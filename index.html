@@ -255,6 +255,22 @@ body.mov .pt[aria-pressed="true"] .pt-b{animation:check .4s cubic-bezier(.3,1.6,
 .pt-refs li{display:grid;grid-template-columns:5.6rem 1fr 2.6rem;align-items:center;gap:10px;font-size:.85rem;color:var(--soft)}
 .pt-refs b{text-align:right;font-size:.82rem;color:var(--ink)}
 .pt-refs .st-bar{height:8px}
+.chips.two-c{display:grid;grid-template-columns:1fr 1fr}
+.chips.two-c .chip{text-align:center}
+.cd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;position:relative}
+.cd-r{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.cd-r.bol{background:linear-gradient(180deg,color-mix(in srgb,var(--coral) 9%,var(--surface)) 0,var(--surface) 70px)}
+.cd-h{display:flex;align-items:center;gap:10px}
+.cd-hora{font-size:.78rem;font-weight:800;color:var(--muted);min-width:3.2em}
+.cd-h b{flex:1;font-size:1rem}
+.cd-bol{font-size:.72rem;font-weight:800;color:#1A0B06;background:var(--coral);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.cd-r ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:.88rem;color:var(--soft)}
+.cd-n{margin:0;font-size:.76rem;color:var(--muted)}
+.cd-t{display:flex;flex-direction:column;gap:2px;padding-top:8px;border-top:1px solid var(--line)}
+.cd-base{margin:0;font-weight:700;font-size:.9rem}
+.cd-ou{margin:2px 0 0;font-size:.74rem;color:var(--muted)}
+.cd-eq{display:flex;flex-wrap:wrap;gap:6px}
+.cd-eq span{font-size:.8rem;color:var(--soft);background:var(--surface2);border-radius:10px;padding:5px 9px;line-height:1.3}
 .pr-txt{font-size:1.05rem!important;line-height:1.2!important}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
@@ -366,7 +382,7 @@ body:not(.mov) .toast{transition:none}
 .dc-stats svg{width:18px;height:18px;color:var(--muted)}
 .dc-stats small{grid-column:2;font-weight:500;font-size:.7rem;color:var(--muted)}
 .dc-mus{margin:0;font-size:.78rem;color:var(--muted)}
-body[data-tela="treino"] .top,body[data-tela="perfil"] .top{display:none}
+body[data-tela="treino"] .top,body[data-tela="perfil"] .top,body[data-tela="cardapio"] .top,body[data-tela="regras"] .top,body[data-tela="breno"] .top,body[data-tela="dieta"] .top,body[data-tela="medidas"] .top{display:none}
 .chips.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .chips.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .chips.five .chip,.chips.three .chip{padding:9px 2px;font-size:.78rem;text-align:center}
@@ -770,6 +786,7 @@ const DAYS_LAURA = fromPlan(PLAN_LAURA);
 const DAYS_LAYSA = fromPlan(PLAN_LAYSA);
 
 const EXTRA = [
+ {id:"cardapio", name:"Cardápio", plate:"--p25"},
  {id:"regras", name:"Regras", plate:"--p20"},
  {id:"breno", name:"Breno", plate:"--p10"}
 ];
@@ -1831,10 +1848,10 @@ function drawDock(){
   document.body.classList.toggle("has-timer", tm);
 }
 const BLOCO = {start: "2026-10-08", weeks: 6};
-const GUIA_DESC = {dieta: "Calorias, proteína e suplementos", regras: "Sobrar, falha, drop, progressão e deload", medidas: "Peso, medidas e próxima avaliação", breno: "O que veio dos vídeos do Breno Aceti"};
+const GUIA_DESC = {cardapio: "Um dia de exemplo e tabela de trocas", dieta: "Calorias, proteína e suplementos", regras: "Sobrar, falha, drop, progressão e deload", medidas: "Peso, medidas e próxima avaliação", breno: "O que veio dos vídeos do Breno Aceti"};
 const dm = s => s.slice(8, 10) + "/" + s.slice(5, 7);
-const GUIA_ICO = {dieta: ICON.prato, regras: ICON_LIVRO, medidas: ICON_FITA, breno: ICON_PLAY};
-const GUIA_COR = {dieta: "var(--coral)", regras: "var(--lime)", medidas: "var(--peso)", breno: "var(--blue)"};
+const GUIA_ICO = {cardapio: ICON.prato, dieta: ICON.prato, regras: ICON_LIVRO, medidas: ICON_FITA, breno: ICON_PLAY};
+const GUIA_COR = {cardapio: "var(--kcal)", dieta: "var(--coral)", regras: "var(--lime)", medidas: "var(--peso)", breno: "var(--blue)"};
 const kg1 = v => num((Math.round(v * 10) / 10).toFixed(1));
 function blocoInfo(){
   const w0 = weekOf(BLOCO.start)[0], n = Math.round((parseDate(weekOf(trainDay())[0]) - parseDate(w0)) / 864e5 / 7) + 1;
@@ -1845,6 +1862,26 @@ function metaPeso(p){
   const t = META_PESO[p]?.txt; if (!t) return null;
   const m = t.match(/^(.*?) \((.*)\)$/);
   return t.endsWith(" por semana") ? [t.replace(" por semana", ""), "por semana"] : m ? [m[1], m[2]] : [t, ""];
+}
+// Cardápio de exemplo — conteúdo do agente de nutrição (2026-10-09)
+const CARDAPIO = {"pessoas":{"rafael":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["2 pães franceses com 1 col. de chá de manteiga em cada","2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (250 ml) com café","1 banana (pode comer às 10h)"],"kcal":790,"prot":34},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["8 col. de sopa de arroz + 1 concha de feijão","1 filé pequeno de frango grelhado (~70 g)","Salada à vontade + 1 col. de sopa de azeite"],"kcal":540,"prot":32},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 pão francês com 1 col. de sopa cheia de pasta de amendoim","1 banana ou outra fruta","1 copo grande de suco de uva integral (300 ml)"],"kcal":540,"prot":10},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["7 col. de sopa de arroz + 1 concha de feijão","3 col. de sopa cheias de carne moída (~70 g)","Legumes refogados à vontade"],"kcal":490,"prot":32},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + 2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (300 ml)","1 banana"],"kcal":580,"prot":32}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["2 xícaras de cuscuz de milho com 1 col. de chá de manteiga","3 ovos mexidos","Café com leite integral (250 ml)","1 banana"],"kcal":730,"prot":32},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["8 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno de patinho (~60 g)","2 col. de sopa de farofa + salada com 1 col. de sopa de azeite","1 copo de suco de laranja natural (250 ml)"],"kcal":780,"prot":33},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + ½ lata de atum + 1 col. de sopa de requeijão","Vitamina: 250 ml de leite integral + 1 banana + 1 col. de sopa de mel"],"kcal":555,"prot":32},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["2 pegadores de macarrão (~250 g cozido) com molho de tomate","3 col. de sopa de carne moída (~60 g) no molho"],"kcal":535,"prot":33},{"hora":"22h30","nome":"Ceia (opcional)","bolinha":false,"itens":["1 copo de leite integral (250 ml) com 2 col. de sopa de achocolatado","4 biscoitos maisena"],"kcal":310,"prot":10}],"total_treino":{"kcal":2940,"prot":140},"total_descanso":{"kcal":2910,"prot":140},"dicas":["Você come pouco: beba calorias. Leite integral, suco de uva integral e vitamina entram fácil e não enchem.","Pese-se de manhã, 1–2 vezes por semana. Se não subir uns 0,2 kg por semana em 2–3 semanas, some 1 copo de leite integral + 1 banana por dia.","Pós-treino rápido e cama. Dormir 5–6 h segura seu ganho. Tente chegar a 7–8 h."]},"laura":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["3 ovos mexidos","1 pão francês","1 fatia de queijo minas frescal","1 copo de leite desnatado (250 ml) com café"],"kcal":520,"prot":35},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","1 filé médio de frango grelhado (~90 g)","Salada à vontade + 1 col. de chá de azeite"],"kcal":430,"prot":35},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 banana amassada com 2 col. de sopa de aveia e canela","1 laranja"],"kcal":250,"prot":5},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["4 col. de sopa de arroz (ou 1 batata-doce média) + 1 concha de feijão","1 filé médio de tilápia (~120 g)","Legumes com 1 col. de chá de azeite"],"kcal":435,"prot":35},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + ½ lata de atum bem servida + 1 col. de sopa de requeijão light","1 copo de leite desnatado (250 ml)"],"kcal":340,"prot":35}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["Crepioca (2 ovos + 2 col. de sopa de goma) com 2 col. de frango desfiado e 1 fatia de queijo minas","1 fatia de mamão com 1 col. de sopa de aveia","Café preto ou pingado"],"kcal":475,"prot":35},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["6 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno de patinho (~70 g)","Salada à vontade + 1 col. de sopa de azeite","1 fruta de sobremesa"],"kcal":585,"prot":35},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + 4 col. de sopa de frango desfiado + 1 col. de sopa de requeijão light","1 copo de suco de laranja natural (250 ml)"],"kcal":410,"prot":35},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["1 batata-doce grande (~200 g) ou 5 col. de sopa de arroz","1 filé médio de tilápia + 1 concha de feijão","Legumes ou salada + 1 col. de sopa de azeite"],"kcal":480,"prot":35}],"total_treino":{"kcal":1975,"prot":145},"total_descanso":{"kcal":1950,"prot":140},"dicas":["Proteína primeiro e metade do prato de salada ou legumes. Enche, tem poucas calorias e protege o músculo no déficit.","O peso oscila. Olhe a média de 2–3 semanas e a cintura. Perder de 0,15 a 0,3 kg por semana está ótimo.","Se a menstruação falhar ou o cansaço ficar forte e não passar, avise e procure um médico. Não é só \"comer mais\"."]},"laysa":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["1 pão francês com 1 col. de chá de manteiga","2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (250 ml) com café"],"kcal":535,"prot":28},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["6 col. de sopa de arroz + 1 concha de feijão","1 filé pequeno de frango (~60 g, palma da mão)","Salada à vontade + 1 col. de sopa de azeite"],"kcal":460,"prot":28},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 banana amassada com 2 col. de sopa de aveia e 1 col. de chá de mel","1 punhado pequeno de amendoim (15 g)"],"kcal":280,"prot":8},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","2 col. de sopa cheias de carne moída (~60 g)","Legumes com 1 col. de chá de azeite"],"kcal":430,"prot":28},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + 2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (200 ml)"],"kcal":450,"prot":28}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["1½ xícara de cuscuz de milho com 1 col. de chá de manteiga","2 ovos mexidos + 1 fatia de muçarela","Café com leite integral (200 ml)","1 laranja"],"kcal":625,"prot":28},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["7 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno (~50 g)","2 col. de sopa de farofa + salada com 1 col. de sopa de azeite"],"kcal":610,"prot":28},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + ½ lata de atum + 1 col. de sopa de requeijão","Vitamina: 200 ml de leite integral + 1 banana"],"kcal":465,"prot":30},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["1 pegador e meio de macarrão (~200 g cozido) com molho de tomate","2 col. de sopa de carne moída (~50 g) no molho","1 col. de sopa de queijo ralado"],"kcal":465,"prot":28}],"total_treino":{"kcal":2155,"prot":120},"total_descanso":{"kcal":2165,"prot":114},"dicas":["Você já é magra: definir = ganhar músculo. Não corte comida e não pule o lanche da tarde.","A balança subindo devagar (0,1 a 0,25 kg por semana) está certo. Se ficar parada por 3 semanas, some 1 banana com 1 col. de pasta de amendoim.","Se a menstruação falhar ou o cansaço ficar forte e não passar, avise e procure um médico."]},"a3":{"texto":"Em breve! Seu cardápio sai depois da sua avaliação (peso, altura e objetivo). Até lá, siga o básico: proteína em toda refeição, água e sono."}},"trocas":[{"grupo":"Carboidrato","base":"4 col. de sopa de arroz (~100 g, ~130 kcal)","itens":["1 pão francês","2 fatias de pão de forma","1 pegador de macarrão (~90 g cozido)","1 batata-doce média (~150 g)","1 xícara de cuscuz de milho","1 tapioca pequena (3 col. de goma) ou 1 pedaço médio de mandioca (~100 g)"]},{"grupo":"Proteína","base":"1 filé de frango grelhado (~100 g, ~30 g de proteína)","itens":["3–4 col. de sopa cheias de carne moída magra (~100 g)","1 lata de atum em água, escorrido","1 filé médio de tilápia (~120 g)","5 col. de sopa de frango desfiado","2 sobrecoxas sem pele","4 ovos inteiros (~25 g, com mais gordura)"]},{"grupo":"Gordura / lanche","base":"1 col. de sopa de pasta de amendoim (~90 kcal)","itens":["1 punhado pequeno de amendoim (15 g)","1 col. de sopa de azeite","3 col. de sopa de abacate","3 castanhas-do-pará","2 col. de chá de manteiga","1½ fatia de muçarela"]},{"grupo":"Fruta","base":"1 banana prata (~70 kcal)","itens":["1 maçã média","1 laranja média","1 fatia média de mamão","1 fatia média de melancia","½ manga"]}],"aviso":"Cardápio de exemplo, com valores aproximados. Não é orientação médica individual: em caso de doença, remédio ou sintoma, procure um médico ou nutricionista."};
+let cardTipo = null;   // "treino" | "descanso"; começa pelo tipo do dia escolhido
+function renderCardapio(){
+  const c = CARDAPIO.pessoas[person.id];
+  const head = `<div class="dayhead"><div><div class="eyebrow">Exemplo do agente de nutrição</div><h2>Cardápio ${person.art} ${person.name}</h2></div></div>`;
+  if (!c || !c.treino) return `<section class="list">${head}<div class="panel"><p>${esc((c && c.texto) || "Em breve, depois da avaliação.")}</p></div></section>`;
+  const tipo = cardTipo || (dayIdFor(logDate) ? "treino" : "descanso"), refs = c[tipo] || [], tot = c["total_" + tipo] || {};
+  const g = (PROT_REF[person.id] || PROT_REF.a3).g;
+  return `<section class="list cardapio">${head}
+    <div class="chips two-c" role="group" aria-label="Tipo de dia">${[["treino", "Dia de treino"], ["descanso", "Descanso"]].map(([k, t]) => `<button type="button" class="chip" data-ctipo="${k}" aria-pressed="${tipo === k}">${t}</button>`).join("")}</div>
+    <div class="stats">${stat({ico: ICONF, c: "var(--kcal)", l: "Calorias", v: tot.kcal ? "~" + tot.kcal.toLocaleString("pt-BR") : "—", u: "kcal", foot: "meta " + (KCAL[person.id] || "—")})}${stat({ico: ICON.prato, c: "var(--coral)", l: "Proteína", v: tot.prot || "—", u: "g", foot: "meta " + (PROT[person.id] || "—")})}</div>
+    <ol class="cd-list">${refs.map(r => `<li class="cd-r${r.bolinha ? " bol" : ""}"><div class="cd-h"><span class="cd-hora num">${esc(r.hora || "")}</span><b>${esc(r.nome)}</b>${r.bolinha ? `<span class="cd-bol" title="Conta 1 bolinha de proteína">1 bolinha</span>` : ""}</div>
+      <ul>${(r.itens || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul><p class="cd-n num">~${r.kcal} kcal · ${r.prot} g de proteína</p></li>`).join("")}</ol>
+    ${c.dicas && c.dicas.length ? `<article class="panel tinted" style="--c:var(--kcal)">${phd(ICONF, "Dicas para você")}<ul class="rel-l">${c.dicas.map(x => `<li class="nx">${esc(x)}</li>`).join("")}</ul></article>` : ""}
+    <article class="panel"><h3>Trocas</h3><p class="hint">Troque à vontade dentro do mesmo grupo: a quantidade de cada linha vale o mesmo.</p>
+      ${(CARDAPIO.trocas || []).map(t => `<div class="cd-t"><p class="rel-h">${esc(t.grupo)}</p><p class="cd-base">${esc(t.base)}</p><p class="cd-ou">ou troque por:</p><div class="cd-eq">${t.itens.map(x => `<span>${esc(x)}</span>`).join("")}</div></div>`).join("")}</article>
+    <p class="hint">${esc(CARDAPIO.aviso || "")}</p>
+  </section>`;
 }
 function renderPerfil(){
   const p = person.id, g = GOALS[p] || GOALS.a3, hoje = trainDay(), cor = `var(${person.cor || "--lime"})`;
@@ -1929,6 +1966,7 @@ function drawCore(){
   if (screen === "mais") { screen = "perfil"; }
   if (screen === "progresso") { view.innerHTML = shownStats = renderProgress(); return; }
   if (screen === "perfil") { view.innerHTML = shownStats = renderPerfil(); return; }
+  if (screen === "cardapio") { view.innerHTML = `<button type="button" class="ghost back" data-screen="perfil">‹ Perfil</button>` + renderCardapio(); return; }
   if (EXTRA.find(t => t.id === screen)) { view.innerHTML = `<button type="button" class="ghost back" data-screen="perfil">‹ Perfil</button>` + (person.panels || PANELS)[screen]; return; }
   if (!person.days){ view.innerHTML = PENDING(person); return; }
   if (treinoView === "semana") { view.innerHTML = renderSemana(); return; }
@@ -1968,6 +2006,8 @@ view.addEventListener("click", e=>{
   if (pb){ painelSel = pb.dataset.pbar; const y = scrollY; draw(); scrollTo(0, y); return; }
   const prof = e.target.closest("[data-perfil]");
   if (prof){ goScreen("perfil"); return; }
+  const ct = e.target.closest("[data-ctipo]");
+  if (ct){ cardTipo = ct.dataset.ctipo; const y = scrollY; draw(); scrollTo(0, y); return; }
   const an = e.target.closest("[data-anim]");
   if (an){ motion = an.dataset.anim; store.set("anim", motion); applyMotion(); const y = scrollY; animNext = true; draw(); scrollTo(0, y); return; }
   const pick = e.target.closest("[data-person]");
