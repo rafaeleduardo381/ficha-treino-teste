@@ -418,9 +418,12 @@ const EXTRA = [
  {id:"breno", name:"Breno", plate:"--p10"}
 ];
 
+// Produção e teste ficam no mesmo endereço (github.io): o teste guarda tudo com prefixo próprio no aparelho
+const NS = window.SUPA && window.SUPA.table && window.SUPA.table !== "treinos" ? window.SUPA.table + "/" : "";
+const CK = NS + "cargas:";
 const store = {
-  get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
-  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  get(k){try{return JSON.parse(localStorage.getItem(NS + k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(NS + k,JSON.stringify(v))}catch(e){}}
 };
 const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
 
@@ -495,7 +498,7 @@ const filled = s => s && ((s.kg !== "" && s.kg != null) || (s.reps !== "" && s.r
 const fmtSets = sets => (sets || []).filter(filled).map(s => `${num(s.kg) || "–"}×${s.reps === "" || s.reps == null ? "–" : s.reps}`).join(" · ");
 const storageOk = (() => { try { localStorage.setItem("_t", "1"); const ok = localStorage.getItem("_t") === "1"; localStorage.removeItem("_t"); return ok; } catch(e) { return false; } })();
 const modeText = () => logMode === "online" ? "Salva online" : logMode === "local" ? (storageOk ? "Salva neste celular" : "Este navegador não guarda os dados: envie pelo WhatsApp antes de fechar") : "";
-try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith("cargas:")) LOGS[key.slice(7)] = JSON.parse(localStorage.getItem(key)); } } catch(e) {}
+try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith(CK)) LOGS[key.slice(CK.length)] = JSON.parse(localStorage.getItem(key)); } } catch(e) {}
 
 function lastFor(p, name, before){
   let best = null;
@@ -594,7 +597,7 @@ function saveLog(id){
     store.set("cargas:" + id, body);   // cópia no aparelho até o banco confirmar
     if (logMode === "online" && dbRef) {
       for (let t = 0; t < 2; t++) {
-        try { await dbRef.collection("treinos").doc(id).set(body); delete pending[id]; try { localStorage.removeItem("cargas:" + id); } catch(e) {} setStatus("Salvo online ✓"); return; }
+        try { await dbRef.collection("treinos").doc(id).set(body); delete pending[id]; try { localStorage.removeItem(CK + id); } catch(e) {} setStatus("Salvo online ✓"); return; }
         catch(e) { if (SUPA || !(e && e.code === "unavailable") || t) break; await new Promise(r => setTimeout(r, 400 + Math.random()*600)); }
       }
       if (!SUPA) logMode = "local";
@@ -607,7 +610,7 @@ function saveLog(id){
 const ts = s => Date.parse(s || 0) || 0;
 function syncLocal(server){
   let keys = [];
-  try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith("cargas:")) keys.push(key.slice(7)); } } catch(e) { return; }
+  try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith(CK)) keys.push(key.slice(CK.length)); } } catch(e) { return; }
   for (const id of keys) if (LOGS[id] && !(server[id] && ts(server[id].updated) >= ts(LOGS[id].updated))) saveLog(id);
 }
 // Versão do site (GitHub Pages): o banco é o Supabase do Rafael, sem login para ninguém
