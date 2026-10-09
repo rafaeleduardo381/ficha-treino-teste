@@ -64,9 +64,13 @@ a{color:var(--lime);text-underline-offset:2px}
 .ico{width:34px;height:34px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;flex:none;color:var(--c)}
 .ico svg{width:18px;height:18px}
 .ring{position:relative;width:min(132px,100%);aspect-ratio:1}
-.ring svg{width:100%;height:100%;transform:rotate(-90deg);display:block}
-.ring .track{stroke:var(--surface2)}
-.ring .val{stroke:var(--c)}
+.ring svg{width:100%;height:100%;display:block}
+.ring .track{stroke:color-mix(in srgb,var(--c) 30%,transparent)}
+.dot-p{fill:var(--c);opacity:.13;transform-box:fill-box;transform-origin:center;transform:scale(.7)}
+.dot-p.on{opacity:1;transform:scale(1)}
+.pr-ring .dm{fill:var(--c);opacity:.15}
+.pr-ring .dm.on{opacity:1}
+.ring .lbl small{font-variant-numeric:tabular-nums}
 .ring .lbl{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
 .ring .lbl b{font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
 .ring .lbl small{font-size:.75rem;color:var(--muted);white-space:nowrap}
@@ -191,7 +195,8 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .bar{position:absolute;left:0;right:0;bottom:0;height:3px}
 .bar i{display:block;height:100%;width:0;background:var(--lime)}
 footer{color:var(--muted);font-size:.78rem;text-align:center}
-@media (prefers-reduced-motion:no-preference){.bar i{transition:width .9s linear}.ring .val{transition:stroke-dashoffset .4s ease}}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .9s linear}.dot-p{transition:opacity .28s ease,transform .28s cubic-bezier(.3,1.6,.5,1)}.pr-ring .dm.on{animation:dot-in .35s ease both}}
+@keyframes dot-in{from{opacity:.15}to{opacity:1}}
 @media (max-width:380px){.cards{gap:8px}.ck{padding:14px 10px}.step button{width:44px}}
 
 /* Ofensiva */
@@ -913,8 +918,32 @@ const ICON = {
   balanca: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8.5 9.5a4.5 4.5 0 0 1 7 0L12 12z"/></svg>`,
   seta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`
 };
-const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="9"/><circle class="val" id="ring-${key}" cx="50" cy="50" r="42" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"/></svg><span class="cheer" aria-hidden="true">Meta batida!</span><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
+const DOTS = 40;
+const dotsAt = (r, cx, cy, n, rad) => Array.from({length: n}, (_, i) => { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return `<circle class="dot-p" cx="${(cx + r * Math.cos(a)).toFixed(2)}" cy="${(cy + r * Math.sin(a)).toFixed(2)}" r="${rad}"/>`; }).join("");
+const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg id="ring-${key}" viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="1.2"/>${dotsAt(42, 50, 50, DOTS, 2.8)}</svg><span class="cheer" aria-hidden="true">Meta batida!</span><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
+// Liga os pontos do anel a partir de onde estavam (um a um) e conta a % até o valor novo
+const ringState = {}, ringRaf = {};
+function animateRing(k, frac){
+  const svg = document.getElementById("ring-" + k), b = document.getElementById("ck-" + k); if (!svg || !b) return;
+  const dots = svg.querySelectorAll(".dot-p"), f = Math.max(0, frac || 0), to = Math.round(Math.min(1, f) * DOTS), pctTo = Math.round(f * 100);
+  const from = ringState[k]?.lit ?? 0, pctFrom = ringState[k]?.pct ?? 0;
+  ringState[k] = {lit: to, pct: pctTo};
+  const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  dots.forEach((d, i) => {
+    const on = i < to, muda = on !== d.classList.contains("on");
+    const ordem = to > from ? i - from : from - 1 - i;
+    d.style.transitionDelay = calmo || !muda ? "0ms" : Math.max(0, ordem) * 22 + "ms";
+    d.classList.toggle("on", on);
+  });
+  cancelAnimationFrame(ringRaf[k]);
+  if (calmo || pctFrom === pctTo) { b.textContent = pctTo + "%"; return; }
+  const t0 = performance.now(), dur = Math.min(1000, 160 + Math.abs(to - from) * 22);
+  const tick = t => { const x = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - x, 3); b.textContent = Math.round(pctFrom + (pctTo - pctFrom) * e) + "%"; if (x < 1) ringRaf[k] = requestAnimationFrame(tick); };
+  ringRaf[k] = requestAnimationFrame(tick);
+  clearTimeout(ringRaf[k + "t"]); ringRaf[k + "t"] = setTimeout(() => { cancelAnimationFrame(ringRaf[k]); b.textContent = pctTo + "%"; }, dur + 80);   // garante o número final mesmo se a animação parar
+}
 function renderToday(){
+  for (const k in ringState) delete ringState[k];   // ao abrir a tela, os anéis enchem de novo a partir do zero
   const hoje = trainDay();
   const week = weekOf(logDate).map(s => `<button type="button" class="wday${s === logDate ? " on" : ""}${s === hoje ? " today" : ""}" data-date="${s}" aria-pressed="${s === logDate}" aria-label="${WD[parseDate(s).getDay()]} ${brDate(s)}"><span>${WD[parseDate(s).getDay()]}</span><b>${s.slice(8,10)}</b><i class="dot" data-dot="${s}"></i></button>`).join("");
   return `<section class="list" aria-label="Hoje">
@@ -939,13 +968,12 @@ function refreshToday(){
   if (screen !== "hoje" || !document.getElementById("ck-agua")) return;
   const g = goalsFor(person.id, logDate), c = chkOf(person.id, logDate);
   const setRing = (k, v, goal, unit) => {
-    const el = document.getElementById("ck-" + k); el.textContent = k === "agua" ? ml(v) : `${num(v)}/${num(goal)}`;
     document.getElementById("ck-" + k + "-u").textContent = unit;
-    document.getElementById("ring-" + k).style.strokeDashoffset = 263.9 * (1 - Math.min(1, v / goal));
+    animateRing(k, v / goal);
   };
-  setRing("agua", +c.agua || 0, g.agua, `de ${ml(g.agua)} ml`);
+  setRing("agua", +c.agua || 0, g.agua, `${ml(+c.agua || 0)} / ${ml(g.agua)} ml`);
   document.getElementById("ck-agua-note").textContent = `+ / − 250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}`;
-  setRing("sono", +c.sono || 0, g.sono, "horas");
+  setRing("sono", +c.sono || 0, g.sono, `${num(+c.sono || 0)} / ${num(g.sono)} h`);
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
   document.getElementById("ck-count").textContent = `${((+c.agua || 0) >= g.agua) + ((+c.sono || 0) >= g.sono)}/2`;
@@ -1242,8 +1270,9 @@ function maxCarga(doc){
   return best;
 }
 function ringMini(frac, color){
-  const c = 2 * Math.PI * 18, f = Math.max(0, Math.min(1, frac || 0));
-  return `<svg class="pr-ring" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke-width="6" style="stroke:color-mix(in srgb,${color} 22%,transparent)"/><circle cx="22" cy="22" r="18" fill="none" stroke-width="6" stroke-linecap="round" style="stroke:${color}" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - f)}" transform="rotate(-90 22 22)"/></svg>`;
+  const n = 24, lit = Math.round(Math.max(0, Math.min(1, frac || 0)) * n);
+  const pts = Array.from({length: n}, (_, i) => { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return `<circle class="dm${i < lit ? " on" : ""}" style="animation-delay:${i * 30}ms" cx="${(22 + 18 * Math.cos(a)).toFixed(2)}" cy="${(22 + 18 * Math.sin(a)).toFixed(2)}" r="2.1"/>`; }).join("");
+  return `<svg class="pr-ring" viewBox="0 0 44 44" aria-hidden="true" style="--c:${color}"><circle cx="22" cy="22" r="18" fill="none" stroke-width=".9" style="stroke:color-mix(in srgb,${color} 35%,transparent)"/>${pts}</svg>`;
 }
 function renderPainel(p){
   const today = trainDay();
