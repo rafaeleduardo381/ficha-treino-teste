@@ -215,6 +215,17 @@ body.mov .anim .st-bar i,body.mov .anim .pbar i,body.mov .anim .pf-segs i.ok,bod
 button.todaycard,button.dcard{background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 10%,var(--surface)) 0,var(--surface) 78px)}
 .panel.tinted{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0,var(--surface) 78px)}
 .ex{background:linear-gradient(180deg,color-mix(in srgb,var(--pc,var(--muted)) 7%,var(--surface)) 0,var(--surface) 78px)}
+.rel-t{margin:0;font-weight:700;font-size:.98rem;line-height:1.4}
+.rel-n{display:flex;flex-wrap:wrap;gap:6px}
+.rel-n span{font-size:.76rem;font-weight:800;color:var(--soft);background:var(--surface2);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
+.rel-b{display:flex;flex-direction:column;gap:6px}
+.rel-h{margin:0;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rel .rel-l{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.rel-l li{position:relative;padding-left:24px;font-size:.9rem;color:var(--soft);line-height:1.4}
+.rel-l li::before{position:absolute;left:0;top:1px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;font-size:.66rem;font-weight:800}
+.rel-l li.ok::before{content:"✓";background:color-mix(in srgb,var(--lime) 22%,var(--surface2));color:var(--lime)}
+.rel-l li.at::before{content:"!";background:color-mix(in srgb,var(--warn) 22%,var(--surface2));color:var(--warn)}
+.rel-l li.nx::before{content:"→";background:color-mix(in srgb,var(--blue) 22%,var(--surface2));color:var(--blue)}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -497,7 +508,7 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
   <button type="button" data-screen="progresso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Progresso</span></button>
 </nav>
 
-<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste"};</script>
+<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste","relatorios":"relatorios"};</script>
 <script>
 const IG = id => `https://www.instagram.com/breno.aceti/reel/${id}/`;
 const b = (id, txt) => `<span class="breno">Breno</span>${txt} <a href="${IG(id)}" target="_blank" rel="noopener">ver vídeo</a>`;
@@ -954,6 +965,17 @@ function syncLocal(server){
 }
 // Versão do site (GitHub Pages): o banco é o Supabase do Rafael, sem login para ninguém
 const SUPA = window.SUPA || null;
+const REL = {};   // último relatório semanal de cada pessoa
+async function loadRel(){
+  if (!SUPA || !SUPA.relatorios) return;
+  try {
+    const h = {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key};
+    const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.relatorios}?select=*&order=semana.desc&limit=60`, {headers: h});
+    if (!r.ok) return;
+    for (const x of await r.json()) if (!REL[x.person]) REL[x.person] = x;
+    refreshStats();
+  } catch(e) {}
+}
 function supaDb(){
   const h = {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key, "Content-Type": "application/json"};
   // coleção "treinos" → tabela de treinos do ambiente; "checkins" → tabela de check-ins do ambiente
@@ -984,7 +1006,7 @@ function supaDb(){
   if (SUPA) db = supaDb();
   else try { db = await window.claude?.use?.("db"); } catch(e) {}
   if (!db) { logMode = "local"; refreshCarga(); return; }
-  dbRef = db; logMode = "online"; refreshCarga();
+  dbRef = db; logMode = "online"; refreshCarga(); loadRel(); document.addEventListener("visibilitychange", () => { if (!document.hidden) loadRel(); });
   db.collection("treinos").orderBy("date", "desc").limit(500).onSnapshot(snap => {
     const server = {};
     for (const d of snap.docs) {
@@ -1387,6 +1409,17 @@ const ICON_PLAY = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const ICON_FITA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="8" width="19" height="8" rx="2"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg>`;
 // Título de painel: ícone colorido + título (+ selo à direita)
 const phd = (ico, t, extra = "") => `<div class="ph"><div class="ph-t"><span class="st-ico">${ico}</span><h3>${t}</h3></div>${extra}</div>`;
+function relCard(p){
+  const r = REL[p]; if (!r) return "";
+  const fim = addDays(r.semana, 6), n = r.numeros || {}, li = (arr, cls) => (arr || []).slice(0, 4).map(t => `<li class="${cls}">${esc(t)}</li>`).join("");
+  const chips = [n.treinos != null ? `${n.treinos}${n.previstos ? "/" + n.previstos : ""} treinos` : "", n.volume_kg ? (n.volume_kg / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "", n.sono_media ? "sono " + num(n.sono_media) + " h" : "", n.peso_delta != null ? (n.peso_delta > 0 ? "+" : n.peso_delta < 0 ? "−" : "") + num(Math.abs(n.peso_delta)) + " kg" : ""].filter(Boolean);
+  const blk = (t, arr, cls) => arr && arr.length ? `<div class="rel-b"><p class="rel-h">${t}</p><ul class="rel-l">${li(arr, cls)}</ul></div>` : "";
+  return `<article class="panel tinted rel" style="--c:var(--lime)">${phd(ICON_LIVRO, "Resumo da semana", `<span class="delta">${dd(r.semana)}–${dd(fim)}</span>`)}
+    ${r.titulo ? `<p class="rel-t">${esc(r.titulo)}</p>` : ""}
+    ${chips.length ? `<div class="rel-n">${chips.map(c => `<span>${c}</span>`).join("")}</div>` : ""}
+    ${blk("Foi bem", r.destaques, "ok")}${blk("Atenção", r.atencao, "at")}${blk("Próxima semana", r.proxima, "nx")}
+    <p class="hint">Feito pelo seu personal todo domingo com os treinos e o check-in da semana.</p></article>`;
+}
 const tile = (v, l, s = "") => `<div class="tile"><b class="num">${v}</b><span>${l}</span>${s ? `<small>${s}</small>` : ""}</div>`;
 function renderProgress(){
   const p = person.id, today = logDate, from28 = addDays(today, -27);
@@ -1433,6 +1466,7 @@ function renderProgress(){
   return `<section class="list prog" aria-label="Progresso">
     <h2>Progresso</h2>
     ${renderPainel(p)}
+    ${relCard(p)}
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="stats">${statCards}</div>
 
