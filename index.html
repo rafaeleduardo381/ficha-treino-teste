@@ -278,7 +278,7 @@ footer{color:var(--muted);font-size:.78rem;text-align:center}
 .dc-stats svg{width:18px;height:18px;color:var(--muted)}
 .dc-stats small{grid-column:2;font-weight:500;font-size:.7rem;color:var(--muted)}
 .dc-mus{margin:0;font-size:.78rem;color:var(--muted)}
-body[data-tela="treino"] .hello{display:none}
+body[data-tela="treino"] .top,body[data-tela="perfil"] .top{display:none}
 .chips.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .chips.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .chips.five .chip,.chips.three .chip{padding:9px 2px;font-size:.78rem;text-align:center}
@@ -289,6 +289,55 @@ body[data-tela="treino"] .hello{display:none}
 .ex-top.has-thumb{grid-template-columns:56px 1fr}
 .ex-top.has-thumb .presc{grid-column:2}
 .dayhead h2{font-size:1.5rem}
+/* Perfil */
+.plist{display:flex;flex-direction:column;gap:8px}
+.pitem{display:flex;align-items:center;gap:12px;width:100%;font:inherit;font-weight:700;color:var(--ink);background:var(--surface2);border:1px solid transparent;border-radius:14px;padding:10px 12px;cursor:pointer;text-align:left}
+.pitem span:nth-child(2){flex:1}
+.pitem small{font-weight:600;color:var(--lime);font-size:.75rem}
+.pitem[aria-pressed="true"]{border-color:var(--lime)}
+.avatar.sm{width:34px;height:34px;font-size:.9rem;box-shadow:none;cursor:inherit}
+/* Hoje: sono, peso e alimentação */
+.sq{display:flex;gap:4px;justify-content:center}
+.sqb{width:26px;height:26px;padding:0;border:0;border-radius:50%;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.sqb svg{width:22px;height:22px}
+.sqb[aria-pressed="true"]{color:var(--bg);background:var(--lime)}
+.mini-ck{gap:10px;align-items:stretch;text-align:left;font:inherit;color:var(--ink)}
+.mini-ck .ck-note{text-align:left}
+.dietbtn{cursor:pointer}
+.diet-st{font-size:1.05rem;font-weight:800;color:var(--muted)}
+.diet-st.marcada{color:var(--ink)}
+.mini-ck .ck-h{font-size:.92rem;gap:8px;min-width:0}
+.mini-ck .ico{width:30px;height:30px}
+.backtoday{align-self:center;font:inherit;font-size:.8rem;font-weight:800;color:var(--lime-ink);background:var(--lime);border:0;border-radius:999px;padding:7px 14px;cursor:pointer;margin-top:-4px}
+.week-cap{margin:-6px 0 0;font-size:.72rem;color:var(--muted);text-align:center}
+.tip-sono{border-color:color-mix(in srgb,var(--warn) 55%,var(--line))}
+.tip-sono h3{color:var(--warn);font-size:1rem}
+.tip-sono ul{font-size:.88rem}
+/* Folha de baixo */
+.sheet{position:fixed;inset:0;z-index:40}
+.sheet-bg{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .2s}
+.sheet-panel{position:absolute;left:0;right:0;bottom:0;max-width:560px;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:24px 24px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;transform:translateY(100%);transition:transform .22s ease}
+.sheet.open .sheet-bg{opacity:1}
+.sheet.open .sheet-panel{transform:none}
+.sheet-grab{width:40px;height:4px;border-radius:4px;background:var(--line);align-self:center}
+.sheet-panel h2{font-size:1.2rem}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
+.opt small{color:var(--muted);font-size:.8rem}
+.opt[aria-pressed="true"]{border-color:var(--lime);background:color-mix(in srgb,var(--lime) 12%,var(--surface2))}
+.done-btn{font:inherit;font-weight:800;font-size:1rem;color:var(--lime-ink);background:var(--lime);border:0;border-radius:14px;height:50px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.sheet-panel,.sheet-bg{transition:none}}
+/* Treino: título do dia e controle de séries */
+.dsub{margin:2px 0 0;font-size:.82rem;color:var(--muted)}
+.daystats{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.daystats span{font-size:.78rem;font-weight:700;color:var(--soft);background:var(--surface2);border-radius:999px;padding:4px 10px}
+.daystats span:empty{display:none}
+.daystats #logstate{background:none;padding:4px 2px}
+.rows{display:flex;flex-direction:column;gap:10px}
+.rows .setctl{display:flex;align-items:center;align-self:stretch;justify-content:center;gap:0;background:var(--surface2);border-radius:12px;padding:4px}
+.rows .setctl span{flex:1;text-align:center;font-size:.85rem;color:var(--soft)}
+.sbtn{width:44px;height:36px;border:0;border-radius:9px;background:var(--bg);color:var(--ink);font:inherit;font-size:1.25rem;font-weight:800;cursor:pointer}
+.sbtn:disabled{opacity:.35;cursor:default}
 /* Topo com perfil */
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:inherit;font-weight:800;font-size:1.1rem;color:var(--lime-ink);background:var(--lime);border:0;cursor:pointer;box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--line)}
@@ -372,7 +421,6 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
   <button type="button" data-screen="hoje"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg><span>Hoje</span></button>
   <button type="button" data-screen="treino"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg><span>Treino</span></button>
   <button type="button" data-screen="progresso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Progresso</span></button>
-  <button type="button" data-screen="mais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span>Mais</span></button>
 </nav>
 
 <script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste"};</script>
@@ -649,9 +697,8 @@ function renderDay(d){
   const total = d.ex.reduce((a,e)=>a+(e[4] ? e[1] : 0),0);
   return `<section style="--pc:var(${d.plate})" class="list">
     <button type="button" class="ghost back" data-semana>‹ Semana</button>
-    <div class="dayhead"><div><div class="eyebrow">${d.wd} · ${d.sub}</div><h2>${d.name}</h2></div>
-    <div style="display:flex;gap:8px;align-items:center"><span class="num" style="color:var(--muted)">${total} séries</span><button type="button" class="ghost" id="reset">Zerar</button></div></div>
-    <div class="logbar"><label for="logdate">Treino de</label><input type="date" id="logdate" value="${logDate}"><span id="logstate" aria-live="polite">${modeText()}</span></div>
+    <div class="dayhead"><div><div class="eyebrow">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}${logDate === trainDay() ? " · hoje" : ""}</div><h2>${d.name}</h2><p class="dsub">${d.sub}</p></div></div>
+    <div class="daystats"><span class="num">${total} séries</span><span class="num">~${Math.round(d.ex.reduce((a, e) => a + (e[4] ? e[1] * (40 + e[4]) : 0), 0) / 60)} min</span><span class="num" id="daykcal"></span><span id="logstate" aria-live="polite">${modeText()}</span></div>
     ${cards}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
       <p id="sendsum" class="sendsum"></p>
@@ -721,7 +768,7 @@ function setRows(d, i, name, sets, marks, reps){
   }).join("");
   const leg = d.id === "d2" || d.id === "d4";
   return `<div class="rows" id="rows-${d.id}-${i}"><div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
-    <div class="setctl"><button type="button" class="ghost" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="ghost" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button></div></div>`;
+    <div class="setctl"><button type="button" class="sbtn" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="sbtn" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button></div></div>`;
 }
 function changeSets(i, dir){
   const d = person.days.find(x => x.id === current), [name, sets, reps] = d.ex[i];
@@ -767,7 +814,7 @@ function refreshCarga(){
     const p = box.closest(".ex").querySelector(".last");
     if (p) p.innerHTML = last ? `Última vez (${brDate(last.date)}): <b>${fmtSets(last.sets)}</b>` : "Primeira vez: anote kg e reps de cada série.";
     const mt = box.closest(".ex").querySelector(".meta");
-    if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name); mt.innerHTML = t ? `Meta de hoje: ${t}` : ""; mt.hidden = !t; }
+    if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name); mt.innerHTML = t ? `Meta${logDate === trainDay() ? " de hoje" : ""}: ${t}` : ""; mt.hidden = !t; }
     box.querySelectorAll("input").forEach(inp => {
       const s = +inp.dataset.set, f = inp.dataset.field, lv = last?.sets?.[s]?.[f];
       const ph = lv === "" || lv == null ? (f === "kg" ? box.dataset.kg : "reps") : (f === "kg" ? num(lv) : String(lv));
@@ -915,6 +962,7 @@ function dayScore(p, s){
 const ICON = {
   agua: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>`,
   sono: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>`,
+  prato: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="3.5"/><path d="M3 4v6M3 7h2M21 4v16"/></svg>`,
   balanca: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8.5 9.5a4.5 4.5 0 0 1 7 0L12 12z"/></svg>`,
   seta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`
 };
@@ -950,20 +998,23 @@ function renderToday(){
   const week = weekOf(logDate).map(s => `<button type="button" class="wday${s === logDate ? " on" : ""}${s === hoje ? " today" : ""}" data-date="${s}" aria-pressed="${s === logDate}" aria-label="${WD[parseDate(s).getDay()]} ${brDate(s)}"><span>${WD[parseDate(s).getDay()]}</span><b>${s.slice(8,10)}</b><i class="dot" data-dot="${s}"></i></button>`).join("");
   return `<section class="list" aria-label="Hoje">
     <div class="week">${week}</div>
+    ${logDate === hoje ? `<p class="week-cap">O anel de cada dia mostra quanto você completou: água, sono e treino.</p>` : `<button type="button" class="backtoday" data-date="${hoje}">Vendo ${WD[parseDate(logDate).getDay()]}, ${brDate(logDate)} · Voltar para hoje</button>`}
     ${renderStreak()}
-    <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count">0/2</span></h2>
+    <h2 class="sec">Treino ${logDate === trainDay() ? "de hoje" : "de " + brDate(logDate)}</h2>
+    <div id="todaytrain"></div>
+    <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count" title="itens registrados no dia">0/4</span></h2>
     <div class="cards">
       <article class="ck" id="card-agua" style="--c:var(--blue)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<button type="button" class="badge" data-cheer="agua" aria-label="Meta de água batida: ver a comemoração">Meta ✓</button></div>${ring("agua", "var(--blue)")}
         <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Menos 250 ml">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais 250 ml">+</button></div>
         <p class="ck-note" id="ck-agua-note">250 ml</p></article>
       <article class="ck" id="card-sono" style="--c:var(--lime)"><div class="ck-h"><span class="ico">${ICON.sono}</span>Sono<button type="button" class="badge" data-cheer="sono" aria-label="Meta de sono batida: ver a comemoração">Meta ✓</button></div>${ring("sono", "var(--lime)")}
         <div class="step"><button type="button" data-ck="sono" data-d="-1" aria-label="Menos meia hora">−</button><button type="button" data-ck="sono" data-d="1" aria-label="Mais meia hora">+</button></div>
-        <p class="ck-note" id="ck-sono-note">noite passada · mín. 7 h</p></article>
+        <div class="sq" role="group" aria-label="Como você dormiu">${SONO_Q.map((t, i) => `<button type="button" class="sqb" data-sq="${i + 1}" aria-pressed="false" aria-label="${t}" title="${t}">${SQ_ICO[i]}</button>`).join("")}</div>
+        <p class="ck-note" id="ck-sono-note">Como dormiu? Toque numa carinha</p></article>
     </div>
-    <p class="ckstate" id="ckstate"></p>
+    <div id="sonotip"></div>
     ${renderExtras()}
-    <h2 class="sec">Treino do dia</h2>
-    <div id="todaytrain"></div>
+    <p class="ckstate" id="ckstate"></p>
   </section>`;
 }
 function refreshToday(){
@@ -978,7 +1029,7 @@ function refreshToday(){
   setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
-  document.getElementById("ck-count").textContent = `${((+c.agua || 0) >= g.agua) + ((+c.sono || 0) >= g.sono)}/2`;
+  document.getElementById("ck-count").textContent = `${[+c.agua > 0, +c.sono > 0, !!c.peso, c.dieta != null].filter(Boolean).length}/4`;
   refreshExtras();
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
   const t = treinoProg(person.id, logDate), box = document.getElementById("todaytrain");
@@ -1115,25 +1166,73 @@ function setChk(patch){
   refreshToday(); setChkStatus("Salvando…");
   clearTimeout(chkTimers[id]); chkTimers[id] = setTimeout(() => saveChk(id), 600);
 }
+// 1 péssimo … 5 ótimo: carinhas desenhadas (sem emoji)
+const SQ_ICO = [
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 16.5c2.2-2 5.8-2 8 0M8.5 9.5l2 1M15.5 9.5l-2 1"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 16c2-1.3 5-1.3 7 0"/><circle cx="9" cy="10" r=".6" fill="currentColor"/><circle cx="15" cy="10" r=".6" fill="currentColor"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 15h7"/><circle cx="9" cy="10" r=".6" fill="currentColor"/><circle cx="15" cy="10" r=".6" fill="currentColor"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 14c2 1.6 5 1.6 7 0"/><circle cx="9" cy="10" r=".6" fill="currentColor"/><circle cx="15" cy="10" r=".6" fill="currentColor"/></svg>',
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M7.5 13.5c2.4 3.2 6.6 3.2 9 0M8 9.5q1-1.5 2 0M14 9.5q1-1.5 2 0"/></svg>'
+];
+const DIETA_DESC = {1: "comi o que estava previsto", 0.5: "uma refeição fora do plano", 0: "o dia quase todo fora"};
 function renderExtras(){
-  return `<div class="panel ckx"><h3>Como você dormiu?</h3><div class="chips five" role="group" aria-label="Qualidade do sono">${SONO_Q.map((t, i) => `<button type="button" class="chip" data-sq="${i + 1}" aria-pressed="false">${t}</button>`).join("")}</div></div>
-    <div class="panel ckx"><h3>Alimentação</h3>
-      <div class="chips three" role="group" aria-label="Como foi a dieta hoje">${DIETA_OP.map(([v, t]) => `<button type="button" class="chip" data-dieta="${v}" aria-pressed="false">${t}</button>`).join("")}</div>
-      <div class="togs"><button type="button" class="tog" data-flag="proteina" aria-pressed="false"><span>Bati a proteína</span><small>${PROT[person.id] ? "meta " + PROT[person.id] : ""}</small></button><button type="button" class="tog" data-flag="creatina" aria-pressed="false"><span>Tomei creatina</span><small>3–5 g</small></button></div></div>
-    <div class="panel ckx"><h3>Peso de hoje</h3>
-      <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso de hoje em kg"><span>kg · em jejum, ao acordar, depois do banheiro</span></div>
-      <p class="hint" id="pesohint"></p></div>`;
+  return `<div class="cards">
+      <article class="ck mini-ck" id="card-peso" style="--c:var(--ink)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
+        <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
+        <p class="ck-note" id="pesohint">em jejum, ao acordar</p></article>
+      <button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
+        <b class="diet-st" id="dietst">Não marcada</b><span class="ck-note" id="dietsub">Toque para marcar no fim do dia</span></button>
+    </div>`;
 }
 function refreshExtras(){
   const c = chkOf(person.id, logDate);
   document.querySelectorAll("[data-sq]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.sq === c.sono_q)));
-  document.querySelectorAll("[data-dieta]").forEach(b => b.setAttribute("aria-pressed", String(c.dieta != null && +b.dataset.dieta === +c.dieta)));
-  document.querySelectorAll("[data-flag]").forEach(b => b.setAttribute("aria-pressed", String(!!c[b.dataset.flag])));
+  const sn = document.getElementById("ck-sono-note"); if (sn) sn.textContent = c.sono_q ? `Dormiu: ${SONO_Q[c.sono_q - 1].toLowerCase()}` : "Como dormiu? Toque numa carinha";
   const pin = document.getElementById("peso");
   if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
   const h = document.getElementById("pesohint");
-  if (h) { const t = pesoTrend(person.id, trainDay()); h.textContent = t ? `Média de 7 dias: ${num(t.avg.toFixed(1))} kg${t.delta != null ? ` · ${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(2))} kg na semana` : ""}` : "Pese todo dia: a média de 7 dias mostra a tendência real."; }
+  if (h) { const t = pesoTrend(person.id, logDate); h.textContent = t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "em jejum, ao acordar"; }
+  const st = document.getElementById("dietst"), sub = document.getElementById("dietsub");
+  if (st) { const op = DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta); st.textContent = op ? op[1] : "Não marcada"; st.classList.toggle("marcada", !!op);
+    sub.textContent = op ? [c.proteina ? "proteína ✓" : "proteína não", c.creatina ? "creatina ✓" : ""].filter(Boolean).join(" · ") : "Toque para marcar no fim do dia"; }
+  // O que muda quando a noite foi ruim (base: conhecimento/04 e regra de deload da ficha)
+  const tip = document.getElementById("sonotip");
+  if (tip) {
+    const qRuim = c.sono_q && c.sono_q <= 2, curto = +c.sono > 0 && +c.sono < 6, ruim = qRuim || curto;
+    const curtas = lastDays(7, logDate).filter(x => { const v = +chkOf(person.id, x).sono; return v > 0 && v < 5; }).length;
+    tip.innerHTML = !ruim ? "" : `<div class="panel tip-sono"><h3>${qRuim ? "Noite ruim" : "Dormiu pouco (" + num(+c.sono) + " h)"}: o que muda hoje</h3><ul>
+      <li>Uma noite assim não muda a ficha. Treine normal, mas respeite o "sobrar" de cada exercício: não force falha nem drop extra.</li>
+      <li>Se der, cochile 20–90 min entre 13h e 16h.</li>
+      <li>${curtas >= 3 ? "<b>Já são " + curtas + " noites com menos de 5 h nesta semana: é sinal para antecipar o deload.</b> Fale com o personal." : "Se as cargas caírem em 2 treinos seguidos com sono ruim, é sinal para antecipar o deload (regra da sua ficha)."}</li></ul></div>`;
+  }
 }
+// Folha que sobe de baixo (alimentação)
+function openSheet(kind){
+  let sh = document.getElementById("sheet");
+  if (!sh) { sh = document.createElement("div"); sh.id = "sheet"; sh.className = "sheet"; document.body.appendChild(sh);
+    sh.addEventListener("click", e => {
+      if (e.target.closest("[data-close]")) return closeSheet();
+      const di = e.target.closest("[data-dieta]"); if (di) { const v = +di.dataset.dieta, c = chkOf(person.id, logDate); setChk({dieta: c.dieta != null && +c.dieta === v ? null : v}); return renderSheet(); }
+      const fl = e.target.closest("[data-flag]"); if (fl) { const f = fl.dataset.flag; setChk({[f]: !chkOf(person.id, logDate)[f]}); return renderSheet(); }
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !sh.hidden) closeSheet(); });
+  }
+  sh.dataset.kind = kind; sh.hidden = false; renderSheet();
+  requestAnimationFrame(() => sh.classList.add("open"));
+  sh.querySelector("[data-close]")?.focus({preventScroll: true});
+}
+function renderSheet(){
+  const sh = document.getElementById("sheet"), c = chkOf(person.id, logDate), quando = logDate === trainDay() ? "hoje" : "em " + brDate(logDate);
+  sh.innerHTML = `<div class="sheet-bg" data-close></div><div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <h2 id="sheet-t">Como foi a alimentação ${quando}?</h2>
+    <p class="hint">Marque no fim do dia. "O plano" é o que o seu personal passou: proteína ${PROT[person.id] || "da sua meta"} por dia, creatina 3–5 g e as calorias do seu objetivo.</p>
+    <div class="opts">${DIETA_OP.map(([v, t]) => `<button type="button" class="opt" data-dieta="${v}" aria-pressed="${c.dieta != null && +c.dieta === v}"><b>${t}</b><small>${DIETA_DESC[v]}</small></button>`).join("")}</div>
+    <div class="togs"><button type="button" class="tog" data-flag="proteina" aria-pressed="${!!c.proteina}"><span>Bati a proteína</span><small>${PROT[person.id] ? "meta " + PROT[person.id] : ""}</small></button><button type="button" class="tog" data-flag="creatina" aria-pressed="${!!c.creatina}"><span>Tomei creatina</span><small>3–5 g</small></button></div>
+    <button type="button" class="done-btn" data-close>Pronto</button>
+  </div>`;
+}
+function closeSheet(){ const sh = document.getElementById("sheet"); if (!sh) return; sh.classList.remove("open"); setTimeout(() => { sh.hidden = true; }, 220); document.getElementById("card-dieta")?.focus({preventScroll: true}); }
 
 // ───────────── Cálculos para o Progresso ─────────────
 const addDays = (s, n) => { const d = parseDate(s); d.setDate(d.getDate() + n); return fmtDate(d); };
@@ -1198,7 +1297,7 @@ function lineChart({pts, avgPts, color, band}){
 const dd = s => `${s.slice(8, 10)}/${s.slice(5, 7)}`;
 const tile = (v, l, s = "") => `<div class="tile"><b class="num">${v}</b><span>${l}</span>${s ? `<small>${s}</small>` : ""}</div>`;
 function renderProgress(){
-  const p = person.id, today = trainDay(), from28 = addDays(today, -27);
+  const p = person.id, today = logDate, from28 = addDays(today, -27);
   const sess = sessionsOf(p, from28), stats = sess.map(d => ({d, ...sessionStats(p, d)}));
   const kcal = stats.reduce((a, s) => a + (s.kcal || 0), 0), semPeso = stats.some(s => s.kcal == null);
   const vol = stats.reduce((a, s) => a + s.vol, 0);
@@ -1209,24 +1308,24 @@ function renderProgress(){
   const wPct = a && b ? Math.round((a / b - 1) * 100) : null;
   const ev = evolucao(p, from28).slice(0, 5);
   // Peso
-  const pdays = lastDays(28).map(s => ({s, v: pesoAt(p, s)})).filter(x => x.v);
+  const pdays = lastDays(28, today).map(s => ({s, v: pesoAt(p, s)})).filter(x => x.v);
   const ptsP = pdays.map(x => ({v: x.v, l: dd(x.s), tip: `${dd(x.s)}: ${num(x.v)} kg`}));
   const avgP = pdays.map((x, i) => { const w = pdays.filter(y => y.s <= x.s && y.s > addDays(x.s, -7)).map(y => y.v); return {i, v: avg(w)}; });
   const trend = pesoTrend(p, today), meta = META_PESO[p];
   // Sono, água, dieta: 14 dias
-  const d14 = lastDays(14);
+  const d14 = lastDays(14, today);
   const sono = d14.map(s => { const c = chkOf(p, s); return {l: s.slice(8, 10), v: +c.sono || 0, tip: `${dd(s)}: ${num(+c.sono || 0)} h${c.sono_q ? " · " + SONO_Q[c.sono_q - 1] : ""}`}; });
   const sonoReg = d14.map(s => chkOf(p, s)).filter(c => +c.sono > 0);
   const sonoAvg = avg(sonoReg.map(c => +c.sono)), qAvg = avg(sonoReg.filter(c => c.sono_q).map(c => c.sono_q)), curtas = sonoReg.filter(c => +c.sono < 7).length;
   const agua = d14.map(s => { const c = chkOf(p, s), g = goalsFor(p, s).agua, v = +c.agua || 0; return {l: s.slice(8, 10), v: Math.round(v / g * 100), tip: `${dd(s)}: ${ml(v)} de ${ml(g)} ml`}; });
   const aguaOk = d14.filter(s => (+chkOf(p, s).agua || 0) >= goalsFor(p, s).agua).length;
   const dietaDe = days => { const reg = days.map(s => chkOf(p, s)).filter(c => c.dieta != null); return reg.length ? {ader: Math.round(avg(reg.map(c => +c.dieta)) * 100), prot: Math.round(reg.filter(c => c.proteina).length / reg.length * 100), n: reg.length} : null; };
-  const dNow = dietaDe(lastDays(7)), dPrev = dietaDe(lastDays(7, addDays(today, -7)));
+  const dNow = dietaDe(lastDays(7, today)), dPrev = dietaDe(lastDays(7, addDays(today, -7)));
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
   return `<section class="list prog" aria-label="Progresso">
     <h2>Progresso</h2>
     ${renderPainel(p)}
-    <p class="sub">Últimas 4 semanas</p>
+    <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="tiles">${tile(streakOf(p), "dias de ofensiva", `maior: ${bestStreak(p)}`)}${tile(sess.length, "treinos")}${tile(vol ? (vol / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "—", "volume levantado")}${tile(kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", "kcal gastas no treino", semPeso ? "registre o peso" : "")}</div>
 
     <article class="panel"><div class="ph"><h3>Desempenho</h3>${wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : ""}</div>
@@ -1277,28 +1376,28 @@ function ringMini(frac, color){
   return `<svg class="pr-ring" viewBox="0 0 44 44" aria-hidden="true" style="--c:${color}"><circle cx="22" cy="22" r="18" fill="none" stroke-width=".9" style="stroke:color-mix(in srgb,${color} 35%,transparent)"/>${pts}</svg>`;
 }
 function renderPainel(p){
-  const today = trainDay();
+  const today = logDate, quando = logDate === trainDay() ? "hoje" : brDate(logDate);
   const sess = sessionsOf(p, addDays(today, -60)).map(d => ({d, m: maxCarga(d)})).filter(x => x.m).slice(-9);
-  if (painelSel == null || !sess.find(x => x.d.date === painelSel)) painelSel = sess.length ? sess[sess.length - 1].d.date : null;
+  if (painelSel == null || !sess.find(x => x.d.date === painelSel)) painelSel = sess.find(x => x.d.date === today)?.d.date || (sess.length ? sess[sess.length - 1].d.date : null);
   const sel = sess.find(x => x.d.date === painelSel), top = Math.max(1, ...sess.map(x => x.m.kg));
   const barras = sess.map(x => `<button type="button" class="pb${x.d.date === painelSel ? " on" : ""}" data-pbar="${x.d.date}" aria-label="${dd(x.d.date)}: ${num(x.m.kg)} kg"><span class="pb-col"><i style="height:${Math.max(14, x.m.kg / top * 100)}%">${x.d.date === painelSel ? `<em class="num">${num(x.m.kg)}</em>` : ""}</i></span><small class="num">${x.d.date.slice(8, 10)}</small></button>`).join("");
   const wk = weekOf(today), feitos = wk.slice(0, 5).filter(s => trained(p, s)).length;
-  const kcalSem = sessionsOf(p, wk[0]).reduce((a, d) => a + (sessionStats(p, d).kcal || 0), 0);
+  const tdoc = LOGS[docId(p, today)], tst = tdoc && trained(p, today) ? sessionStats(p, tdoc) : null, tprog = treinoProg(p, today);
   const c = chkOf(p, today), gAgua = goalsFor(p, today).agua;
-  const noites = lastDays(7).map(s => +chkOf(p, s).sono || 0), ontem = noites[noites.length - 1];
-  const pesos = lastDays(14).map(s => pesoAt(p, s)).filter(v => v), pAtual = pesos.length ? pesos[pesos.length - 1] : null;
+  const noites = lastDays(7, today).map(s => +chkOf(p, s).sono || 0), ontem = noites[noites.length - 1];
+  const pesos = lastDays(14, today).map(s => pesoAt(p, s)).filter(v => v), pAtual = pesos.length ? pesos[pesos.length - 1] : null;
   const spark = pesos.length > 1 ? (() => { const lo = Math.min(...pesos), hi = Math.max(...pesos), r = hi - lo || 1; return `<svg class="pr-spark" viewBox="0 0 64 30" aria-hidden="true"><polyline points="${pesos.map((v, i) => `${i / (pesos.length - 1) * 62 + 1},${28 - (v - lo) / r * 26}`).join(" ")}" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; })() : "";
   const sonoBars = `<svg class="pr-bars" viewBox="0 0 64 30" aria-hidden="true">${noites.map((v, i) => `<rect x="${i * 9 + 1}" y="${30 - Math.min(10, v) / 10 * 28}" width="5" height="${Math.max(1, Math.min(10, v) / 10 * 28)}" rx="2" fill="#F4C542" opacity="${i === noites.length - 1 ? 1 : .45}"/>`).join("")}</svg>`;
   return `<div class="painel">
     <article class="pr-big">
-      <div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICO2.peso}</span><b>Carga máxima</b><span class="pr-per">últimos treinos</span></div>
+      <div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICO2.peso}</span><b>Carga máxima</b><span class="pr-per">até ${quando}</span></div>
       ${sel ? `<div class="pr-top"><div><b class="num">${num(sel.m.kg)}</b><span>kg · ${dd(sel.d.date)}</span></div><div class="pr-ex"><b>${esc(sel.m.name)}</b><span class="num">${sel.m.reps ? sel.m.reps + " reps" : ""}</span></div></div>
       <div class="pr-chart">${barras}</div>` : `<p class="hint">Anote kg nas séries: aqui aparece a maior carga de cada treino.</p>`}
     </article>
     <div class="pr-grid">
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#FF9F43">${ICONF}</span><b>Calorias</b></div><div class="pr-v"><div><b class="num">${kcalSem ? "~" + kcalSem.toLocaleString("pt-BR") : "—"}</b><span>kcal/semana</span></div>${ringMini(feitos / 5, "#FF9F43")}</div></article>
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml hoje</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#F4C542">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h na noite</span></div>${sonoBars}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#FF9F43">${ICONF}</span><b>Calorias</b></div><div class="pr-v"><div><b class="num">${tst?.kcal ? "~" + tst.kcal : "—"}</b><span>${tst ? "kcal no treino" : tprog ? "sem treino registrado" : "dia de descanso"}</span></div>${ringMini(tprog && tprog.total ? tprog.done / tprog.total : 0, "#FF9F43")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#F4C542">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h · noite ${quando === "hoje" ? "passada" : "p/ " + quando}</span></div>${sonoBars}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
     </div>
   </div>`;
@@ -1358,7 +1457,7 @@ const ICO2 = {
   peso: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l2 12H4z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>`
 };
 function renderSemana(){
-  const today = trainDay(), wk = weekOf(today);
+  const today = trainDay(), wk = weekOf(logDate);
   const cards = (person.days || []).map(d => {
     const n = d.ex.reduce((a, e) => a + (e[4] ? e[1] : 0), 0), min = Math.round(d.ex.reduce((a, e) => a + (e[4] ? e[1] * (40 + e[4]) : 0), 0) / 60);
     const {p, s} = musclesOf(d.ex), date = wk[+d.id.slice(1) - 1], feito = trained(person.id, date);
@@ -1467,7 +1566,7 @@ const PENDING = p => `<section class="list pending" style="--pc:var(--p5)">
  </section>`;
 
 function drawWho(){
-  who.innerHTML = PEOPLE.map(p=>`<button type="button" data-person="${p.id}" aria-pressed="${p.id===person.id}">${p.name}</button>`).join("");
+  who.hidden = true; who.innerHTML = "";
   const pf = document.getElementById("perfilbtn"); if (pf) { pf.textContent = person.name.slice(0, 1); pf.setAttribute("aria-label", `Perfil ${person.art} ${person.name}`); }
 }
 function drawHead(){
@@ -1479,7 +1578,7 @@ function drawTabs(){
   tabs.innerHTML = person.days.map(t => `<button type="button" role="tab" data-tab="${t.id}" aria-selected="${t.id===current}" style="--pc:var(${t.plate})"><span class="wd"><span class="plate"></span>${t.wd}</span><span class="nm">${t.name}</span></button>`).join("");
 }
 function drawDock(){
-  const sec = ["hoje","treino","progresso","mais"].includes(screen) ? screen : screen === "perfil" ? "" : "mais";
+  const sec = ["hoje","treino","progresso"].includes(screen) ? screen : "";
   dock.querySelectorAll("[data-screen]").forEach(b => b.dataset.screen === sec ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   document.body.dataset.tela = screen;
   const tm = screen === "treino" && treinoView === "dia";
@@ -1491,7 +1590,8 @@ function renderPerfil(){
   const total = Object.values(LOGS).filter(x => x && x.person === p && trained(p, x.date)).length;
   const linha = (l, v) => `<li><span>${l}</span><b>${v}</b></li>`;
   return `<section class="list perfil">
-    <div class="pf-head"><span class="avatar big" aria-hidden="true">${person.name.slice(0, 1)}</span><div><h2>${person.name}</h2><p class="sub">${person.eyebrow || "Ficha em construção"}</p></div></div>
+    <div class="pf-head"><button type="button" class="ghost back" data-screen="hoje" aria-label="Voltar para o Hoje">‹</button><span class="avatar big" aria-hidden="true">${person.name.slice(0, 1)}</span><div><p class="eyebrow">Meu perfil</p><h2>${person.name}</h2><p class="sub">${person.eyebrow || "Ficha em construção"}</p></div></div>
+    <article class="panel"><h3>Trocar de perfil</h3><div class="plist">${PEOPLE.map(x => `<button type="button" class="pitem" data-person="${x.id}" aria-pressed="${x.id === person.id}"><span class="avatar sm" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span>${x.id === person.id ? `<small>você está aqui</small>` : `<span aria-hidden="true">›</span>`}</button>`).join("")}</div></article>
     <div class="tiles">${tile(total, "treinos registrados")}${tile(bestStreak(p), "maior ofensiva", `atual: ${streakOf(p)}`)}${tile(pesos.length ? num(pesos[pesos.length - 1]) + " kg" : "—", "peso atual")}${tile(person.days ? person.days.length + "x" : "—", "treinos por semana")}</div>
     <article class="panel"><h3>Metas diárias</h3><ul class="pf-list">
       ${linha("Água em dia de treino", ml(g.aguaTreino) + " ml")}${linha("Água em dia de descanso", ml(g.aguaDescanso) + " ml")}
@@ -1507,15 +1607,16 @@ function renderMais(){
 function draw(){
   drawWho(); drawHead(); drawTabs(); drawDock();
   if (screen === "hoje") { view.innerHTML = renderToday(); refreshToday(); return; }
-  if (screen === "mais") { view.innerHTML = renderMais(); return; }
+  if (screen === "mais") { screen = "perfil"; }
   if (screen === "progresso") { view.innerHTML = renderProgress(); return; }
   if (screen === "perfil") { view.innerHTML = renderPerfil(); return; }
-  if (EXTRA.find(t => t.id === screen)) { view.innerHTML = `<button type="button" class="ghost back" data-screen="mais">‹ Mais</button>` + (person.panels || PANELS)[screen]; return; }
+  if (EXTRA.find(t => t.id === screen)) { view.innerHTML = `<button type="button" class="ghost back" data-screen="perfil">‹ Perfil</button>` + (person.panels || PANELS)[screen]; return; }
   if (!person.days){ view.innerHTML = PENDING(person); return; }
   if (treinoView === "semana") { view.innerHTML = renderSemana(); return; }
   if (!person.days.find(t=>t.id===current)) current = "d1";
   view.innerHTML = renderDay(person.days.find(x=>x.id===current));
   refreshCarga();
+  const kc = document.getElementById("daykcal"), dc = LOGS[docId(person.id, logDate)]; if (kc) kc.textContent = dc && trained(person.id, logDate) && sessionStats(person.id, dc).kcal ? "~" + sessionStats(person.id, dc).kcal + " kcal" : "";
 }
 function showTip(t){ const c = t.closest(".chart"), tip = c.querySelector(".tip"), r = t.getBoundingClientRect(), cr = c.getBoundingClientRect(); tip.textContent = t.dataset.tip; tip.hidden = false; tip.style.left = Math.min(Math.max(0, r.left - cr.left + r.width / 2 - tip.offsetWidth / 2), cr.width - tip.offsetWidth) + "px"; }
 view.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) showTip(t); });
@@ -1539,7 +1640,7 @@ view.addEventListener("click", e=>{
   const semana = e.target.closest("[data-semana]");
   if (semana){ treinoView = "semana"; draw(); window.scrollTo({top:0}); return; }
   const dayCard = e.target.closest("[data-day]");
-  if (dayCard){ current = dayCard.dataset.day; treinoView = "dia"; draw(); window.scrollTo({top:0}); return; }
+  if (dayCard){ current = dayCard.dataset.day; logDate = weekOf(logDate)[+current.slice(1) - 1]; keepDate(logDate); treinoView = "dia"; draw(); window.scrollTo({top:0}); return; }
   const zoom = e.target.closest("[data-zoom]");
   if (zoom){ const f = zoom.closest(".ex").querySelector(".zoom"); if (f) f.hidden = !f.hidden; return; }
   const jump = e.target.closest("[data-jump]");
@@ -1548,8 +1649,12 @@ view.addEventListener("click", e=>{
   if (pb){ painelSel = pb.dataset.pbar; const y = scrollY; draw(); scrollTo(0, y); return; }
   const prof = e.target.closest("[data-perfil]");
   if (prof){ goScreen("perfil"); return; }
+  const pick = e.target.closest("[data-person]");
+  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayIdFor(logDate) || "d1"; goScreen("hoje"); return; }
   const sc = e.target.closest("[data-setctl]");
   if (sc){ changeSets(+sc.dataset.ex, +sc.dataset.setctl); return; }
+  const sheetBtn = e.target.closest("[data-sheet]");
+  if (sheetBtn){ openSheet(sheetBtn.dataset.sheet); return; }
   const sq = e.target.closest("[data-sq]");
   if (sq){ const v = +sq.dataset.sq; setChk({sono_q: chkOf(person.id, logDate).sono_q === v ? null : v}); return; }
   const di = e.target.closest("[data-dieta]");
