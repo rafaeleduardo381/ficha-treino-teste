@@ -265,8 +265,8 @@ footer{color:var(--muted);font-size:.78rem;text-align:center}
 .dc-body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px;align-items:center}
 .body{width:100%;max-width:170px;height:auto;display:block}
 .bm-h{fill:var(--surface2)}
-.bm-o{fill:#2C2F35}
-.bm-s{fill:color-mix(in srgb,var(--pc) 45%,#2C2F35)}
+.bm-o{fill:#363A41}
+.bm-s{fill:color-mix(in srgb,var(--pc) 45%,#363A41)}
 .bm-p{fill:var(--pc)}
 .dc-stats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .dc-stats li{display:grid;grid-template-columns:20px 1fr;column-gap:8px;align-items:center;font-weight:700;font-size:.9rem}
@@ -277,12 +277,48 @@ body[data-screen="treino"] .hello{display:none}
 .chips.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .chips.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .chips.five .chip,.chips.three .chip{padding:9px 2px;font-size:.78rem;text-align:center}
-.bm-base{fill:#1E2125}
+.bm-base{fill:#24272C}
+.body path{stroke:#121316;stroke-width:.5;stroke-linejoin:round}
 .thumb{position:relative}
 .thumb b{position:absolute;left:3px;top:3px;font-size:.62rem;background:var(--bg);color:var(--pc);border-radius:6px;padding:0 5px;font-family:var(--f-mono)}
 .ex-top.has-thumb{grid-template-columns:56px 1fr}
 .ex-top.has-thumb .presc{grid-column:2}
 .dayhead h2{font-size:1.5rem}
+/* Topo com perfil */
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:inherit;font-weight:800;font-size:1.1rem;color:var(--lime-ink);background:var(--lime);border:0;cursor:pointer;box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--line)}
+.avatar.big{width:64px;height:64px;font-size:1.6rem;cursor:default}
+body[data-screen="treino"] .toprow{justify-content:flex-end}
+.pf-head{display:flex;align-items:center;gap:14px}
+.pf-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.pf-list li{display:flex;justify-content:space-between;gap:12px;font-size:.9rem;color:var(--soft)}
+.pf-list b{color:var(--ink);text-align:right}
+/* Painel do Progresso */
+.painel{display:flex;flex-direction:column;gap:12px}
+.pr-big,.pr-card{background:#0B0C0D;border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pr-h{display:flex;align-items:center;gap:8px;font-size:.95rem}
+.pr-ico{width:22px;height:22px;color:var(--c);display:grid;place-items:center}
+.pr-ico svg{width:20px;height:20px}
+.pr-per{margin-left:auto;font-size:.78rem;color:var(--muted)}
+.pr-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.pr-top b{font-size:1.7rem;font-weight:800;line-height:1}
+.pr-top span{display:block;font-size:.78rem;color:var(--muted)}
+.pr-ex{text-align:right;min-width:0}
+.pr-ex b{font-size:.85rem;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
+.pr-chart{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;height:150px;align-items:end;padding-top:24px}
+.pb{display:flex;flex-direction:column;align-items:stretch;gap:6px;height:100%;padding:0;border:0;background:none;font:inherit;color:var(--muted);cursor:pointer;min-width:0}
+.pb-col{flex:1;display:flex;align-items:flex-end}
+.pb i{position:relative;display:block;width:100%;border-radius:12px;background:#2F3A2C;border:1px solid #3A4636}
+.pb.on i{background:linear-gradient(180deg,var(--lime),#22C55E);border-color:transparent}
+.pb em{position:absolute;left:50%;top:-26px;transform:translateX(-50%);font-style:normal;font-size:.72rem;font-weight:800;color:var(--ink);background:var(--surface2);border-radius:999px;padding:2px 7px;white-space:nowrap}
+.pb small{font-size:.75rem;text-align:center}
+.pb.on small{color:var(--ink);font-weight:800}
+.pr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pr-v{display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
+.pr-v b{font-size:1.35rem;font-weight:800;line-height:1.1;display:block}
+.pr-v span{font-size:.75rem;color:var(--muted)}
+.pr-ring{width:46px;height:46px;flex:none}
+.pr-bars,.pr-spark{width:64px;height:30px;flex:none}
 /* Ficha do dia */
 .strip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:2px 16px}
 .strip::-webkit-scrollbar{display:none}
@@ -306,7 +342,7 @@ body[data-screen="treino"] .hello{display:none}
 <div class="wrap">
   <div class="envbar" role="note">Ambiente de teste</div>
   <header class="top">
-    <div class="hello" id="head"></div>
+    <div class="toprow"><div class="hello" id="head"></div><button type="button" class="avatar" id="perfilbtn" data-perfil aria-label="Perfil">R</button></div>
     <div class="who" id="who" role="group" aria-label="Ficha de quem"></div>
   </header>
   <nav id="tabs" class="days" role="tablist" aria-label="Dias de treino"></nav>
@@ -606,12 +642,10 @@ function renderDay(d){
     </article>`;
   }).join("");
   const total = d.ex.reduce((a,e)=>a+(e[4] ? e[1] : 0),0);
-  const strip = IMG ? `<div class="strip" role="list" aria-label="Exercícios do dia">${d.ex.map((e, i) => MUS[e[0]] ? `<button type="button" role="listitem" class="sthumb" data-jump="ex-${d.id}-${i}" aria-label="${esc(e[0])}"><img src="${IMG}${MUS[e[0]].id}.jpg" alt="" loading="lazy"><b>${i + 1}</b></button>` : "").join("")}</div>` : "";
   return `<section style="--pc:var(${d.plate})" class="list">
     <button type="button" class="ghost back" data-semana>‹ Semana</button>
     <div class="dayhead"><div><div class="eyebrow">${d.wd} · ${d.sub}</div><h2>${d.name}</h2></div>
     <div style="display:flex;gap:8px;align-items:center"><span class="num" style="color:var(--muted)">${total} séries</span><button type="button" class="ghost" id="reset">Zerar</button></div></div>
-    ${strip}
     <div class="logbar"><label for="logdate">Treino de</label><input type="date" id="logdate" value="${logDate}"><span id="logstate" aria-live="polite">${modeText()}</span></div>
     ${cards}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
@@ -667,12 +701,12 @@ function lastFor(p, name, before){
   }
   return best;
 }
-const addRows = {};   // séries a mais abertas pelo botão "+ série" (por pessoa, data e exercício)
+const rowCount = {};   // séries do dia por exercício (o "− / +" muda; padrão = séries da ficha ou o que já foi anotado)
 function setRows(d, i, name, sets, marks, reps){
   const cur = (LOGS[docId(person.id, logDate)]?.ex?.[name]?.sets) || [];
   const k = `${person.id}:${logDate}:${name}`;
   const kgLbl = /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg";   // halter: anota o peso de um halter só
-  const total = Math.max(sets, cur.length, sets + (addRows[k] || 0));
+  const total = rowCount[k] ?? Math.max(sets, cur.length);
   const rows = Array.from({length:total}, (_, s) => {
     const v = cur[s] || {}, on = !!(marks[i+"-"+s] ?? v.done), a = `data-name="${esc(name)}" data-set="${s}" data-n="${total}"`;
     return `<span class="sn${s >= sets ? " extra" : ""}">${s+1}</span>
@@ -681,8 +715,23 @@ function setRows(d, i, name, sets, marks, reps){
       <button type="button" class="set" data-ex="${i}" data-s="${s}" aria-pressed="${on}" aria-label="Marcar série ${s+1} de ${esc(name)} como feita">✓</button>`;
   }).join("");
   const leg = d.id === "d2" || d.id === "d4";
-  return `<div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
-    <div class="setctl"><button type="button" class="ghost" data-setctl="-1" data-ex="${i}" data-k="${esc(k)}" data-total="${total}" data-sets="${sets}" aria-label="Uma série a menos"${total <= sets ? " disabled" : ""}>−</button><span class="num">${total} séries</span><button type="button" class="ghost addset" data-ex="${i}" data-k="${esc(k)}" data-total="${total}" data-sets="${sets}" aria-label="Uma série a mais">+</button></div>`;
+  return `<div class="rows" id="rows-${d.id}-${i}"><div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
+    <div class="setctl"><button type="button" class="ghost" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="ghost" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button></div></div>`;
+}
+function changeSets(i, dir){
+  const d = person.days.find(x => x.id === current), [name, sets, reps] = d.ex[i];
+  const k = `${person.id}:${logDate}:${name}`, id = docId(person.id, logDate), cur = LOGS[id]?.ex?.[name]?.sets || [];
+  const total = Math.max(1, (rowCount[k] ?? Math.max(sets, cur.length)) + dir);
+  rowCount[k] = total;
+  if (cur.length > total) {   // as séries que saíram somem do registro do dia
+    const doc = JSON.parse(JSON.stringify(LOGS[id]));
+    doc.ex[name].sets = doc.ex[name].sets.slice(0, total); doc.updated = new Date().toISOString();
+    LOGS[id] = doc; pending[id] = true; clearTimeout(timers[id]); timers[id] = setTimeout(() => saveLog(id), 700);
+    const mk = getMarks(markKey(d.id)); for (let x = total; x < cur.length; x++) delete mk[i + "-" + x]; store.set(markKey(d.id), mk);
+  }
+  document.getElementById(`rows-${d.id}-${i}`).outerHTML = setRows(d, i, name, sets, getMarks(markKey(d.id)), reps);
+  refreshCarga();
+  if (dir > 0) document.getElementById(`kg-${d.id}-${i}-${total - 1}`)?.focus({preventScroll: true});
 }
 // Meta do dia pela dupla progressão: bateu o topo da faixa em todas as séries → sobe a carga; senão, mesma carga buscando o topo.
 // No graviton o peso é ajuda: progredir é tirar peso.
@@ -710,9 +759,9 @@ function refreshCarga(){
   document.querySelectorAll(".lg").forEach(box => {
     const name = box.dataset.name, sets = doc?.ex?.[name]?.sets || [];
     const last = lastFor(person.id, name, logDate);
-    const p = box.parentElement.querySelector(".last");
+    const p = box.closest(".ex").querySelector(".last");
     if (p) p.innerHTML = last ? `Última vez (${brDate(last.date)}): <b>${fmtSets(last.sets)}</b>` : "Primeira vez: anote kg e reps de cada série.";
-    const mt = box.parentElement.querySelector(".meta");
+    const mt = box.closest(".ex").querySelector(".meta");
     if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name); mt.innerHTML = t ? `Meta de hoje: ${t}` : ""; mt.hidden = !t; }
     box.querySelectorAll("input").forEach(inp => {
       const s = +inp.dataset.set, f = inp.dataset.field, lv = last?.sets?.[s]?.[f];
@@ -861,6 +910,7 @@ function dayScore(p, s){
 const ICON = {
   agua: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>`,
   sono: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>`,
+  balanca: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8.5 9.5a4.5 4.5 0 0 1 7 0L12 12z"/></svg>`,
   seta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`
 };
 const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="9"/><circle class="val" id="ring-${key}" cx="50" cy="50" r="42" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"/></svg><span class="cheer" aria-hidden="true">Meta batida!</span><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
@@ -1144,7 +1194,9 @@ function renderProgress(){
   const dNow = dietaDe(lastDays(7)), dPrev = dietaDe(lastDays(7, addDays(today, -7)));
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
   return `<section class="list prog" aria-label="Progresso">
-    <h2>Progresso</h2><p class="sub">Últimas 4 semanas</p>
+    <h2>Progresso</h2>
+    ${renderPainel(p)}
+    <p class="sub">Últimas 4 semanas</p>
     <div class="tiles">${tile(streakOf(p), "dias de ofensiva", `maior: ${bestStreak(p)}`)}${tile(sess.length, "treinos")}${tile(vol ? (vol / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "—", "volume levantado")}${tile(kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", "kcal gastas no treino", semPeso ? "registre o peso" : "")}</div>
 
     <article class="panel"><div class="ph"><h3>Desempenho</h3>${wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : ""}</div>
@@ -1179,30 +1231,88 @@ function renderProgress(){
   </section>`;
 }
 
+// Painel do topo do Progresso: carga máxima por treino (toque escolhe o dia) e 4 cartões
+let painelSel = null;
+function maxCarga(doc){
+  let best = null;
+  for (const [name, e] of Object.entries(doc.ex || {})) {
+    if (/Graviton|Caminhada/.test(name)) continue;
+    for (const x of e.sets || []) if (typeof x.kg === "number" && (!best || x.kg > best.kg)) best = {kg: x.kg, name, reps: x.reps};
+  }
+  return best;
+}
+function ringMini(frac, color){
+  const c = 2 * Math.PI * 18, f = Math.max(0, Math.min(1, frac || 0));
+  return `<svg class="pr-ring" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke-width="6" style="stroke:color-mix(in srgb,${color} 22%,transparent)"/><circle cx="22" cy="22" r="18" fill="none" stroke-width="6" stroke-linecap="round" style="stroke:${color}" stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - f)}" transform="rotate(-90 22 22)"/></svg>`;
+}
+function renderPainel(p){
+  const today = trainDay();
+  const sess = sessionsOf(p, addDays(today, -60)).map(d => ({d, m: maxCarga(d)})).filter(x => x.m).slice(-9);
+  if (painelSel == null || !sess.find(x => x.d.date === painelSel)) painelSel = sess.length ? sess[sess.length - 1].d.date : null;
+  const sel = sess.find(x => x.d.date === painelSel), top = Math.max(1, ...sess.map(x => x.m.kg));
+  const barras = sess.map(x => `<button type="button" class="pb${x.d.date === painelSel ? " on" : ""}" data-pbar="${x.d.date}" aria-label="${dd(x.d.date)}: ${num(x.m.kg)} kg"><span class="pb-col"><i style="height:${Math.max(14, x.m.kg / top * 100)}%">${x.d.date === painelSel ? `<em class="num">${num(x.m.kg)}</em>` : ""}</i></span><small class="num">${x.d.date.slice(8, 10)}</small></button>`).join("");
+  const wk = weekOf(today), feitos = wk.slice(0, 5).filter(s => trained(p, s)).length;
+  const kcalSem = sessionsOf(p, wk[0]).reduce((a, d) => a + (sessionStats(p, d).kcal || 0), 0);
+  const c = chkOf(p, today), gAgua = goalsFor(p, today).agua;
+  const noites = lastDays(7).map(s => +chkOf(p, s).sono || 0), ontem = noites[noites.length - 1];
+  const pesos = lastDays(14).map(s => pesoAt(p, s)).filter(v => v), pAtual = pesos.length ? pesos[pesos.length - 1] : null;
+  const spark = pesos.length > 1 ? (() => { const lo = Math.min(...pesos), hi = Math.max(...pesos), r = hi - lo || 1; return `<svg class="pr-spark" viewBox="0 0 64 30" aria-hidden="true"><polyline points="${pesos.map((v, i) => `${i / (pesos.length - 1) * 62 + 1},${28 - (v - lo) / r * 26}`).join(" ")}" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; })() : "";
+  const sonoBars = `<svg class="pr-bars" viewBox="0 0 64 30" aria-hidden="true">${noites.map((v, i) => `<rect x="${i * 9 + 1}" y="${30 - Math.min(10, v) / 10 * 28}" width="5" height="${Math.max(1, Math.min(10, v) / 10 * 28)}" rx="2" fill="#F4C542" opacity="${i === noites.length - 1 ? 1 : .45}"/>`).join("")}</svg>`;
+  return `<div class="painel">
+    <article class="pr-big">
+      <div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICO2.peso}</span><b>Carga máxima</b><span class="pr-per">últimos treinos</span></div>
+      ${sel ? `<div class="pr-top"><div><b class="num">${num(sel.m.kg)}</b><span>kg · ${dd(sel.d.date)}</span></div><div class="pr-ex"><b>${esc(sel.m.name)}</b><span class="num">${sel.m.reps ? sel.m.reps + " reps" : ""}</span></div></div>
+      <div class="pr-chart">${barras}</div>` : `<p class="hint">Anote kg nas séries: aqui aparece a maior carga de cada treino.</p>`}
+    </article>
+    <div class="pr-grid">
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#FF9F43">${ICONF}</span><b>Calorias</b></div><div class="pr-v"><div><b class="num">${kcalSem ? "~" + kcalSem.toLocaleString("pt-BR") : "—"}</b><span>kcal/semana</span></div>${ringMini(feitos / 5, "#FF9F43")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml hoje</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#F4C542">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h na noite</span></div>${sonoBars}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
+    </div>
+  </div>`;
+}
+const ICONF = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-7 0 2 1 3 2 3-1-3 0-6 1-8z"/></svg>`;
 // ───────────── Mapa dos músculos (frente e costas) ─────────────
 const MUSCLE_PT = {chest: "peito", shoulders: "ombros", triceps: "tríceps", biceps: "bíceps", forearms: "antebraço", abdominals: "abdômen", quadriceps: "quadríceps", hamstrings: "posteriores", glutes: "glúteos", calves: "panturrilhas", lats: "dorsais", "middle back": "meio das costas", "lower back": "lombar", traps: "trapézio", abductors: "abdutores", adductors: "adutores", neck: "pescoço"};
-const BODY = [
-  // frente
-  ["head", "c", 30, 10, 6], ["shoulders", "e", 19.5, 27, 5, 4.5], ["shoulders", "e", 40.5, 27, 5, 4.5],
-  ["chest", "r", 22.5, 23.5, 7, 11, 3], ["chest", "r", 30.5, 23.5, 7, 11, 3],
-  ["biceps", "e", 16, 39, 3.2, 7], ["biceps", "e", 44, 39, 3.2, 7], ["forearms", "e", 14, 54, 2.7, 7], ["forearms", "e", 46, 54, 2.7, 7],
-  ["abdominals", "r", 25, 36, 10, 21, 3], ["abductors", "e", 20, 68, 2.2, 6], ["abductors", "e", 40, 68, 2.2, 6],
-  ["quadriceps", "e", 25.5, 75, 4.8, 12], ["quadriceps", "e", 34.5, 75, 4.8, 12], ["adductors", "e", 30, 71, 1.4, 6],
-  ["calves", "e", 25.5, 100, 3.4, 9], ["calves", "e", 34.5, 100, 3.4, 9],
-  // costas (deslocado +60)
-  ["head", "c", 90, 10, 6], ["traps", "e", 90, 21, 8, 4.5], ["shoulders", "e", 79.5, 27, 5, 4.5], ["shoulders", "e", 100.5, 27, 5, 4.5],
-  ["middle back", "r", 87, 25, 6, 15, 2], ["lats", "e", 83.5, 38, 4.5, 9], ["lats", "e", 96.5, 38, 4.5, 9], ["lower back", "r", 86, 44, 8, 11, 3],
-  ["triceps", "e", 76, 39, 3.2, 7], ["triceps", "e", 104, 39, 3.2, 7], ["forearms", "e", 74, 54, 2.7, 7], ["forearms", "e", 106, 54, 2.7, 7],
-  ["glutes", "e", 85, 62, 5, 5.5], ["glutes", "e", 95, 62, 5, 5.5], ["hamstrings", "e", 85.5, 79, 4.5, 10.5], ["hamstrings", "e", 94.5, 79, 4.5, 10.5],
-  ["calves", "e", 85.5, 100, 3.8, 9], ["calves", "e", 94.5, 100, 3.8, 9]
+// Metade esquerda de cada vista (centro em x=30); a outra metade é espelhada. [músculo, caminho SVG]
+const BODY_FRONT = [
+  ["traps", "M27.5,17.5 Q23,18.6 19.5,20.8 L26,21.6 Z"],
+  ["shoulders", "M19.3,21 Q13.6,21.6 12,28.2 Q12.4,33.4 14.8,35.2 Q16.6,28.6 21.6,23.8 Z"],
+  ["chest", "M29.6,22.6 L22.2,23.6 Q17.4,28.4 16.9,33.2 Q20.6,38.2 29.6,37.2 Z"],
+  ["biceps", "M13.6,35.6 Q11.2,41.2 11.8,47 Q13.8,49.2 15.9,47 Q17,41.4 16.4,36 Z"],
+  ["forearms", "M11.6,49.2 Q8.6,56.4 9.4,64.2 Q11.4,66.2 12.8,64.2 Q15,57 15.8,49.4 Z"],
+  ["abdominals", "M25.6,39 H29.4 V44.4 H25.6 Z M25.6,45.4 H29.4 V50.6 H25.6 Z M25.6,51.6 H29.4 V56.6 H25.6 Z M25.6,57.6 H29.4 V64.8 Q27,63 25.6,60 Z"],
+  ["abdominals", "M24.6,39.4 Q20.6,44 21.2,54.6 Q22.8,59 24.8,59.6 Z"],
+  ["abductors", "M20.6,58.4 Q18,63.4 18.8,69 L22.6,63.2 Z"],
+  ["quadriceps", "M21.4,64 Q16.8,74.6 18,86.4 Q20,92.4 23.2,93.4 Q22,80 24.4,66 Z"],
+  ["quadriceps", "M24.6,66.2 Q22.4,80 23.4,93.4 Q26,95.4 28,92.2 Q29.2,80 27.2,67.4 Z"],
+  ["quadriceps", "M27.4,81.6 Q29.4,88 28.4,94.2 Q30,95 29.6,90 V80.6 Z"],
+  ["adductors", "M27.4,66.4 Q29.6,70.4 29.6,79.6 H27.8 Q27.2,72.2 26.2,67 Z"],
+  ["calves", "M20.8,98.6 Q18.8,108.4 21,118.4 H23 Q24,108.2 23.2,98.6 Z"],
+  ["calves", "M25.8,99 Q28.2,108.2 26,117.4 H24.2 Q25.2,108 24.2,99 Z"]
 ];
+const BODY_BACK = [
+  ["traps", "M30,13.6 V40 Q26.4,32.4 19.8,22.6 Q24,19.8 28,18 Z"],
+  ["shoulders", "M19.3,21 Q13.6,21.6 12,28.2 Q12.4,33.4 14.8,35.2 Q16.8,28.2 21.2,23.6 Z"],
+  ["middle back", "M28.2,24 L23.2,26 Q24,34 28.2,40.2 Z"],
+  ["lats", "M21.4,29.6 Q16.8,36.2 18.8,48 Q23,54 28.2,56 V44.4 Q24,38.6 22.2,29.8 Z"],
+  ["lower back", "M25.8,46.4 H29.6 V60.2 L26,59.4 Q24.8,52.6 25.8,46.4 Z"],
+  ["triceps", "M13.6,35.6 Q11.2,41.2 11.8,48 Q13.8,50.2 15.9,48 Q17,41.4 16.4,36 Z"],
+  ["forearms", "M11.6,50.2 Q8.6,57 9.4,64.2 Q11.4,66.2 12.8,64.2 Q15,57.4 15.8,50.4 Z"],
+  ["glutes", "M29.6,60.6 L21,61.2 Q17.8,66.2 19.8,72.2 Q24.8,76.2 29.6,73.4 Z"],
+  ["hamstrings", "M19.8,74.4 Q17.8,84.4 19.8,94.4 H23 Q23,84.4 24.2,75.2 Z"],
+  ["hamstrings", "M24.6,75.4 Q24,85 24.2,94.4 H28.2 Q29.2,85 28.8,75.4 Z"],
+  ["calves", "M20,99 Q18,106.4 21,113.4 L23.6,112.4 Q24,105.4 23,99 Z"],
+  ["calves", "M24,99 Q23.4,106.2 25,114 L27.6,112.2 Q28.2,105.2 26.6,99 Z"]
+];
+// Contorno do corpo (metade esquerda) por baixo dos músculos
+const BODY_SIL = "M30,17 L26.4,17.4 Q20,18.6 15,20.6 Q10,23.4 10.6,31.6 Q8.8,43.6 8.8,51.6 Q7.6,60 8.6,66.2 L13.6,66.4 Q16.2,56 17,45 Q17.8,50.6 19.2,57.4 Q16.8,64 17.8,74.4 Q16.8,88.4 19.2,98.4 Q17.8,110 19.8,121.6 L25,121.6 Q26.4,110 27,98.6 Q28.4,88.4 28.8,80.4 L30,80.4 Z";
 function bodyMap(prim, sec){
-  const sh = ([m, t, ...a]) => {
-    const cls = m === "head" ? "bm-h" : prim.has(m) ? "bm-p" : sec.has(m) ? "bm-s" : "bm-o";
-    return t === "c" ? `<circle class="${cls}" cx="${a[0]}" cy="${a[1]}" r="${a[2]}"/>` : t === "e" ? `<ellipse class="${cls}" cx="${a[0]}" cy="${a[1]}" rx="${a[2]}" ry="${a[3]}"/>` : `<rect class="${cls}" x="${a[0]}" y="${a[1]}" width="${a[2]}" height="${a[3]}" rx="${a[4]}"/>`;
-  };
-  const base = x => `<g class="bm-base"><rect x="${x - 11.5}" y="19" width="23" height="40" rx="9"/><rect x="${x - 17.5}" y="24" width="7" height="38" rx="3.5"/><rect x="${x + 10.5}" y="24" width="7" height="38" rx="3.5"/><rect x="${x - 10}" y="55" width="9.5" height="56" rx="4.5"/><rect x="${x + 0.5}" y="55" width="9.5" height="56" rx="4.5"/></g>`;
-  return `<svg class="body" viewBox="4 0 112 112" aria-hidden="true">${base(30)}${base(90)}${BODY.map(sh).join("")}</svg>`;
+  const cls = m => prim.has(m) ? "bm-p" : sec.has(m) ? "bm-s" : "bm-o";
+  const half = list => `<path class="bm-base" d="${BODY_SIL}"/>` + list.map(([m, d]) => `<path class="${cls(m)}" d="${d}"/>`).join("");
+  const view = (list, dx) => `<g transform="translate(${dx},0)"><ellipse class="bm-base" cx="30" cy="9" rx="6.2" ry="7.4"/>${half(list)}<g transform="matrix(-1 0 0 1 60 0)">${half(list)}</g></g>`;
+  return `<svg class="body" viewBox="2 0 120 124" aria-hidden="true">${view(BODY_FRONT, 0)}${view(BODY_BACK, 62)}</svg>`;
 }
 function musclesOf(exList){
   const p = new Set(), s = new Set();
@@ -1327,6 +1437,7 @@ const PENDING = p => `<section class="list pending" style="--pc:var(--p5)">
 
 function drawWho(){
   who.innerHTML = PEOPLE.map(p=>`<button type="button" data-person="${p.id}" aria-pressed="${p.id===person.id}">${p.name}</button>`).join("");
+  const pf = document.getElementById("perfilbtn"); if (pf) { pf.textContent = person.name.slice(0, 1); pf.setAttribute("aria-label", `Perfil ${person.art} ${person.name}`); }
 }
 function drawHead(){
   head.innerHTML = `<h1>Olá, ${person.name}!</h1>`;
@@ -1337,12 +1448,26 @@ function drawTabs(){
   tabs.innerHTML = person.days.map(t => `<button type="button" role="tab" data-tab="${t.id}" aria-selected="${t.id===current}" style="--pc:var(${t.plate})"><span class="wd"><span class="plate"></span>${t.wd}</span><span class="nm">${t.name}</span></button>`).join("");
 }
 function drawDock(){
-  const sec = ["hoje","treino","progresso","mais"].includes(screen) ? screen : "mais";
+  const sec = ["hoje","treino","progresso","mais"].includes(screen) ? screen : screen === "perfil" ? "" : "mais";
   dock.querySelectorAll("[data-screen]").forEach(b => b.dataset.screen === sec ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   document.body.dataset.screen = screen;
   const tm = screen === "treino" && treinoView === "dia";
   timerEl.hidden = !tm;
   document.body.classList.toggle("has-timer", tm);
+}
+function renderPerfil(){
+  const p = person.id, g = GOALS[p] || GOALS.a3, today = trainDay(), pesos = lastDays(30).map(s => pesoAt(p, s)).filter(v => v);
+  const total = Object.values(LOGS).filter(x => x && x.person === p && trained(p, x.date)).length;
+  const linha = (l, v) => `<li><span>${l}</span><b>${v}</b></li>`;
+  return `<section class="list perfil">
+    <div class="pf-head"><span class="avatar big" aria-hidden="true">${person.name.slice(0, 1)}</span><div><h2>${person.name}</h2><p class="sub">${person.eyebrow || "Ficha em construção"}</p></div></div>
+    <div class="tiles">${tile(total, "treinos registrados")}${tile(bestStreak(p), "maior ofensiva", `atual: ${streakOf(p)}`)}${tile(pesos.length ? num(pesos[pesos.length - 1]) + " kg" : "—", "peso atual")}${tile(person.days ? person.days.length + "x" : "—", "treinos por semana")}</div>
+    <article class="panel"><h3>Metas diárias</h3><ul class="pf-list">
+      ${linha("Água em dia de treino", ml(g.aguaTreino) + " ml")}${linha("Água em dia de descanso", ml(g.aguaDescanso) + " ml")}
+      ${linha("Sono", g.sono + " h (mínimo " + g.sonoMin + " h)")}${PROT[p] ? linha("Proteína", PROT[p]) : ""}${META_PESO[p] ? linha("Peso", META_PESO[p].txt) : ""}
+    </ul><p class="hint">Metas definidas pelo agente de nutrição do seu personal.</p></article>
+    <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}"><span>${t.name}</span><span aria-hidden="true">›</span></button>`).join("")}</div>
+  </section>`;
 }
 function renderMais(){
   const desc = {dieta:"Calorias, proteína e suplementos", regras:"Sobrar, falha, drop, progressão e deload", medidas:"Peso, medidas e próxima avaliação", breno:"O que veio dos vídeos do Breno Aceti"};
@@ -1353,6 +1478,7 @@ function draw(){
   if (screen === "hoje") { view.innerHTML = renderToday(); refreshToday(); return; }
   if (screen === "mais") { view.innerHTML = renderMais(); return; }
   if (screen === "progresso") { view.innerHTML = renderProgress(); return; }
+  if (screen === "perfil") { view.innerHTML = renderPerfil(); return; }
   if (EXTRA.find(t => t.id === screen)) { view.innerHTML = `<button type="button" class="ghost back" data-screen="mais">‹ Mais</button>` + (person.panels || PANELS)[screen]; return; }
   if (!person.days){ view.innerHTML = PENDING(person); return; }
   if (treinoView === "semana") { view.innerHTML = renderSemana(); return; }
@@ -1365,6 +1491,7 @@ view.addEventListener("pointerover", e => { const t = e.target.closest("[data-ti
 view.addEventListener("pointerout", e => { const t = e.target.closest("[data-tip]"); if (t && e.pointerType === "mouse") t.closest(".chart").querySelector(".tip").hidden = true; });
 const goScreen = s => { if (s === "treino") { treinoView = "dia"; current = dayIdFor(logDate) || current; } screen = s; store.set("screen", s); draw(); window.scrollTo({top:0}); };
 dock.addEventListener("click", e => { const b = e.target.closest("[data-screen]"); if (b) goScreen(b.dataset.screen); });
+document.getElementById("perfilbtn").addEventListener("click", () => goScreen("perfil"));
 view.addEventListener("input", e => { if (e.target.closest(".lg")) onLogInput(e.target); });
 view.addEventListener("change", e => { if (e.target.id === "peso") { const v = Number(e.target.value.trim().replace(",", ".")); setChk({peso: v > 20 && v < 300 ? Math.round(v * 10) / 10 : null}); return; } if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayIdFor(logDate) || current; draw(); } });
 who.addEventListener("click", e=>{
@@ -1386,8 +1513,12 @@ view.addEventListener("click", e=>{
   if (zoom){ const f = zoom.closest(".ex").querySelector(".zoom"); if (f) f.hidden = !f.hidden; return; }
   const jump = e.target.closest("[data-jump]");
   if (jump){ document.getElementById(jump.dataset.jump)?.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"}); return; }
-  const less = e.target.closest("[data-setctl]");
-  if (less){ const k = less.dataset.k, tot = +less.dataset.total, n = +less.dataset.sets, d = person.days.find(x => x.id === current), nm = d.ex[+less.dataset.ex][0], cur = LOGS[docId(person.id, logDate)]?.ex?.[nm]?.sets || []; if (tot > n && !filled(cur[tot - 1]) && !cur[tot - 1]?.done) { if (cur.length >= tot) writeSet(nm, tot, tot - 1, {}), LOGS[docId(person.id, logDate)].ex[nm].sets.length = tot - 1; addRows[k] = Math.max(0, tot - 1 - n); const y = scrollY; draw(); scrollTo(0, y); } return; }
+  const pb = e.target.closest("[data-pbar]");
+  if (pb){ painelSel = pb.dataset.pbar; const y = scrollY; draw(); scrollTo(0, y); return; }
+  const prof = e.target.closest("[data-perfil]");
+  if (prof){ goScreen("perfil"); return; }
+  const sc = e.target.closest("[data-setctl]");
+  if (sc){ changeSets(+sc.dataset.ex, +sc.dataset.setctl); return; }
   const sq = e.target.closest("[data-sq]");
   if (sq){ const v = +sq.dataset.sq; setChk({sono_q: chkOf(person.id, logDate).sono_q === v ? null : v}); return; }
   const di = e.target.closest("[data-dieta]");
@@ -1402,13 +1533,6 @@ view.addEventListener("click", e=>{
   if (cheer){ celebrate(cheer.dataset.cheer); return; }
   const ck = e.target.closest("[data-ck]");
   if (ck){ writeChk(ck.dataset.ck, +ck.dataset.d); return; }
-  const add = e.target.closest(".addset");
-  if (add){
-    addRows[add.dataset.k] = +add.dataset.total - +add.dataset.sets + 1;
-    const y = scrollY; draw(); scrollTo(0, y);
-    document.getElementById(`kg-${current}-${add.dataset.ex}-${add.dataset.total}`)?.focus();
-    return;
-  }
   const wa = e.target.closest("#sendwa"), cp = e.target.closest("#copytxt");
   if (wa || cp){
     const t = treinoText(), sum = document.getElementById("sendsum");
