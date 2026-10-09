@@ -273,7 +273,7 @@ footer{color:var(--muted);font-size:.78rem;text-align:center}
 .dc-stats svg{width:18px;height:18px;color:var(--muted)}
 .dc-stats small{grid-column:2;font-weight:500;font-size:.7rem;color:var(--muted)}
 .dc-mus{margin:0;font-size:.78rem;color:var(--muted)}
-body[data-screen="treino"] .hello{display:none}
+body[data-tela="treino"] .hello{display:none}
 .chips.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .chips.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 .chips.five .chip,.chips.three .chip{padding:9px 2px;font-size:.78rem;text-align:center}
@@ -288,7 +288,7 @@ body[data-screen="treino"] .hello{display:none}
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:inherit;font-weight:800;font-size:1.1rem;color:var(--lime-ink);background:var(--lime);border:0;cursor:pointer;box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--line)}
 .avatar.big{width:64px;height:64px;font-size:1.6rem;cursor:default}
-body[data-screen="treino"] .toprow{justify-content:flex-end}
+body[data-tela="treino"] .toprow{justify-content:flex-end}
 .pf-head{display:flex;align-items:center;gap:14px}
 .pf-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .pf-list li{display:flex;justify-content:space-between;gap:12px;font-size:.9rem;color:var(--soft)}
@@ -1450,7 +1450,7 @@ function drawTabs(){
 function drawDock(){
   const sec = ["hoje","treino","progresso","mais"].includes(screen) ? screen : screen === "perfil" ? "" : "mais";
   dock.querySelectorAll("[data-screen]").forEach(b => b.dataset.screen === sec ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
-  document.body.dataset.screen = screen;
+  document.body.dataset.tela = screen;
   const tm = screen === "treino" && treinoView === "dia";
   timerEl.hidden = !tm;
   document.body.classList.toggle("has-timer", tm);
