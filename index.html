@@ -252,7 +252,7 @@ body.mov .pt[aria-pressed="true"] .pt-b{animation:check .4s cubic-bezier(.3,1.6,
 .pt-media{display:flex;flex-direction:column;gap:8px}
 .pt-media .st-v b{font-size:1.9rem}
 .pt-refs{list-style:none;margin:0;padding:0!important;display:flex;flex-direction:column;gap:8px}
-.pt-refs li{display:grid;grid-template-columns:5.6rem 1fr 2.6rem;align-items:center;gap:10px;font-size:.85rem;color:var(--soft)}
+.pt-refs li{display:grid;grid-template-columns:7.6rem 1fr 2.6rem;align-items:center;gap:10px;font-size:.85rem;color:var(--soft)}
 .pt-refs b{text-align:right;font-size:.82rem;color:var(--ink)}
 .pt-refs .st-bar{height:8px}
 .chips.two-c{display:grid;grid-template-columns:1fr 1fr}
@@ -272,6 +272,24 @@ body.mov .pt[aria-pressed="true"] .pt-b{animation:check .4s cubic-bezier(.3,1.6,
 .cd-eq{display:flex;flex-wrap:wrap;gap:6px}
 .cd-eq span{font-size:.8rem;color:var(--soft);background:var(--surface2);border-radius:10px;padding:5px 9px;line-height:1.3}
 .pr-txt{font-size:1.05rem!important;line-height:1.2!important}
+.al-tot{display:flex;flex-direction:column;gap:10px}
+.al-l{display:flex;flex-direction:column;gap:6px}
+.al-v{display:flex;align-items:baseline;gap:4px}
+.al-v b{font-size:1.5rem;font-weight:800;line-height:1}
+.al-v span{font-size:.82rem;font-weight:700;color:var(--muted)}
+.al-l .st-bar{height:8px}
+.al-l .st-bar i{transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.al-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.al-r{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:10px;text-align:left;font:inherit;color:var(--ink);background:var(--surface2);border:1px solid transparent;border-radius:14px;padding:10px 12px;cursor:pointer}
+.al-c{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:800;color:transparent;border:2px solid var(--line)}
+.al-n{min-width:0;display:flex;flex-direction:column}
+.al-n b{font-size:.92rem}
+.al-n small{font-size:.74rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.al-k{text-align:right;font-size:.85rem;font-weight:800;white-space:nowrap;display:flex;flex-direction:column}
+.al-k small{font-size:.7rem;font-weight:700;color:var(--muted)}
+.al-r[aria-pressed="true"]{background:color-mix(in srgb,var(--kcal) 12%,var(--surface2));border-color:color-mix(in srgb,var(--kcal) 45%,var(--line))}
+.al-r[aria-pressed="true"] .al-c{background:var(--kcal);border-color:var(--kcal);color:#1A0D05}
+body.mov .al-r[aria-pressed="true"] .al-c{animation:check .4s cubic-bezier(.3,1.6,.5,1)}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -1178,7 +1196,7 @@ function refreshToday(){
   setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
-  document.getElementById("ck-count").textContent = `${[+c.agua > 0, +c.sono > 0, refsOf(person.id, logDate).length > 0, !!c.peso, c.dieta != null].filter(Boolean).length}/5`;
+  document.getElementById("ck-count").textContent = `${[+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0, !!c.peso, c.dieta != null].filter(Boolean).length}/5`;
   refreshExtras(); refreshProt();
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
   const t = treinoProg(person.id, logDate), box = document.getElementById("todaytrain");
@@ -1356,13 +1374,6 @@ const SQ_ICO = [
 ];
 const DIETA_DESC = {1: "comi o que estava previsto", 0.5: "uma refeição fora do plano", 0: "o dia quase todo fora"};
 // Proteína por refeição e comida em volta do treino das 21h — conteúdo do agente de nutrição (2026-10-09)
-const REF_TREINO = ["Café", "Almoço", "Pré-treino", "Pós-treino"], REF_DESC = ["Café", "Almoço", "Lanche", "Jantar"];
-const PROT_REF = {
-  rafael: {g: 35, ex: ["120 g de frango cozido (1 filé médio)", "130 g de carne moída ou patinho", "1 lata de atum + 2 ovos", "4 ovos + 1 copo de leite", "1 scoop de whey + 1 copo de leite", "Prato com 100 g de frango + arroz e feijão"], txt: "Fez 3? Reforce a próxima refeição. Um lanche extra à tarde ajuda nas calorias."},
-  laura: {g: 35, ex: ["120 g de frango cozido (1 filé médio)", "130 g de patinho moído", "1 lata de atum + 2 ovos", "1 scoop de whey + 1 copo de leite desnatado", "4 ovos + 1 copo de leite", "Iogurte grego + 1 scoop de whey"], txt: "No déficit, a proteína segura o músculo e a fome."},
-  laysa: {g: 28, ex: ["100 g de frango cozido", "100 g de carne moída", "3 ovos + 1 copo de leite", "1 lata de atum", "1 scoop de whey + 1 copo de leite", "Pão com 2 ovos + 2 fatias de queijo"], txt: "Não pule refeição: é assim que o músculo cresce."},
-  a3: {g: 25, ex: ["80–100 g de frango cozido", "3 ovos + 1 copo de leite", "1 lata de atum", "1 scoop de whey", "Iogurte grego + 2 ovos"], txt: "Meta provisória até a avaliação."}
-};
 const NUTRI = {
   antes: {titulo: "Antes do treino", tag: "coma até 19h30", itens: ["Até 19h30: prato normal — arroz, feijão, frango ou carne, salada", "Até 20h30, se bater fome: banana + pão com queijo, ou iogurte com aveia", "Cafeína só até 18h: depois atrapalha o sono"], porque: "Treino de 2 h pede energia; comer 1h30 a 3 h antes dá tempo de digerir.",
     pessoa: {rafael: "Prato cheio e faça o lanche das 20h30: você precisa comer mais.", laura: "Prato normal, sem exagero. Guarde calorias para o pós-treino.", laysa: "Não pule o pré: treinar de estômago vazio derruba a força.", a3: "Prato normal até 19h30."}},
@@ -1371,26 +1382,57 @@ const NUTRI = {
     pessoa: {rafael: "1 bolinha (~35 g) + carboidrato à vontade (2 pães ou 1 prato de arroz).", laura: "1 bolinha (~35 g) + carboidrato pequeno (1 fruta ou 1 pão).", laysa: "1 bolinha (~28 g) + carboidrato médio (1 pão ou 1 banana com aveia).", a3: "1 bolinha (~25 g) + 1 fruta ou 1 pão."}},
   creatina: "Creatina 3–5 g por dia, em qualquer horário, inclusive no fim de semana."
 };
-for (const k in PROT_REF) Object.defineProperty(PROT_REF[k], "g", {get: () => metas(k).bolinha});   // gramas da bolinha vêm do peso
 let nowFn = () => new Date();   // trocável nos testes
-const refsOf = (p, s) => { const c = chkOf(p, s), r = c.prot_refs; return Array.isArray(r) ? r : c.proteina ? [0, 1, 2, 3] : []; };   // registro antigo com "bati a proteína" = 4 bolinhas
+// Refeições do dia = cardápio do agente de nutrição ajustado à meta calculada pelo peso
+// (soma das kcal = meio da faixa de calorias; soma da proteína = proteína alvo). Marcar todas = bater a meta.
+function refeicoesDe(p, s = logDate, tipo = dayIdFor(s) ? "treino" : "descanso"){
+  const c = CARDAPIO.pessoas[p], m = metas(p, s);
+  if (!c || !c[tipo] || !m.kcal) return [];
+  const base = c[tipo], bk = base.reduce((a, r) => a + r.kcal, 0), bp = base.reduce((a, r) => a + r.prot, 0);
+  const alvoK = (m.kcal[0] + m.kcal[1]) / 2, alvoP = m.total;
+  const rs = base.map(r => ({...r, kcal: Math.round(r.kcal * alvoK / bk / 10) * 10, prot: Math.round(r.prot * alvoP / bp)}));
+  // o arredondamento vai para a maior refeição, para a soma fechar certinho na meta
+  const big = k => rs.reduce((m, r, i) => r[k] > rs[m][k] ? i : m, 0);
+  rs[big("kcal")].kcal += Math.round(alvoK / 10) * 10 - rs.reduce((a, r) => a + r.kcal, 0);
+  rs[big("prot")].prot += alvoP - rs.reduce((a, r) => a + r.prot, 0);
+  return rs;
+}
+const metaKcal = (p, s = logDate) => { const m = metas(p, s); return m.kcal ? Math.round((m.kcal[0] + m.kcal[1]) / 2 / 10) * 10 : 0; };
+const feitasDe = (p, s) => { const r = chkOf(p, s).refeicoes; return Array.isArray(r) ? r : []; };
+const regAlim = (p, s) => Array.isArray(chkOf(p, s).refeicoes);
+// Total comido no dia: usa o que foi gravado (kcal e prot_g); se faltar, soma as refeições marcadas
+function comidoDe(p, s){
+  const c = chkOf(p, s); if (c.kcal != null) return {kcal: +c.kcal || 0, prot: +c.prot_g || 0};
+  const rs = refeicoesDe(p, s); return feitasDe(p, s).reduce((a, i) => rs[i] ? {kcal: a.kcal + rs[i].kcal, prot: a.prot + rs[i].prot} : a, {kcal: 0, prot: 0});
+}
+function metaBatida(p, s){ const m = metas(p, s), c = comidoDe(p, s); return !!m.kcal && c.kcal >= m.kcal[0] && c.prot >= m.faixa[0]; }
 function protCard(){
-  const pr = PROT_REF[person.id] || PROT_REF.a3, nomes = dayIdFor(logDate) ? REF_TREINO : REF_DESC;
-  return `<article class="ck prot" id="card-prot" style="--c:var(--coral)"><div class="ck-h"><span class="ico">${ICON.prato}</span>Proteína<button type="button" class="badge" data-cheer="prot" aria-label="Meta de proteína batida: ver a comemoração">Meta ✓</button><span class="pt-v num" id="pt-v"></span></div>
-    <div class="pt-row" role="group" aria-label="Refeições com proteína">${nomes.map((n, i) => `<button type="button" class="pt" data-ref="${i}" aria-pressed="false" aria-label="${n}: cerca de ${pr.g} g de proteína"><span class="pt-b"><b>${pr.g}</b><small>g</small></span><span class="pt-n">${n}</span></button>`).join("")}</div>
-    <details class="pt-ex"><summary>O que vale 1 bolinha (~${pr.g} g)</summary><ul>${pr.ex.map(x => `<li>${x}</li>`).join("")}</ul><p class="hint">${pr.txt} Informação geral, não substitui nutricionista.</p></details></article>`;
+  const rs = refeicoesDe(person.id, logDate);
+  if (!rs.length) return `<article class="ck prot" id="card-prot" style="--c:var(--kcal)"><div class="ck-h"><span class="ico">${ICON.prato}</span>Refeições do dia</div><p class="ck-note">O cardápio e as metas saem depois da avaliação.</p></article>`;
+  return `<article class="ck prot" id="card-prot" style="--c:var(--kcal)"><div class="ck-h"><span class="ico">${ICON.prato}</span>Refeições do dia<button type="button" class="badge" data-cheer="prot" aria-label="Meta do dia batida: ver a comemoração">Meta ✓</button></div>
+    <div class="al-tot">
+      <div class="al-l"><div class="al-v"><b class="num" id="al-k">0</b><span id="al-km"></span></div><div class="st-bar" style="--c:var(--kcal)"><i id="al-kb"></i></div></div>
+      <div class="al-l"><div class="al-v"><b class="num" id="al-p">0</b><span id="al-pm"></span></div><div class="st-bar" style="--c:var(--coral)"><i id="al-pb"></i></div></div>
+    </div>
+    <ul class="al-list">${rs.map((r, i) => `<li><button type="button" class="al-r" data-ref="${i}" aria-pressed="false"><span class="al-c" aria-hidden="true">✓</span><span class="al-n"><b>${esc(r.nome)}</b><small>${esc(r.hora)} · ${r.itens.map(esc).join(" · ")}</small></span><span class="al-k num">${r.kcal.toLocaleString("pt-BR")} kcal<small>${r.prot} g proteína</small></span></button></li>`).join("")}</ul>
+    <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio.</p></article>`;
 }
 function refreshProt(){
-  const card = document.getElementById("card-prot"); if (!card) return;
-  const pr = PROT_REF[person.id] || PROT_REF.a3, r = refsOf(person.id, logDate);
-  card.querySelectorAll("[data-ref]").forEach(b => b.setAttribute("aria-pressed", String(r.includes(+b.dataset.ref))));
-  document.getElementById("pt-v").textContent = `${r.length * pr.g} / ${4 * pr.g} g`;
-  card.classList.toggle("met", r.length >= 4);
+  const card = document.getElementById("card-prot"), k = document.getElementById("al-k"); if (!card || !k) return;
+  const f = feitasDe(person.id, logDate), m = metas(person.id, logDate), c = comidoDe(person.id, logDate), mk = metaKcal(person.id, logDate);
+  card.querySelectorAll("[data-ref]").forEach(b => b.setAttribute("aria-pressed", String(f.includes(+b.dataset.ref))));
+  k.textContent = c.kcal.toLocaleString("pt-BR"); document.getElementById("al-km").textContent = ` / ${Math.round(mk).toLocaleString("pt-BR")} kcal`;
+  document.getElementById("al-p").textContent = c.prot; document.getElementById("al-pm").textContent = ` / ${m.total} g de proteína`;
+  document.getElementById("al-kb").style.width = Math.min(100, c.kcal / mk * 100) + "%";
+  document.getElementById("al-pb").style.width = Math.min(100, c.prot / m.total * 100) + "%";
+  card.classList.toggle("met", metaBatida(person.id, logDate));
 }
 function toggleRef(i){
-  const r = refsOf(person.id, logDate), on = r.includes(i), nr = on ? r.filter(x => x !== i) : [...r, i].sort();
-  setChk({prot_refs: nr, proteina: nr.length >= 4});
-  if (!on && nr.length >= 4) requestAnimationFrame(() => celebrate("prot"));
+  const f = feitasDe(person.id, logDate), on = f.includes(i), nf = on ? f.filter(x => x !== i) : [...f, i].sort((a, b) => a - b);
+  const rs = refeicoesDe(person.id, logDate), tot = nf.reduce((a, j) => rs[j] ? {kcal: a.kcal + rs[j].kcal, prot: a.prot + rs[j].prot} : a, {kcal: 0, prot: 0});
+  const antes = metaBatida(person.id, logDate);
+  setChk({refeicoes: nf, kcal: tot.kcal, prot_g: tot.prot, proteina: tot.prot >= metas(person.id, logDate).faixa[0]});
+  if (!antes && metaBatida(person.id, logDate)) requestAnimationFrame(() => celebrate("prot"));
 }
 // Cartão da comida em volta do treino: antes (17h–21h), durante (21h–23h30), depois (23h30 em diante); só no dia de treino de hoje
 function nutriCard(){
@@ -1398,7 +1440,7 @@ function nutriCard(){
   const d = nowFn(), m = d.getHours() * 60 + d.getMinutes();
   const k = m >= 17 * 60 && m < 21 * 60 ? "antes" : m >= 21 * 60 && m < 23 * 60 + 30 ? "durante" : (m >= 23 * 60 + 30 || m < 5 * 60) ? "depois" : null;
   if (!k) return "";
-  const n = NUTRI[k], pp = n.pessoa ? (n.pessoa[person.id] || n.pessoa.a3).replace(/~\d+ g/, "~" + metas(person.id).bolinha + " g") : "";
+  const n = NUTRI[k], pp = n.pessoa ? (n.pessoa[person.id] || n.pessoa.a3).replace(/1 bolinha \(~\d+ g\)/, () => { const pt = refeicoesDe(person.id, logDate).find(r => /Pós/.test(r.nome)); return pt ? `~${pt.kcal} kcal e ${pt.prot} g de proteína` : "proteína"; }) : "";
   return `<article class="panel tinted nut" style="--c:var(--kcal)">${phd(ICON.prato, n.titulo, `<span class="delta">${n.tag}</span>`)}
     <ul class="rel-l">${n.itens.map(x => `<li class="nx">${x}</li>`).join("")}</ul>
     ${pp ? `<p class="nut-p"><b>${person.name}:</b> ${pp}</p>` : ""}
@@ -1424,7 +1466,7 @@ function refreshExtras(){
   if (h) { const t = pesoTrend(person.id, logDate); h.textContent = t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "em jejum, ao acordar"; }
   const st = document.getElementById("dietst"), sub = document.getElementById("dietsub");
   if (st) { const op = DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta); st.textContent = op ? op[1] : "Não marcada"; st.classList.toggle("marcada", !!op);
-    sub.textContent = op ? [`proteína ${refsOf(person.id, logDate).length}/4`, c.creatina ? "creatina ✓" : ""].filter(Boolean).join(" · ") : "Toque para marcar no fim do dia"; }
+    sub.textContent = op ? [`${comidoDe(person.id, logDate).kcal.toLocaleString("pt-BR")} kcal`, c.creatina ? "creatina ✓" : ""].filter(Boolean).join(" · ") : "Toque para marcar no fim do dia"; }
   // O que muda quando a noite foi ruim (base: conhecimento/04 e regra de deload da ficha)
   const tip = document.getElementById("sonotip");
   if (tip) {
@@ -1458,7 +1500,7 @@ function renderSheet(){
     <h2 id="sheet-t">Como foi a alimentação ${quando}?</h2>
     <p class="hint">Marque no fim do dia. "O plano" é o que o seu personal passou: ${KCAL[person.id] ? KCAL[person.id] + " e " : ""}proteína ${PROT[person.id] || "da sua meta"} por dia, mais creatina 3–5 g.</p>
     <div class="opts">${DIETA_OP.map(([v, t]) => `<button type="button" class="opt" data-dieta="${v}" aria-pressed="${c.dieta != null && +c.dieta === v}"><b>${t}</b><small>${DIETA_DESC[v]}</small></button>`).join("")}</div>
-    <div class="togs"><div class="tog info"><span>Proteína: ${refsOf(person.id, logDate).length}/4</span><small>marque nas bolinhas do check-in</small></div><button type="button" class="tog" data-flag="creatina" aria-pressed="${!!c.creatina}"><span>Tomei creatina</span><small>3–5 g</small></button></div>
+    <div class="togs"><div class="tog info"><span>${comidoDe(person.id, logDate).kcal.toLocaleString("pt-BR")} kcal · ${comidoDe(person.id, logDate).prot} g</span><small>marque as refeições no check-in</small></div><button type="button" class="tog" data-flag="creatina" aria-pressed="${!!c.creatina}"><span>Tomei creatina</span><small>3–5 g</small></button></div>
     <button type="button" class="done-btn" data-close>Pronto</button>
   </div>`;
 }
@@ -1572,13 +1614,12 @@ function renderProgress(){
   const aguaOk = d14.filter(s => (+chkOf(p, s).agua || 0) >= goalsFor(p, s).agua).length;
   const dietaDe = days => { const reg = days.map(s => chkOf(p, s)).filter(c => c.dieta != null); return reg.length ? {ader: Math.round(avg(reg.map(c => +c.dieta)) * 100), prot: Math.round(reg.filter(c => c.proteina).length / reg.length * 100), n: reg.length} : null; };
   const dNow = dietaDe(lastDays(7, today)), dPrev = dietaDe(lastDays(7, addDays(today, -7)));
-  // Proteína: 14 dias, gramas = refeições marcadas × gramas da bolinha
-  const protDias = d14.filter(s => protReg(p, s)), protOk = protDias.filter(s => refsOf(p, s).length >= 4).length;
-  const protBars = d14.map(s => { const r = refsOf(p, s), g = r.length * protG(p), nm = refNomes(s); return {l: s.slice(8, 10), v: protReg(p, s) ? g : 0, tip: protReg(p, s) ? `${dd(s)}: ${g} g · ${r.length ? r.map(i => nm[i]).join(", ") : "nenhuma refeição"}` : `${dd(s)}: sem registro`}; });
-  // Quanto cada refeição foi cumprida nos dias registrados (Café, Almoço, Pré-treino…)
-  const refStat = {}; protDias.forEach(s => { const r = refsOf(p, s); refNomes(s).forEach((n, i) => { const x = refStat[n] || (refStat[n] = [0, 0]); x[1]++; if (r.includes(i)) x[0]++; }); });
-  const porRef = ["Café", "Almoço", "Pré-treino", "Pós-treino", "Lanche", "Jantar"].filter(n => refStat[n]).map(n => [n, ...refStat[n]]);
-  const protMedia = protDias.length ? Math.round(avg(protDias.map(s => refsOf(p, s).length * protG(p)))) : 0;
+  // Comida: 14 dias com refeições marcadas (kcal e proteína do cardápio ajustado à meta)
+  const mt = metas(p, today), mk = metaKcal(p, today), alDias = d14.filter(s => regAlim(p, s)), alOk = alDias.filter(s => metaBatida(p, s)).length;
+  const alBars = d14.map(s => { const c = comidoDe(p, s); return {l: s.slice(8, 10), v: regAlim(p, s) ? c.kcal : 0, tip: regAlim(p, s) ? `${dd(s)}: ${c.kcal.toLocaleString("pt-BR")} kcal · ${c.prot} g de proteína` : `${dd(s)}: sem registro`}; });
+  const refStat = {}; alDias.forEach(s => { const f = feitasDe(p, s); refeicoesDe(p, s).forEach((r, i) => { const n = r.nome.replace(/ \(.*\)/, ""), x = refStat[n] || (refStat[n] = [0, 0]); x[1]++; if (f.includes(i)) x[0]++; }); });
+  const porRef = Object.entries(refStat).map(([n, [h, t]]) => [n, h, t]);
+  const kMedia = alDias.length ? Math.round(avg(alDias.map(s => comidoDe(p, s).kcal))) : 0, pMedia = alDias.length ? Math.round(avg(alDias.map(s => comidoDe(p, s).prot))) : 0;
   const creat = lastDays(7, today).filter(s => chkOf(p, s).creatina).length;
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
   // Cartões do topo: ofensiva (dias úteis da semana), treinos feitos x previstos, volume e calorias
@@ -1625,10 +1666,11 @@ function renderProgress(){
       ${bars({data: agua, color: "var(--blue)", max: 120, ref: 100, refLabel: "meta", fmtY: v => v + "%"})}
     </article>
 
-    <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Proteína", protDias.length ? `<span class="delta">${protOk}/${protDias.length} dias na meta</span>` : "")}
-      ${protDias.length ? `<div class="pt-media"><div class="st-v"><b class="num">${protMedia}</b><span>g por dia, em média · meta ${4 * protG(p)} g</span></div><div class="st-bar" style="--c:var(--coral)"><i style="width:${Math.min(100, Math.round(protMedia / (4 * protG(p)) * 100))}%"></i></div></div>
-      <ul class="pt-refs">${porRef.map(([n, h, t]) => `<li><span>${n}</span><div class="st-bar" style="--c:var(--coral)"><i style="width:${Math.round(h / t * 100)}%"></i></div><b class="num">${h}/${t}</b></li>`).join("")}</ul>
-      ${bars({data: protBars, color: "var(--coral)", max: Math.ceil(4 * protG(p) * 1.25 / 20) * 20, ref: 4 * protG(p), fmtY: v => v + " g"})}<p class="sub">Gramas por dia (14 dias) · linha tracejada = meta</p>` : `<p class="hint">Marque as bolinhas de proteína no check-in do Hoje para ver aqui quanto você come por dia.</p>`}
+    <article class="panel tinted" style="--c:var(--kcal)">${phd(ICON.prato, "Calorias e proteína", alDias.length ? `<span class="delta">${alOk}/${alDias.length} dias na meta</span>` : "")}
+      ${alDias.length && mk ? `<div class="pt-media"><div class="st-v"><b class="num">${kMedia.toLocaleString("pt-BR")}</b><span>kcal por dia, em média · meta ${Math.round(mk).toLocaleString("pt-BR")}</span></div><div class="st-bar" style="--c:var(--kcal)"><i style="width:${Math.min(100, Math.round(kMedia / mk * 100))}%"></i></div>
+        <div class="st-v"><b class="num">${pMedia}</b><span>g de proteína por dia · meta ${mt.total} g</span></div><div class="st-bar" style="--c:var(--coral)"><i style="width:${Math.min(100, Math.round(pMedia / mt.total * 100))}%"></i></div></div>
+      <p class="rel-h">Refeições cumpridas</p><ul class="pt-refs">${porRef.map(([n, h, t]) => `<li><span>${n}</span><div class="st-bar" style="--c:var(--kcal)"><i style="width:${Math.round(h / t * 100)}%"></i></div><b class="num">${h}/${t}</b></li>`).join("")}</ul>
+      ${bars({data: alBars, color: "var(--kcal)", max: Math.ceil(mk * 1.2 / 500) * 500, ref: mk, fmtY: v => (v / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " mil"})}<p class="sub">Calorias comidas por dia (14 dias) · linha tracejada = meta · toque numa barra para ver a proteína</p>` : `<p class="hint">Marque as refeições no check-in do Hoje para ver aqui quanto você come por dia.</p>`}
     </article>
 
     <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Alimentação")}
@@ -1657,9 +1699,6 @@ function ringMini(frac, color){
   const pts = Array.from({length: n}, (_, i) => { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return `<circle class="dm${i < lit ? " on" : ""}" style="animation-delay:${i * 30}ms" cx="${(22 + 18 * Math.cos(a)).toFixed(2)}" cy="${(22 + 18 * Math.sin(a)).toFixed(2)}" r="2.1"/>`; }).join("");
   return `<svg class="pr-ring" viewBox="0 0 44 44" aria-hidden="true" style="--c:${color}"><circle cx="22" cy="22" r="18" fill="none" stroke-width=".9" style="stroke:color-mix(in srgb,${color} 35%,transparent)"/>${pts}</svg>`;
 }
-const protG = p => (PROT_REF[p] || PROT_REF.a3).g;
-const protReg = (p, s) => { const c = chkOf(p, s); return Array.isArray(c.prot_refs) || !!c.proteina; };   // dia com proteína registrada
-const refNomes = s => dayIdFor(s) ? REF_TREINO : REF_DESC;
 // 7 bolinhas da alimentação na semana: cheia = segui o plano, metade = saí um pouco, vazia = saí do plano, apagada = sem registro
 function dietDots(p, end){
   return `<svg class="pr-bars" viewBox="0 0 64 30" aria-hidden="true">${lastDays(7, end).map((s, i) => { const d = chkOf(p, s).dieta, cx = i * 9 + 4;
@@ -1689,8 +1728,8 @@ function renderPainel(p){
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--sono)">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h · noite ${quando === "hoje" ? "passada" : "p/ " + quando}</span></div>${sonoBars}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--peso)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--coral)">${ICON.prato}</span><b>Proteína</b></div><div class="pr-v"><div><b class="num">${protReg(p, today) ? refsOf(p, today).length * protG(p) : "—"}</b><span>g de ${4 * protG(p)} ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini(refsOf(p, today).length / 4, "var(--coral)")}</div></article>
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--coral)">${ICON.prato}</span><b>Alimentação</b></div><div class="pr-v"><div><b class="pr-txt">${(DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta) || [, "—"])[1]}</b><span>${c.dieta != null ? (c.creatina ? "creatina ✓" : "sem creatina") : "marque no Hoje"}</span></div>${dietDots(p, today)}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--coral)">${ICON.prato}</span><b>Proteína</b></div><div class="pr-v"><div><b class="num">${regAlim(p, today) ? comidoDe(p, today).prot : "—"}</b><span>g de ${metas(p, today).total || "—"} ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini(metas(p, today).total ? comidoDe(p, today).prot / metas(p, today).total : 0, "var(--coral)")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--kcal)">${ICON.prato}</span><b>Comida</b></div><div class="pr-v"><div><b class="num">${regAlim(p, today) ? comidoDe(p, today).kcal.toLocaleString("pt-BR") : "—"}</b><span>kcal de ${metaKcal(p, today) ? Math.round(metaKcal(p, today)).toLocaleString("pt-BR") : "—"}</span></div>${ringMini(metaKcal(p, today) ? comidoDe(p, today).kcal / metaKcal(p, today) : 0, "var(--kcal)")}</div></article>
     </div>
   </div>`;
 }
@@ -1900,12 +1939,13 @@ function renderCardapio(){
   const c = CARDAPIO.pessoas[person.id];
   const head = `<div class="dayhead"><div><div class="eyebrow">Exemplo do agente de nutrição</div><h2>Cardápio ${person.art} ${person.name}</h2></div></div>`;
   if (!c || !c.treino) return `<section class="list">${head}<div class="panel"><p>${esc((c && c.texto) || "Em breve, depois da avaliação.")}</p></div></section>`;
-  const tipo = cardTipo || (dayIdFor(logDate) ? "treino" : "descanso"), refs = c[tipo] || [], tot = c["total_" + tipo] || {};
-  const g = (PROT_REF[person.id] || PROT_REF.a3).g;
+  const tipo = cardTipo || (dayIdFor(logDate) ? "treino" : "descanso"), refs = refeicoesDe(person.id, logDate, tipo).length ? refeicoesDe(person.id, logDate, tipo) : (c[tipo] || []);
+  const tot = {kcal: refs.reduce((a, r) => a + r.kcal, 0), prot: refs.reduce((a, r) => a + r.prot, 0)};
   return `<section class="list cardapio">${head}
     <div class="chips two-c" role="group" aria-label="Tipo de dia">${[["treino", "Dia de treino"], ["descanso", "Descanso"]].map(([k, t]) => `<button type="button" class="chip" data-ctipo="${k}" aria-pressed="${tipo === k}">${t}</button>`).join("")}</div>
     <div class="stats">${stat({ico: ICONF, c: "var(--kcal)", l: "Calorias", v: tot.kcal ? "~" + tot.kcal.toLocaleString("pt-BR") : "—", u: "kcal", foot: "meta " + (KCAL[person.id] || "—")})}${stat({ico: ICON.prato, c: "var(--coral)", l: "Proteína", v: tot.prot || "—", u: "g", foot: "meta " + (PROT[person.id] || "—")})}</div>
-    <ol class="cd-list">${refs.map(r => `<li class="cd-r${r.bolinha ? " bol" : ""}"><div class="cd-h"><span class="cd-hora num">${esc(r.hora || "")}</span><b>${esc(r.nome)}</b>${r.bolinha ? `<span class="cd-bol" title="Conta 1 bolinha de proteína">1 bolinha</span>` : ""}</div>
+    <p class="hint">Valores ajustados à sua meta de hoje (calculada pelo peso). São os mesmos do check-in: comer tudo = bater a meta.</p>
+    <ol class="cd-list">${refs.map(r => `<li class="cd-r"><div class="cd-h"><span class="cd-hora num">${esc(r.hora || "")}</span><b>${esc(r.nome)}</b></div>
       <ul>${(r.itens || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul><p class="cd-n num">~${r.kcal} kcal · ${r.prot} g de proteína</p></li>`).join("")}</ol>
     ${c.dicas && c.dicas.length ? `<article class="panel tinted" style="--c:var(--kcal)">${phd(ICONF, "Dicas para você")}<ul class="rel-l">${c.dicas.map(x => `<li class="nx">${esc(x)}</li>`).join("")}</ul></article>` : ""}
     <article class="panel"><h3>Trocas</h3><p class="hint">Troque à vontade dentro do mesmo grupo: a quantidade de cada linha vale o mesmo.</p>
@@ -1942,7 +1982,7 @@ function renderPerfil(){
       ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
       ${meta(ICON.sono, "var(--sono)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
       ${meta(ICONF, "var(--kcal)", "Calorias", KCAL[p] || "a definir", mt.kcal ? `calculado para ${num(mt.peso)} kg${mt.n ? ` (média de ${mt.n} pesagens)` : " (peso da avaliação)"}` : "depois da avaliação")}
-      ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", mt.faixa ? `${num(mt.gkg)} g por kg × ${num(mt.peso)} kg ≈ ${mt.total} g → 4 bolinhas de ${mt.bolinha} g` : "depois da avaliação")}
+      ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", mt.faixa ? `${num(mt.gkg)} g por kg × ${num(mt.peso)} kg ≈ ${mt.total} g, dividida nas refeições` : "depois da avaliação")}
       ${mp ? meta(ICON.balanca, "var(--peso)", "Peso", mp[0], mp[1]) : ""}
     </ul>${mt.revisao ? `<p class="alert">Seu peso saiu da faixa prevista: as metas precisam de revisão do personal.</p>` : ""}<p class="hint">Calculadas pelo seu peso e objetivo (regra do agente de nutrição) e recalculadas toda segunda com a média das pesagens em jejum. Pese-se pelo menos 3 vezes na semana.</p></article>
     <article class="panel"><h3>Animações</h3><div class="chips three" role="group" aria-label="Animações">${[["on", "Completas"], ["off", "Suaves"], ["auto", "Do celular"]].map(([k, t]) => `<button type="button" class="chip" data-anim="${k}" aria-pressed="${motion === k}">${t}</button>`).join("")}</div><p class="hint">${motion === "on" ? "Cartões entrando, números subindo, barras crescendo e efeitos ao tocar." : motion === "off" ? "Só aparece e some suave, sem movimento na tela." : "Segue o ajuste do celular: se ele estiver com animações reduzidas, fica suave."}</p></article>
