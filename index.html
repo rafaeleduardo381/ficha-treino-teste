@@ -1325,7 +1325,9 @@ const SONO_Q = ["Péssimo", "Ruim", "Ok", "Bom", "Ótimo"];
 const DIETA_OP = [[1, "Segui o plano"], [0.5, "Saí um pouco"], [0, "Saí do plano"]];
 // Metas calculadas pelo peso e pelo objetivo — regra do agente de nutrição (2026-10-09).
 // Proteína = g/kg × peso; calorias = base + 16,5 × peso (a base já embute altura/idade, que não vão para o site).
-// Peso = média das pesagens em jejum dos 7 dias até a segunda-feira da semana (mín. 3; senão 14 dias; senão o da avaliação), recalculado toda segunda.
+// Peso = pesagem na balança da academia ao chegar (~21h, antes do treino, sem tênis) menos 1,5 kg (roupa + comida do dia), para ficar no padrão de jejum.
+// Média das pesagens de seg a sex da semana anterior (mín. 3; senão das 2 semanas anteriores; senão o da avaliação), recalculada toda segunda.
+const DESCONTO_PESO = 1.5;
 const METAS_REGRA = {
   ref: {rafael: 63, laura: 64, laysa: 55, a3: null},
   rafael: {gkg: 2.2, faixa: [2.0, 2.2], base: [1860, 1960], fator: 16.5, peso: [59.2, 66.8], protMax: 150, kcal: [2800, 3100]},
@@ -1337,9 +1339,10 @@ const r5 = v => Math.round(v / 5) * 5, r50 = v => Math.round(v / 50) * 50, clamp
 function pesoMeta(p, s = logDate){
   const R = METAS_REGRA[p] || METAS_REGRA.a3, ref = METAS_REGRA.ref[p] ?? null, seg = weekOf(s)[0];
   const ok = v => v >= 35 && v <= 150 && (ref == null || Math.abs(v - ref) / ref <= 0.15);
-  const janela = n => Array.from({length: n + 1}, (_, i) => pesoAt(p, addDays(seg, -i))).filter(v => v && ok(v));
-  let w = janela(7), fonte = "7";
-  if (w.length < 3) { w = janela(14); fonte = "14"; }
+  const uteis = sem => weekOf(addDays(seg, -7 * sem)).slice(0, 5);
+  const janela = sems => sems.flatMap(uteis).map(d => pesoAt(p, d)).filter(v => v).map(v => v - DESCONTO_PESO).filter(ok);
+  let w = janela([1]), fonte = "7";
+  if (w.length < 3) { w = janela([1, 2]); fonte = "14"; }
   if (w.length < 3) { if (ref == null && !w.length) return null; w = ref != null ? [ref] : w; fonte = ref != null ? "ref" : "14"; }
   const bruto = avg(w), peso = clamp(bruto, R.peso[0], R.peso[1]);
   return {peso: Math.round(peso * 10) / 10, n: fonte === "ref" ? 0 : w.length, fonte, revisao: Math.abs(peso - bruto) > 0.05};
@@ -1451,7 +1454,7 @@ function renderExtras(){
   return `<div class="cards">${protCard()}
       <article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
-        <p class="ck-note" id="pesohint">em jejum, ao acordar</p></article>
+        <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>
       <button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
         <b class="diet-st" id="dietst">Não marcada</b><span class="ck-note" id="dietsub">Toque para marcar no fim do dia</span></button>
     </div>`;
@@ -1463,7 +1466,7 @@ function refreshExtras(){
   const pin = document.getElementById("peso");
   if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
   const h = document.getElementById("pesohint");
-  if (h) { const t = pesoTrend(person.id, logDate); h.textContent = t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "em jejum, ao acordar"; }
+  if (h) { const t = pesoTrend(person.id, logDate); h.textContent = t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "na academia, ao chegar: antes de treinar, sem tênis"; }
   const st = document.getElementById("dietst"), sub = document.getElementById("dietsub");
   if (st) { const op = DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta); st.textContent = op ? op[1] : "Não marcada"; st.classList.toggle("marcada", !!op);
     sub.textContent = op ? [`${comidoDe(person.id, logDate).kcal.toLocaleString("pt-BR")} kcal`, c.creatina ? "creatina ✓" : ""].filter(Boolean).join(" · ") : "Toque para marcar no fim do dia"; }
@@ -1981,10 +1984,10 @@ function renderPerfil(){
     <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
       ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
       ${meta(ICON.sono, "var(--sono)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
-      ${meta(ICONF, "var(--kcal)", "Calorias", KCAL[p] || "a definir", mt.kcal ? `calculado para ${num(mt.peso)} kg${mt.n ? ` (média de ${mt.n} pesagens)` : " (peso da avaliação)"}` : "depois da avaliação")}
+      ${meta(ICONF, "var(--kcal)", "Calorias", KCAL[p] || "a definir", mt.kcal ? `calculado para ${num(mt.peso)} kg${mt.n ? ` (média de ${mt.n} pesagens da academia − 1,5 kg)` : " (peso da avaliação)"}` : "depois da avaliação")}
       ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", mt.faixa ? `${num(mt.gkg)} g por kg × ${num(mt.peso)} kg ≈ ${mt.total} g, dividida nas refeições` : "depois da avaliação")}
       ${mp ? meta(ICON.balanca, "var(--peso)", "Peso", mp[0], mp[1]) : ""}
-    </ul>${mt.revisao ? `<p class="alert">Seu peso saiu da faixa prevista: as metas precisam de revisão do personal.</p>` : ""}<p class="hint">Calculadas pelo seu peso e objetivo (regra do agente de nutrição) e recalculadas toda segunda com a média das pesagens em jejum. Pese-se pelo menos 3 vezes na semana.</p></article>
+    </ul>${mt.revisao ? `<p class="alert">Seu peso saiu da faixa prevista: as metas precisam de revisão do personal.</p>` : ""}<p class="hint">Calculadas pelo seu peso e objetivo (regra do agente de nutrição), recalculadas toda segunda. Pese-se na balança da academia ao chegar (~21h), antes do treino, depois do banheiro e sem tênis, sempre na mesma balança, seg/qua/sex. O site desconta 1,5 kg (roupa + comida do dia) para ficar no padrão de jejum: vale a tendência da semana, não o número do dia.</p></article>
     <article class="panel"><h3>Animações</h3><div class="chips three" role="group" aria-label="Animações">${[["on", "Completas"], ["off", "Suaves"], ["auto", "Do celular"]].map(([k, t]) => `<button type="button" class="chip" data-anim="${k}" aria-pressed="${motion === k}">${t}</button>`).join("")}</div><p class="hint">${motion === "on" ? "Cartões entrando, números subindo, barras crescendo e efeitos ao tocar." : motion === "off" ? "Só aparece e some suave, sem movimento na tela." : "Segue o ajuste do celular: se ele estiver com animações reduzidas, fica suave."}</p></article>
     <h3 class="pf-sec">Guias</h3>
     <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}" style="--c:${GUIA_COR[t.id] || "var(--muted)"}"><span class="mi"><span class="st-ico">${GUIA_ICO[t.id] || ""}</span><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span></span><span aria-hidden="true">›</span></button>`).join("")}</div>
