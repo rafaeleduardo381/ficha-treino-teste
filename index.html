@@ -9,7 +9,7 @@
    Cores dos dias = anilhas (25 vermelha, 20 azul, 15 amarela, 10 verde, 5 roxa). */
 :root{
   --bg:#0D0E10; --surface:#17181B; --surface2:#222428; --ink:#F3F4EF; --soft:#D5D7D0; --muted:#8E929A; --line:#2A2D32;
-  --lime:#C6F24E; --lime-ink:#151708; --violet:#A68BFF; --coral:#FF6A4D;
+  --lime:#C6F24E; --lime-ink:#151708; --violet:#A68BFF; --coral:#FF6A4D; --blue:#4DB2FF;
   --accent:var(--lime); --accent-ink:var(--lime-ink);
   --p25:#FF6A4D; --p20:#6E9BFF; --p15:#F4C542; --p10:#C6F24E; --p5:#A68BFF;
   --ok:#C6F24E; --warn:#FFB547;
@@ -751,7 +751,7 @@ function renderToday(){
     <div class="week">${week}</div>
     <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count">0/2</span></h2>
     <div class="cards">
-      <article class="ck" id="card-agua" style="--c:var(--violet)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<span class="badge">Meta ✓</span></div>${ring("agua", "var(--violet)")}
+      <article class="ck" id="card-agua" style="--c:var(--blue)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<span class="badge">Meta ✓</span></div>${ring("agua", "var(--blue)")}
         <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Menos 250 ml">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais 250 ml">+</button></div>
         <p class="ck-note" id="ck-agua-note">250 ml</p></article>
       <article class="ck" id="card-sono" style="--c:var(--lime)"><div class="ck-h"><span class="ico">${ICON.sono}</span>Sono<span class="badge">Meta ✓</span></div>${ring("sono", "var(--lime)")}
@@ -805,7 +805,7 @@ function celebrate(field){
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   card.classList.remove("win"); void card.offsetWidth; card.classList.add("win");
   setTimeout(() => card.classList.remove("win"), 1400);
-  const colors = field === "agua" ? ["var(--violet)", "#D9CCFF", "var(--ink)"] : ["var(--lime)", "#E9FFB0", "var(--ink)"];
+  const colors = field === "agua" ? ["var(--blue)", "#BFE3FF", "var(--ink)"] : ["var(--lime)", "#E9FFB0", "var(--ink)"];
   for (let i = 0; i < 22; i++) {
     const bit = document.createElement("i");
     bit.className = "bit";
