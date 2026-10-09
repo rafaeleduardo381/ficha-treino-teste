@@ -248,6 +248,14 @@ button.todaycard,button.dcard{background:linear-gradient(180deg,color-mix(in srg
 .nut-p{margin:0;font-size:.9rem;color:var(--ink);background:color-mix(in srgb,var(--kcal) 12%,var(--surface2));border-radius:12px;padding:8px 12px}
 .nut-e{margin:0;font-size:.82rem;color:var(--warn)}
 body.mov .pt[aria-pressed="true"] .pt-b{animation:check .4s cubic-bezier(.3,1.6,.5,1)}
+.tile .tx{display:block;font-size:1rem;line-height:1.25;padding-top:3px}
+.pt-media{display:flex;flex-direction:column;gap:8px}
+.pt-media .st-v b{font-size:1.9rem}
+.pt-refs{list-style:none;margin:0;padding:0!important;display:flex;flex-direction:column;gap:8px}
+.pt-refs li{display:grid;grid-template-columns:5.6rem 1fr 2.6rem;align-items:center;gap:10px;font-size:.85rem;color:var(--soft)}
+.pt-refs b{text-align:right;font-size:.82rem;color:var(--ink)}
+.pt-refs .st-bar{height:8px}
+.pr-txt{font-size:1.05rem!important;line-height:1.2!important}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -1517,6 +1525,14 @@ function renderProgress(){
   const aguaOk = d14.filter(s => (+chkOf(p, s).agua || 0) >= goalsFor(p, s).agua).length;
   const dietaDe = days => { const reg = days.map(s => chkOf(p, s)).filter(c => c.dieta != null); return reg.length ? {ader: Math.round(avg(reg.map(c => +c.dieta)) * 100), prot: Math.round(reg.filter(c => c.proteina).length / reg.length * 100), n: reg.length} : null; };
   const dNow = dietaDe(lastDays(7, today)), dPrev = dietaDe(lastDays(7, addDays(today, -7)));
+  // Proteína: 14 dias, gramas = refeições marcadas × gramas da bolinha
+  const protDias = d14.filter(s => protReg(p, s)), protOk = protDias.filter(s => refsOf(p, s).length >= 4).length;
+  const protBars = d14.map(s => { const r = refsOf(p, s), g = r.length * protG(p), nm = refNomes(s); return {l: s.slice(8, 10), v: protReg(p, s) ? g : 0, tip: protReg(p, s) ? `${dd(s)}: ${g} g · ${r.length ? r.map(i => nm[i]).join(", ") : "nenhuma refeição"}` : `${dd(s)}: sem registro`}; });
+  // Quanto cada refeição foi cumprida nos dias registrados (Café, Almoço, Pré-treino…)
+  const refStat = {}; protDias.forEach(s => { const r = refsOf(p, s); refNomes(s).forEach((n, i) => { const x = refStat[n] || (refStat[n] = [0, 0]); x[1]++; if (r.includes(i)) x[0]++; }); });
+  const porRef = ["Café", "Almoço", "Pré-treino", "Pós-treino", "Lanche", "Jantar"].filter(n => refStat[n]).map(n => [n, ...refStat[n]]);
+  const protMedia = protDias.length ? Math.round(avg(protDias.map(s => refsOf(p, s).length * protG(p)))) : 0;
+  const creat = lastDays(7, today).filter(s => chkOf(p, s).creatina).length;
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
   // Cartões do topo: ofensiva (dias úteis da semana), treinos feitos x previstos, volume e calorias
   const ofen = streakOf(p), semDias = weekOf(today).slice(0, 5);
@@ -1562,8 +1578,14 @@ function renderProgress(){
       ${bars({data: agua, color: "var(--blue)", max: 120, ref: 100, refLabel: "meta", fmtY: v => v + "%"})}
     </article>
 
+    <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Proteína", protDias.length ? `<span class="delta">${protOk}/${protDias.length} dias na meta</span>` : "")}
+      ${protDias.length ? `<div class="pt-media"><div class="st-v"><b class="num">${protMedia}</b><span>g por dia, em média · meta ${4 * protG(p)} g</span></div><div class="st-bar" style="--c:var(--coral)"><i style="width:${Math.min(100, Math.round(protMedia / (4 * protG(p)) * 100))}%"></i></div></div>
+      <ul class="pt-refs">${porRef.map(([n, h, t]) => `<li><span>${n}</span><div class="st-bar" style="--c:var(--coral)"><i style="width:${Math.round(h / t * 100)}%"></i></div><b class="num">${h}/${t}</b></li>`).join("")}</ul>
+      ${bars({data: protBars, color: "var(--coral)", max: Math.ceil(4 * protG(p) * 1.25 / 20) * 20, ref: 4 * protG(p), fmtY: v => v + " g"})}<p class="sub">Gramas por dia (14 dias) · linha tracejada = meta</p>` : `<p class="hint">Marque as bolinhas de proteína no check-in do Hoje para ver aqui quanto você come por dia.</p>`}
+    </article>
+
     <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Alimentação")}
-      ${dNow ? `<div class="mini two">${tile(dNow.ader + "%", "na dieta (7 dias)", dPrev ? `semana anterior: ${dPrev.ader}%` : "")}${tile(dNow.prot + "%", "dias com proteína batida")}</div>` : `<p class="hint">Marque a alimentação na tela Hoje para ver a aderência da semana.</p>`}
+      ${dNow ? `<div class="mini two">${tile(dNow.ader + "%", "na dieta (7 dias)", dPrev ? `semana anterior: ${dPrev.ader}%` : "")}${tile(creat + "/7", "dias com creatina")}</div>` : `<p class="hint">Marque a alimentação na tela Hoje para ver a aderência da semana.</p>`}
     </article>
 
     <article class="panel tinted" style="--c:var(--kcal)">${phd(ICONF, "Calorias gastas no treino")}
@@ -1587,6 +1609,14 @@ function ringMini(frac, color){
   const n = 24, lit = Math.round(Math.max(0, Math.min(1, frac || 0)) * n);
   const pts = Array.from({length: n}, (_, i) => { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return `<circle class="dm${i < lit ? " on" : ""}" style="animation-delay:${i * 30}ms" cx="${(22 + 18 * Math.cos(a)).toFixed(2)}" cy="${(22 + 18 * Math.sin(a)).toFixed(2)}" r="2.1"/>`; }).join("");
   return `<svg class="pr-ring" viewBox="0 0 44 44" aria-hidden="true" style="--c:${color}"><circle cx="22" cy="22" r="18" fill="none" stroke-width=".9" style="stroke:color-mix(in srgb,${color} 35%,transparent)"/>${pts}</svg>`;
+}
+const protG = p => (PROT_REF[p] || PROT_REF.a3).g;
+const protReg = (p, s) => { const c = chkOf(p, s); return Array.isArray(c.prot_refs) || !!c.proteina; };   // dia com proteína registrada
+const refNomes = s => dayIdFor(s) ? REF_TREINO : REF_DESC;
+// 7 bolinhas da alimentação na semana: cheia = segui o plano, metade = saí um pouco, vazia = saí do plano, apagada = sem registro
+function dietDots(p, end){
+  return `<svg class="pr-bars" viewBox="0 0 64 30" aria-hidden="true">${lastDays(7, end).map((s, i) => { const d = chkOf(p, s).dieta, cx = i * 9 + 4;
+    return d == null ? `<circle cx="${cx}" cy="15" r="3.4" fill="var(--surface2)"/>` : +d === 1 ? `<circle class="gdot" style="animation-delay:${200 + i * 50}ms" cx="${cx}" cy="15" r="3.4" fill="var(--coral)"/>` : +d === 0.5 ? `<circle cx="${cx}" cy="15" r="3.4" fill="color-mix(in srgb,var(--coral) 45%,var(--surface2))"/>` : `<circle cx="${cx}" cy="15" r="3" fill="none" stroke="var(--coral)" stroke-width="1"/>`; }).join("")}</svg>`;
 }
 function renderPainel(p){
   const today = logDate, quando = logDate === trainDay() ? "hoje" : brDate(logDate);
@@ -1612,6 +1642,8 @@ function renderPainel(p){
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--sono)">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h · noite ${quando === "hoje" ? "passada" : "p/ " + quando}</span></div>${sonoBars}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--peso)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--coral)">${ICON.prato}</span><b>Proteína</b></div><div class="pr-v"><div><b class="num">${protReg(p, today) ? refsOf(p, today).length * protG(p) : "—"}</b><span>g de ${4 * protG(p)} ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini(refsOf(p, today).length / 4, "var(--coral)")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--coral)">${ICON.prato}</span><b>Alimentação</b></div><div class="pr-v"><div><b class="pr-txt">${(DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta) || [, "—"])[1]}</b><span>${c.dieta != null ? (c.creatina ? "creatina ✓" : "sem creatina") : "marque no Hoje"}</span></div>${dietDots(p, today)}</div></article>
     </div>
   </div>`;
 }
