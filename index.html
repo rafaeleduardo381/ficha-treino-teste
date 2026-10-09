@@ -9,7 +9,7 @@
    Cores dos dias = anilhas (25 vermelha, 20 azul, 15 amarela, 10 verde, 5 roxa). */
 :root{
   --bg:#0D0E10; --surface:#17181B; --surface2:#222428; --ink:#F3F4EF; --soft:#D5D7D0; --muted:#8E929A; --line:#2A2D32;
-  --lime:#C6F24E; --lime-ink:#151708; --violet:#A68BFF; --coral:#FF6A4D; --blue:#4DB2FF; --sono:#F4C542;
+  --lime:#C6F24E; --lime-ink:#151708; --violet:#A68BFF; --coral:#FF6A4D; --blue:#4DB2FF; --sono:#F4C542; --peso:#A68BFF; --kcal:#FF9F43;
   --accent:var(--lime); --accent-ink:var(--lime-ink);
   --p25:#FF6A4D; --p20:#6E9BFF; --p15:#F4C542; --p10:#C6F24E; --p5:#A68BFF;
   --ok:#C6F24E; --warn:#FFB547;
@@ -61,7 +61,7 @@ a{color:var(--lime);text-underline-offset:2px}
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .ck{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 14px;display:flex;flex-direction:column;align-items:center;gap:14px;min-width:0}
 .ck-h{align-self:stretch;display:flex;align-items:center;gap:10px;font-weight:800}
-.ico{width:34px;height:34px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;flex:none;color:var(--c)}
+.ico{width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,var(--c,var(--muted)) 16%,var(--surface2));display:grid;place-items:center;flex:none;color:var(--c)}
 .ico svg{width:18px;height:18px}
 .ring{position:relative;width:min(132px,100%);aspect-ratio:1}
 .ring svg{width:100%;height:100%;display:block}
@@ -95,7 +95,7 @@ a{color:var(--lime);text-underline-offset:2px}
 .todaycard{display:flex;flex-direction:column;gap:12px;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;color:var(--ink);font:inherit;cursor:pointer}
 .todaycard .row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .todaycard p{margin:0;color:var(--muted);font-size:.9rem}
-.pbar{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.pbar{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--pc,var(--lime));border-radius:99px}
 .go{width:42px;height:42px;border-radius:50%;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;flex:none}
 .go svg{width:20px;height:20px}
@@ -195,6 +195,22 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .bar{position:absolute;left:0;right:0;bottom:0;height:3px}
 .bar i{display:block;height:100%;width:0;background:var(--lime)}
 footer{color:var(--muted);font-size:.78rem;text-align:center}
+/* Estilo de cartão comum: degradê leve da cor do assunto e ícone tingido */
+.ck{background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--muted)) 10%,var(--surface)) 0,var(--surface) 78px)}
+button.todaycard,button.dcard{background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 10%,var(--surface)) 0,var(--surface) 78px)}
+.panel.tinted{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0,var(--surface) 78px)}
+.ex{background:linear-gradient(180deg,color-mix(in srgb,var(--pc,var(--muted)) 7%,var(--surface)) 0,var(--surface) 78px)}
+.ph-t{display:flex;align-items:center;gap:10px;min-width:0}
+.dc-stats svg{color:var(--pc)}
+.dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dstat{display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0,var(--surface) 78px);border:1px solid var(--line);border-radius:16px;padding:10px;min-width:0}
+.dstat b{display:block;font-size:1.15rem;font-weight:800;line-height:1.1}
+.dstat span:not(.st-ico){font-size:.72rem;color:var(--muted);font-weight:700}
+.daylog{margin:-4px 0 0;font-size:.78rem}
+.menu button{background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--muted)) 10%,var(--surface)) 0,var(--surface) 78px)}
+.menu .mi{display:flex;align-items:center;gap:12px;min-width:0}
+.menu .st-ico{width:36px;height:36px}
+.menu .st-ico svg{width:18px;height:18px}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .9s linear}.dot-p{transition:opacity .28s ease,transform .28s cubic-bezier(.3,1.6,.5,1)}.pr-ring .dm.on{animation:dot-in .35s ease both}}
 @keyframes dot-in{from{opacity:.15}to{opacity:1}}
 @media (max-width:380px){.cards{gap:8px}.ck{padding:14px 10px}.step button{width:44px}}
@@ -239,8 +255,7 @@ footer{color:var(--muted);font-size:.78rem;text-align:center}
 .prog .sub{margin:0;font-size:.8rem;color:var(--muted)}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 12px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;position:relative;overflow:hidden}
-.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:44px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,transparent),transparent);pointer-events:none}
+.stat{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0,var(--surface) 78px);border:1px solid var(--line);border-radius:18px;padding:12px 12px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;position:relative;overflow:hidden}
 .st-h{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;color:var(--soft)}
 .st-ico{width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--c) 16%,var(--surface2));color:var(--c);display:grid;place-items:center;flex:none}
 .st-ico svg{width:16px;height:16px}
@@ -249,10 +264,10 @@ footer{color:var(--muted);font-size:.78rem;text-align:center}
 .st-v b{font-size:1.7rem;font-weight:800;line-height:1;letter-spacing:-.01em}
 .st-v span{font-size:.8rem;font-weight:700;color:var(--muted);white-space:nowrap}
 .stat small{font-size:.72rem;color:var(--muted);line-height:1.3}
-.st-week{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-.st-week i{height:6px;border-radius:3px;background:var(--surface2)}
-.st-week i.on{background:var(--c)}
-.st-week i.hoje{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 70%,transparent)}
+.sx-week{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.sx-week i{height:6px;border-radius:3px;background:var(--surface2)}
+.sx-week i.on{background:var(--c)}
+.sx-week i.hoje{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 70%,transparent)}
 .st-bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}
 .st-bar i{display:block;height:100%;border-radius:3px;background:var(--c)}
 .mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -393,10 +408,10 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .pf-list b{color:var(--ink);text-align:right}
 /* Painel do Progresso */
 .painel{display:flex;flex-direction:column;gap:12px}
-.pr-big,.pr-card{background:#0B0C0D;border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pr-big,.pr-card{background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--muted)) 10%,var(--surface)) 0,var(--surface) 78px);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .pr-h{display:flex;align-items:center;gap:8px;font-size:.95rem}
-.pr-ico{width:22px;height:22px;color:var(--c);display:grid;place-items:center}
-.pr-ico svg{width:20px;height:20px}
+.pr-ico{width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--c) 16%,var(--surface2));color:var(--c);display:grid;place-items:center;flex:none}
+.pr-ico svg{width:16px;height:16px}
 .pr-per{margin-left:auto;font-size:.78rem;color:var(--muted)}
 .pr-top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .pr-top b{font-size:1.7rem;font-weight:800;line-height:1}
@@ -742,7 +757,8 @@ function renderDay(d){
   return `<section style="--pc:var(${d.plate})" class="list">
     <button type="button" class="ghost back" data-semana>‹ Semana</button>
     <div class="dayhead"><div><div class="eyebrow">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}${logDate === trainDay() ? " · hoje" : ""}</div><h2>${d.name}</h2><p class="dsub">${d.sub}</p></div></div>
-    <div class="daystats"><span class="num">${total} séries</span><span class="num">~${Math.round(d.ex.reduce((a, e) => a + (e[4] ? e[1] * (40 + e[4]) : 0), 0) / 60)} min</span><span class="num" id="daykcal"></span><span id="logstate" aria-live="polite">${modeText()}</span></div>
+    <div class="dstats"><div class="dstat" style="--c:var(--pc)"><span class="st-ico">${ICO2.series}</span><div><b class="num">${total}</b><span>séries</span></div></div><div class="dstat" style="--c:var(--blue)"><span class="st-ico">${ICO2.tempo}</span><div><b class="num">~${Math.round(d.ex.reduce((a, e) => a + (e[4] ? e[1] * (40 + e[4]) : 0), 0) / 60)}</b><span>min</span></div></div><div class="dstat" style="--c:var(--kcal)"><span class="st-ico">${ICONF}</span><div><b class="num" id="daykcal">—</b><span>kcal</span></div></div></div>
+    <p class="daylog"><span id="logstate" aria-live="polite">${modeText()}</span></p>
     ${cards}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
       <p id="sendsum" class="sendsum"></p>
@@ -1223,7 +1239,7 @@ const SQ_ICO = [
 const DIETA_DESC = {1: "comi o que estava previsto", 0.5: "uma refeição fora do plano", 0: "o dia quase todo fora"};
 function renderExtras(){
   return `<div class="cards">
-      <article class="ck mini-ck" id="card-peso" style="--c:var(--ink)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
+      <article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
         <p class="ck-note" id="pesohint">em jejum, ao acordar</p></article>
       <button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
@@ -1337,7 +1353,7 @@ function lineChart({pts, avgPts, color, band}){
   const grid = [lo, (lo + hi) / 2, hi].map(v => `<line x1="${PADL}" x2="${W - 6}" y1="${y(v)}" y2="${y(v)}" class="gl"/><text x="${PADL - 6}" y="${y(v) + 4}" class="ax" text-anchor="end">${num(v.toFixed(v % 1 ? 1 : 0))}</text>`).join("");
   const line = avgPts.length > 1 ? `<polyline points="${avgPts.map(p => `${xs(p.i)},${y(p.v)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : "";
   const dots = pts.map((p, i) => `<circle cx="${xs(i)}" cy="${y(p.v)}" r="4" fill="${color}" opacity=".45" stroke="var(--surface)" stroke-width="2"/><rect x="${xs(i) - 12}" y="${PADT}" width="24" height="${ih}" fill="transparent" data-tip="${esc(p.tip)}"/>`).join("");
-  const lbl = pts.length ? `<text x="${xs(0)}" y="${H - 6}" class="ax">${pts[0].l}</text><text x="${xs(pts.length - 1)}" y="${H - 6}" class="ax" text-anchor="end">${pts[pts.length - 1].l}</text>` : "";
+  const lbl = pts.length === 1 ? `<text x="${xs(0)}" y="${H - 6}" class="ax" text-anchor="middle">${pts[0].l}</text>` : pts.length ? `<text x="${xs(0)}" y="${H - 6}" class="ax">${pts[0].l}</text><text x="${xs(pts.length - 1)}" y="${H - 6}" class="ax" text-anchor="end">${pts[pts.length - 1].l}</text>` : "";
   return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img">${grid}${line}${dots}${lbl}</svg><div class="tip" hidden></div></div>`;
 }
 const dd = s => `${s.slice(8, 10)}/${s.slice(5, 7)}`;
@@ -1345,6 +1361,12 @@ const ICON_HALTER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 const ICON_PILHA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20h16M6 20V10M10 20V6M14 20v-8M18 20V4"/></svg>`;
 // Cartão de número: ícone + rótulo, valor grande com unidade, e um rodapé (visual + texto)
 const stat = ({ico, c, l, v, u = "", foot = "", vis = ""}) => `<div class="stat" style="--c:${c}"><div class="st-h"><span class="st-ico">${ico}</span>${l}</div><div class="st-v"><b class="num">${v}</b>${u ? `<span>${u}</span>` : ""}</div>${vis}${foot ? `<small>${foot}</small>` : ""}</div>`;
+const ICON_CAL = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>`;
+const ICON_LIVRO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z"/><path d="M5 16a4 4 0 0 1 4-4h10"/></svg>`;
+const ICON_PLAY = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="M10.5 9.2v5.6l4.6-2.8z" fill="currentColor"/></svg>`;
+const ICON_FITA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="8" width="19" height="8" rx="2"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg>`;
+// Título de painel: ícone colorido + título (+ selo à direita)
+const phd = (ico, t, extra = "") => `<div class="ph"><div class="ph-t"><span class="st-ico">${ico}</span><h3>${t}</h3></div>${extra}</div>`;
 const tile = (v, l, s = "") => `<div class="tile"><b class="num">${v}</b><span>${l}</span>${s ? `<small>${s}</small>` : ""}</div>`;
 function renderProgress(){
   const p = person.id, today = logDate, from28 = addDays(today, -27);
@@ -1378,14 +1400,14 @@ function renderProgress(){
   const n = sess.length, fl = flameOf(ofen);
   const statCards = [
     stat({ico: flameSvg(ofen), c: fl.a, l: "Ofensiva", v: ofen, u: ofen === 1 ? "dia" : "dias",
-      vis: `<div class="st-week" aria-label="Treinos desta semana">${semDias.map(s => `<i class="${trained(p, s) ? "on" : s === trainDay() ? "hoje" : ""}" title="${WD[parseDate(s).getDay()]}"></i>`).join("")}</div>`,
+      vis: `<div class="sx-week" aria-label="Treinos desta semana">${semDias.map(s => `<i class="${trained(p, s) ? "on" : s === trainDay() ? "hoje" : ""}" title="${WD[parseDate(s).getDay()]}"></i>`).join("")}</div>`,
       foot: `recorde: ${bestStreak(p)} ${bestStreak(p) === 1 ? "dia" : "dias"}`}),
     stat({ico: ICON_HALTER, c: "var(--lime)", l: "Treinos", v: n, u: previstos ? `de ${previstos}` : "",
       vis: previstos ? `<div class="st-bar"><i style="width:${Math.min(100, Math.round(n / previstos * 100))}%"></i></div>` : "",
       foot: previstos ? (n >= previstos ? "nenhum treino perdido" : `${previstos - n} ${previstos - n === 1 ? "ficou" : "ficaram"} para trás`) : "nas últimas 4 semanas"}),
     stat({ico: ICON_PILHA, c: "var(--coral)", l: "Volume", v: vol ? (vol / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) : "—", u: vol ? "t" : "",
       foot: vol ? (n > 1 ? `~${(vol / n / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1})} t por treino` : "kg × reps somados") : "kg × reps somados"}),
-    stat({ico: ICONF, c: "#FF9F43", l: "Calorias", v: kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", u: kcal ? "kcal" : "",
+    stat({ico: ICONF, c: "var(--kcal)", l: "Calorias", v: kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", u: kcal ? "kcal" : "",
       foot: semPeso ? "registre o peso no Hoje para calcular" : kcal && n > 1 ? `~${Math.round(kcal / n)} por treino` : "gastas nos treinos"})
   ].join("");
   return `<section class="list prog" aria-label="Progresso">
@@ -1394,33 +1416,33 @@ function renderProgress(){
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="stats">${statCards}</div>
 
-    <article class="panel"><div class="ph"><h3>Desempenho</h3>${wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : ""}</div>
+    <article class="panel tinted" style="--c:var(--coral)">${phd(ICON_PILHA, "Desempenho", wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : "")}
       <p class="sub">Volume por semana (kg × reps)</p>
       ${wvol.some(w => w.v) ? bars({data: wvol.map(w => ({...w, tip: `Semana de ${w.l}: ${w.v.toLocaleString("pt-BR")} kg`})), color: "var(--coral)", fmtY: v => v >= 1000 ? (v / 1000).toLocaleString("pt-BR") + "k" : num(v)}) : `<p class="hint">Anote kg e reps nas séries para ver o volume de cada semana.</p>`}
       ${ev.length ? `<p class="sub">Força estimada (1RM) que mais subiu</p><ul class="evo">${ev.map(e => `<li><span>${e.name}</span><b class="num ${e.pct >= 0 ? "up" : "down"}">${e.pct >= 0 ? "+" : ""}${e.pct.toFixed(0)}%</b></li>`).join("")}</ul>` : `<p class="hint">Depois de 2 treinos do mesmo exercício aparece quanto a força estimada subiu.</p>`}
     </article>
 
-    <article class="panel"><div class="ph"><h3>Peso</h3>${trend?.delta != null ? `<span class="delta">${trend.delta >= 0 ? "+" : "−"}${num(Math.abs(trend.delta).toFixed(2))} kg na semana</span>` : ""}</div>
-      ${ptsP.length ? lineChart({pts: ptsP, avgPts: avgP, color: "var(--ink)"}) + `<p class="sub">Pontos: cada pesagem · linha: média de 7 dias</p>` : `<p class="hint">Registre o peso na tela Hoje, todo dia ao acordar.</p>`}
+    <article class="panel tinted" style="--c:var(--peso)">${phd(ICON.balanca, "Peso", trend?.delta != null ? `<span class="delta">${trend.delta >= 0 ? "+" : "−"}${num(Math.abs(trend.delta).toFixed(2))} kg na semana</span>` : "")}
+      ${ptsP.length ? lineChart({pts: ptsP, avgPts: avgP, color: "var(--peso)"}) + `<p class="sub">Pontos: cada pesagem · linha: média de 7 dias</p>` : `<p class="hint">Registre o peso na tela Hoje, todo dia ao acordar.</p>`}
       ${meta ? `<p class="hint">Meta: ${meta.txt}.</p>` : ""}
     </article>
 
-    <article class="panel"><div class="ph"><h3>Sono</h3></div>
+    <article class="panel tinted" style="--c:var(--sono)">${phd(ICON.sono, "Sono")}
       <div class="mini">${tile(sonoAvg ? num(sonoAvg.toFixed(1)) + " h" : "—", "média")}${tile(qAvg ? SONO_Q[Math.round(qAvg) - 1] : "—", "qualidade")}${tile(curtas, "noites com menos de 7 h")}</div>
       ${bars({data: sono, color: "var(--sono)", max: 10, ref: 7, refLabel: "7 h", fmtY: v => v + "h"})}
       ${sonoAvg && (sonoAvg < 7 || (qAvg && qAvg <= 2)) ? `<p class="alert">Sono abaixo do ideal nas últimas 2 semanas: é o que mais trava o ganho de músculo.</p>` : ""}
     </article>
 
-    <article class="panel"><div class="ph"><h3>Água</h3><span class="delta">${aguaOk}/14 dias na meta</span></div>
+    <article class="panel tinted" style="--c:var(--blue)">${phd(ICON.agua, "Água", `<span class="delta">${aguaOk}/14 dias na meta</span>`)}
       ${bars({data: agua, color: "var(--blue)", max: 120, ref: 100, refLabel: "meta", fmtY: v => v + "%"})}
     </article>
 
-    <article class="panel"><div class="ph"><h3>Alimentação</h3></div>
+    <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Alimentação")}
       ${dNow ? `<div class="mini two">${tile(dNow.ader + "%", "na dieta (7 dias)", dPrev ? `semana anterior: ${dPrev.ader}%` : "")}${tile(dNow.prot + "%", "dias com proteína batida")}</div>` : `<p class="hint">Marque a alimentação na tela Hoje para ver a aderência da semana.</p>`}
     </article>
 
-    <article class="panel"><div class="ph"><h3>Calorias gastas no treino</h3></div>
-      ${kcalBars.length ? bars({data: kcalBars, color: "#FF9F43", fmtY: v => num(v)}) : `<p class="hint">Aparece depois do primeiro treino registrado.</p>`}
+    <article class="panel tinted" style="--c:var(--kcal)">${phd(ICONF, "Calorias gastas no treino")}
+      ${kcalBars.length ? bars({data: kcalBars, color: "var(--kcal)", fmtY: v => num(v)}) : `<p class="hint">Aparece depois do primeiro treino registrado.</p>`}
       <p class="hint">Estimativa média do Compendium of Physical Activities (musculação, MET 3,5) com o seu peso e a duração do treino; o gasto real varia. Não some ao plano de calorias: o treino já está incluído nele.</p>
     </article>
   </section>`;
@@ -1452,19 +1474,19 @@ function renderPainel(p){
   const c = chkOf(p, today), gAgua = goalsFor(p, today).agua;
   const noites = lastDays(7, today).map(s => +chkOf(p, s).sono || 0), ontem = noites[noites.length - 1];
   const pesos = lastDays(14, today).map(s => pesoAt(p, s)).filter(v => v), pAtual = pesos.length ? pesos[pesos.length - 1] : null;
-  const spark = pesos.length > 1 ? (() => { const lo = Math.min(...pesos), hi = Math.max(...pesos), r = hi - lo || 1; return `<svg class="pr-spark" viewBox="0 0 64 30" aria-hidden="true"><polyline points="${pesos.map((v, i) => `${i / (pesos.length - 1) * 62 + 1},${28 - (v - lo) / r * 26}`).join(" ")}" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; })() : "";
-  const sonoBars = `<svg class="pr-bars" viewBox="0 0 64 30" aria-hidden="true">${noites.map((v, i) => `<rect x="${i * 9 + 1}" y="${30 - Math.min(10, v) / 10 * 28}" width="5" height="${Math.max(1, Math.min(10, v) / 10 * 28)}" rx="2" fill="#F4C542" opacity="${i === noites.length - 1 ? 1 : .45}"/>`).join("")}</svg>`;
+  const spark = pesos.length > 1 ? (() => { const lo = Math.min(...pesos), hi = Math.max(...pesos), r = hi - lo || 1; return `<svg class="pr-spark" viewBox="0 0 64 30" aria-hidden="true"><polyline points="${pesos.map((v, i) => `${i / (pesos.length - 1) * 62 + 1},${28 - (v - lo) / r * 26}`).join(" ")}" fill="none" stroke="var(--peso)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`; })() : "";
+  const sonoBars = `<svg class="pr-bars" viewBox="0 0 64 30" aria-hidden="true">${noites.map((v, i) => `<rect x="${i * 9 + 1}" y="${30 - Math.min(10, v) / 10 * 28}" width="5" height="${Math.max(1, Math.min(10, v) / 10 * 28)}" rx="2" fill="var(--sono)" opacity="${i === noites.length - 1 ? 1 : .45}"/>`).join("")}</svg>`;
   return `<div class="painel">
-    <article class="pr-big">
+    <article class="pr-big" style="--c:var(--lime)">
       <div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICO2.peso}</span><b>Carga máxima</b><span class="pr-per">até ${quando}</span></div>
       ${sel ? `<div class="pr-top"><div><b class="num">${num(sel.m.kg)}</b><span>kg · ${dd(sel.d.date)}</span></div><div class="pr-ex"><b>${esc(sel.m.name)}</b><span class="num">${sel.m.reps ? sel.m.reps + " reps" : ""}</span></div></div>
       <div class="pr-chart">${barras}</div>` : `<p class="hint">Anote kg nas séries: aqui aparece a maior carga de cada treino.</p>`}
     </article>
     <div class="pr-grid">
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#FF9F43">${ICONF}</span><b>Calorias</b></div><div class="pr-v"><div><b class="num">${tst?.kcal ? "~" + tst.kcal : "—"}</b><span>${tst ? "kcal no treino" : tprog ? "sem treino registrado" : "dia de descanso"}</span></div>${ringMini(tprog && tprog.total ? tprog.done / tprog.total : 0, "#FF9F43")}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--kcal)">${ICONF}</span><b>Calorias</b></div><div class="pr-v"><div><b class="num">${tst?.kcal ? "~" + tst.kcal : "—"}</b><span>${tst ? "kcal no treino" : tprog ? "sem treino registrado" : "dia de descanso"}</span></div>${ringMini(tprog && tprog.total ? tprog.done / tprog.total : 0, "var(--kcal)")}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--sono)">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h · noite ${quando === "hoje" ? "passada" : "p/ " + quando}</span></div>${sonoBars}</div></article>
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--peso)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
     </div>
   </div>`;
 }
@@ -1654,6 +1676,8 @@ function drawDock(){
 const BLOCO = {start: "2026-10-08", weeks: 6};
 const GUIA_DESC = {dieta: "Calorias, proteína e suplementos", regras: "Sobrar, falha, drop, progressão e deload", medidas: "Peso, medidas e próxima avaliação", breno: "O que veio dos vídeos do Breno Aceti"};
 const dm = s => s.slice(8, 10) + "/" + s.slice(5, 7);
+const GUIA_ICO = {dieta: ICON.prato, regras: ICON_LIVRO, medidas: ICON_FITA, breno: ICON_PLAY};
+const GUIA_COR = {dieta: "var(--coral)", regras: "var(--lime)", medidas: "var(--peso)", breno: "var(--blue)"};
 const kg1 = v => num((Math.round(v * 10) / 10).toFixed(1));
 function blocoInfo(){
   const w0 = weekOf(BLOCO.start)[0], n = Math.round((parseDate(weekOf(trainDay())[0]) - parseDate(w0)) / 864e5 / 7) + 1;
@@ -1689,16 +1713,16 @@ function renderPerfil(){
       ${person.days ? `<div class="pf-bloco"><div class="pf-bl-h"><b>Bloco 1 · ${person.bloco}</b><span>${bl.acabou ? "terminou" : `semana ${bl.sem} de ${BLOCO.weeks}`}</span></div><div class="pf-segs" aria-hidden="true">${segs}</div><small>${bl.acabou ? "Hora da reavaliação: medidas, peso e cargas" : `Reavaliação a partir de ${dm(bl.reav)} · treino de seg a sex`}</small></div>` : ""}
     </article>
     <article class="panel"><h3>Trocar de perfil</h3><div class="pf-swap">${PEOPLE.map(x => `<button type="button" class="pf-p" data-person="${x.id}" aria-pressed="${x.id === p}" aria-label="${x.id === p ? "Você está no perfil " + x.art + " " + x.name : "Trocar para " + x.name}"><span class="avatar sm" style="--av:var(${x.cor || "--lime"})" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span></button>`).join("")}</div></article>
-    ${person.days ? `<div class="tiles">${tile(`${semana}<small>/${dias}</small>`, "treinos nesta semana", semana >= dias ? "semana completa" : `faltam ${dias - semana}`)}${tile(atual, atual === 1 ? "dia de ofensiva" : "dias de ofensiva", `recorde: ${recorde}`)}${tile(pesoV, "peso", pesoS)}${tile(total, total === 1 ? "treino no total" : "treinos no total", "desde " + dm(BLOCO.start))}</div>` : ""}
+    ${person.days ? `<div class="stats">${stat({ico: ICON_HALTER, c: "var(--lime)", l: "Esta semana", v: semana, u: `de ${dias}`, vis: `<div class="sx-week" aria-hidden="true">${weekOf(hoje).slice(0, 5).map(d => `<i class="${trained(p, d) ? "on" : d === hoje ? "hoje" : ""}"></i>`).join("")}</div>`, foot: semana >= dias ? "semana completa" : `${dias - semana === 1 ? "falta 1 treino" : `faltam ${dias - semana} treinos`}`})}${stat({ico: flameSvg(atual), c: flameOf(atual).a, l: "Ofensiva", v: atual, u: atual === 1 ? "dia" : "dias", foot: `recorde: ${recorde} ${recorde === 1 ? "dia" : "dias"}`})}${stat({ico: ICON.balanca, c: "var(--peso)", l: "Peso", v: pesoV.replace(" kg", ""), u: pesoV === "—" ? "" : "kg", foot: pesoS})}${stat({ico: ICON_CAL, c: "var(--blue)", l: "Total", v: total, u: total === 1 ? "treino" : "treinos", foot: "desde " + dm(BLOCO.start)})}</div>` : ""}
     <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
       ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
       ${meta(ICON.sono, "var(--sono)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
-      ${meta(ICONF, "#FF9F43", "Calorias", KCAL[p] || "a definir", KCAL[p] ? "por dia" : "depois da avaliação")}
+      ${meta(ICONF, "var(--kcal)", "Calorias", KCAL[p] || "a definir", KCAL[p] ? "por dia" : "depois da avaliação")}
       ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", PROT[p] ? "por dia · mais creatina 3–5 g" : "depois da avaliação")}
-      ${mp ? meta(ICON.balanca, "var(--ink)", "Peso", mp[0], mp[1]) : ""}
+      ${mp ? meta(ICON.balanca, "var(--peso)", "Peso", mp[0], mp[1]) : ""}
     </ul><p class="hint">Metas do agente de nutrição do seu personal. São um ponto de partida: ajuste pela média do peso em 2–3 semanas (±100–150 kcal).</p></article>
     <h3 class="pf-sec">Guias</h3>
-    <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}"><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div>
+    <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}" style="--c:${GUIA_COR[t.id] || "var(--muted)"}"><span class="mi"><span class="st-ico">${GUIA_ICO[t.id] || ""}</span><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span></span><span aria-hidden="true">›</span></button>`).join("")}</div>
   </section>`;
 }
 function renderMais(){
@@ -1725,7 +1749,7 @@ function draw(){
   if (!person.days.find(t=>t.id===current)) current = "d1";
   view.innerHTML = renderDay(person.days.find(x=>x.id===current));
   refreshCarga();
-  const kc = document.getElementById("daykcal"), dc = LOGS[docId(person.id, logDate)]; if (kc) kc.textContent = dc && trained(person.id, logDate) && sessionStats(person.id, dc).kcal ? "~" + sessionStats(person.id, dc).kcal + " kcal" : "";
+  const kc = document.getElementById("daykcal"), dc = LOGS[docId(person.id, logDate)]; if (kc) kc.textContent = dc && trained(person.id, logDate) && sessionStats(person.id, dc).kcal ? "~" + sessionStats(person.id, dc).kcal : "—";
 }
 function showTip(t){ const c = t.closest(".chart"), tip = c.querySelector(".tip"), r = t.getBoundingClientRect(), cr = c.getBoundingClientRect(); tip.textContent = t.dataset.tip; tip.hidden = false; tip.style.left = Math.min(Math.max(0, r.left - cr.left + r.width / 2 - tip.offsetWidth / 2), cr.width - tip.offsetWidth) + "px"; }
 view.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) showTip(t); });
