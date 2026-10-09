@@ -74,13 +74,18 @@ a{color:var(--lime);text-underline-offset:2px}
 .step button{width:54px;height:46px;border:0;background:none;color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer}
 .step button+button{border-left:1px solid var(--line);color:var(--lime)}
 .ck{position:relative}
-.badge{display:none;margin-left:auto;font-size:.7rem;font-weight:800;color:var(--bg);background:var(--c);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.badge{display:none;margin-left:auto;font:inherit;font-size:.7rem;font-weight:800;color:var(--bg);background:var(--c);border:0;border-radius:999px;padding:3px 9px;white-space:nowrap;cursor:pointer}
+.cheer{position:absolute;inset:11%;border-radius:50%;background:var(--surface);display:grid;place-items:center;text-align:center;font-weight:800;font-size:1.05rem;line-height:1.15;color:var(--c);opacity:0;z-index:1;pointer-events:none;padding:8px}
+@keyframes ck-cheer{0%{opacity:0;transform:scale(.7)}15%{opacity:1;transform:scale(1.06)}25%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+@keyframes ck-cheer-calmo{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.ck.win .cheer{animation:ck-cheer-calmo 1.8s ease forwards}
+.ck.win{box-shadow:0 0 0 2px var(--c)}
 .ck.met .badge{display:inline-block}
 .ck.met .ring .lbl b{color:var(--c)}
 .bit{position:absolute;left:50%;top:44%;width:10px;height:10px;border-radius:2px;pointer-events:none;z-index:2}
 @keyframes ck-pop{0%{transform:scale(1)}35%{transform:scale(1.1)}100%{transform:scale(1)}}
 @keyframes ck-glow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 55%,transparent)}100%{box-shadow:0 0 0 22px transparent}}
-@media (prefers-reduced-motion:no-preference){.ck.win{animation:ck-glow .9s ease-out}.ck.win .ring{animation:ck-pop .6s cubic-bezier(.3,1.6,.5,1)}}
+@media (prefers-reduced-motion:no-preference){.ck.win{animation:ck-glow .9s ease-out}.ck.win .ring{animation:ck-pop .6s cubic-bezier(.3,1.6,.5,1)}.ck.win .cheer{animation:ck-cheer 1.8s cubic-bezier(.3,1.4,.5,1) forwards}}
 .ck-note{font-size:.75rem;color:var(--muted);text-align:center;margin:0;text-wrap:balance}
 .ckstate{font-size:.8rem;color:var(--muted);margin:0}
 .todaycard{display:flex;flex-direction:column;gap:12px;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;color:var(--ink);font:inherit;cursor:pointer}
@@ -743,7 +748,7 @@ const ICON = {
   sono: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>`,
   seta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`
 };
-const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="9"/><circle class="val" id="ring-${key}" cx="50" cy="50" r="42" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"/></svg><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
+const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="9"/><circle class="val" id="ring-${key}" cx="50" cy="50" r="42" fill="none" stroke-width="9" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9"/></svg><span class="cheer" aria-hidden="true">Meta batida!</span><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
 function renderToday(){
   const hoje = trainDay();
   const week = weekOf(logDate).map(s => `<button type="button" class="wday${s === logDate ? " on" : ""}${s === hoje ? " today" : ""}" data-date="${s}" aria-pressed="${s === logDate}" aria-label="${WD[parseDate(s).getDay()]} ${brDate(s)}"><span>${WD[parseDate(s).getDay()]}</span><b>${s.slice(8,10)}</b><i class="dot" data-dot="${s}"></i></button>`).join("");
@@ -751,10 +756,10 @@ function renderToday(){
     <div class="week">${week}</div>
     <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count">0/2</span></h2>
     <div class="cards">
-      <article class="ck" id="card-agua" style="--c:var(--blue)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<span class="badge">Meta ✓</span></div>${ring("agua", "var(--blue)")}
+      <article class="ck" id="card-agua" style="--c:var(--blue)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<button type="button" class="badge" data-cheer="agua" aria-label="Meta de água batida: ver a comemoração">Meta ✓</button></div>${ring("agua", "var(--blue)")}
         <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Menos 250 ml">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais 250 ml">+</button></div>
         <p class="ck-note" id="ck-agua-note">250 ml</p></article>
-      <article class="ck" id="card-sono" style="--c:var(--lime)"><div class="ck-h"><span class="ico">${ICON.sono}</span>Sono<span class="badge">Meta ✓</span></div>${ring("sono", "var(--lime)")}
+      <article class="ck" id="card-sono" style="--c:var(--lime)"><div class="ck-h"><span class="ico">${ICON.sono}</span>Sono<button type="button" class="badge" data-cheer="sono" aria-label="Meta de sono batida: ver a comemoração">Meta ✓</button></div>${ring("sono", "var(--lime)")}
         <div class="step"><button type="button" data-ck="sono" data-d="-1" aria-label="Menos meia hora">−</button><button type="button" data-ck="sono" data-d="1" aria-label="Mais meia hora">+</button></div>
         <p class="ck-note" id="ck-sono-note">noite passada · mín. 7 h</p></article>
     </div>
@@ -802,9 +807,9 @@ function writeChk(field, dir){
 function celebrate(field){
   const card = document.getElementById("card-" + field); if (!card) return;
   try { navigator.vibrate && navigator.vibrate([30, 40, 30]); } catch(e) {}
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   card.classList.remove("win"); void card.offsetWidth; card.classList.add("win");
-  setTimeout(() => card.classList.remove("win"), 1400);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setTimeout(() => card.classList.remove("win"), 1800); return; }
+  setTimeout(() => card.classList.remove("win"), 1800);
   const colors = field === "agua" ? ["var(--blue)", "#BFE3FF", "var(--ink)"] : ["var(--lime)", "#E9FFB0", "var(--ink)"];
   for (let i = 0; i < 22; i++) {
     const bit = document.createElement("i");
@@ -979,6 +984,8 @@ view.addEventListener("click", e=>{
   if (nav){ goScreen(nav.dataset.screen); return; }
   const dayBtn = e.target.closest("[data-date]");
   if (dayBtn){ logDate = dayBtn.dataset.date; keepDate(logDate); current = dayIdFor(logDate) || current; draw(); return; }
+  const cheer = e.target.closest("[data-cheer]");
+  if (cheer){ celebrate(cheer.dataset.cheer); return; }
   const ck = e.target.closest("[data-ck]");
   if (ck){ writeChk(ck.dataset.ck, +ck.dataset.d); return; }
   const add = e.target.closest(".addset");
