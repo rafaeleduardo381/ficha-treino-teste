@@ -1580,7 +1580,7 @@ const phd = (ico, t, extra = "") => `<div class="ph"><div class="ph-t"><span cla
 function relCard(p){
   const r = REL[p]; if (!r) return "";
   const fim = addDays(r.semana, 6), n = r.numeros || {}, li = (arr, cls) => (arr || []).slice(0, 4).map(t => `<li class="${cls}">${esc(t)}</li>`).join("");
-  const chips = [n.treinos != null ? `${n.treinos}${n.previstos ? "/" + n.previstos : ""} treinos` : "", n.volume_kg ? (n.volume_kg / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "", n.sono_media ? "sono " + num(n.sono_media) + " h" : "", n.prot_dias_meta != null ? `proteína ${n.prot_dias_meta}/7 dias` : "", n.peso_delta != null ? (n.peso_delta > 0 ? "+" : n.peso_delta < 0 ? "−" : "") + num(Math.abs(n.peso_delta)) + " kg" : ""].filter(Boolean);
+  const chips = [n.treinos != null ? `${n.treinos}${n.previstos ? "/" + n.previstos : ""} treinos` : "", n.volume_kg ? (n.volume_kg / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "", n.sono_media ? "sono " + num(n.sono_media) + " h" : "", n.kcal_media ? `${Math.round(n.kcal_media).toLocaleString("pt-BR")} kcal/dia` : "", n.prot_media ? `${Math.round(n.prot_media)} g proteína/dia` : "", n.peso_delta != null ? (n.peso_delta > 0 ? "+" : n.peso_delta < 0 ? "−" : "") + num(Math.abs(n.peso_delta)) + " kg" : ""].filter(Boolean);
   const blk = (t, arr, cls) => arr && arr.length ? `<div class="rel-b"><p class="rel-h">${t}</p><ul class="rel-l">${li(arr, cls)}</ul></div>` : "";
   return `<article class="panel tinted rel" style="--c:var(--lime)">${phd(ICON_LIVRO, "Resumo da semana", `<span class="delta">${dd(r.semana)}–${dd(fim)}</span>`)}
     ${r.titulo ? `<p class="rel-t">${esc(r.titulo)}</p>` : ""}
