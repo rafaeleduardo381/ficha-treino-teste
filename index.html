@@ -1,0 +1,843 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#14181D"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>TESTE · Ficha do Rafael · Bloco 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: ficha de academia para usar no celular — abas por dia, cards de exercício empilhados, timer de descanso fixo embaixo. Cores dos dias = cores das anilhas olímpicas (25 vermelha, 20 azul, 15 amarela, 10 verde, 5 branca). */
+:root{
+  --bg:#ECEEF1; --surface:#FFFFFF; --ink:#14181D; --muted:#5A636E; --line:#D3D8DE; --chip:#E1E5EA;
+  --accent:#C8102E; --accent-ink:#FFFFFF;
+  --p25:#C8102E; --p20:#1F4FA8; --p15:#D9A300; --p10:#1E8A4C; --p5:#7E8894;
+  --ok:#1E8A4C; --warn:#B26A00;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101317; --surface:#191E24; --ink:#E7EAEE; --muted:#9AA3AE; --line:#2B323A; --chip:#232A31;
+  --accent:#FF4D5E; --accent-ink:#14181D;
+  --p25:#FF4D5E; --p20:#5C8DF0; --p15:#F2C230; --p10:#3DBF77; --p5:#A9B2BD;
+  --ok:#3DBF77; --warn:#F2A33A; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#101317; --surface:#191E24; --ink:#E7EAEE; --muted:#9AA3AE; --line:#2B323A; --chip:#232A31;
+  --accent:#FF4D5E; --accent-ink:#14181D;
+  --p25:#FF4D5E; --p20:#5C8DF0; --p15:#F2C230; --p10:#3DBF77; --p5:#A9B2BD;
+  --ok:#3DBF77; --warn:#F2A33A; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 140px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:2.3rem;font-weight:800;line-height:1;text-transform:uppercase}
+h2{font-size:1.5rem;font-weight:700;text-transform:uppercase}
+h3{font-size:1.25rem;font-weight:700}
+.eyebrow{font-family:var(--f-display);font-weight:700;font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration-color:var(--accent);text-underline-offset:2px}
+header{display:flex;flex-direction:column;gap:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.stat span{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stat small{font-size:.78rem;color:var(--muted)}
+.who{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.who-lbl{font-family:var(--f-display);font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.who button{font:inherit;font-weight:600;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+.who button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+nav{display:flex;flex-direction:column;gap:6px}
+.navrow{display:grid;gap:6px}
+.navrow.days{grid-template-columns:repeat(5,minmax(0,1fr))}
+.navrow.info{grid-template-columns:repeat(4,minmax(0,1fr))}
+nav button{min-width:0;font-family:var(--f-display);font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:.03em;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1;text-align:center}
+nav button .wd{display:flex;align-items:center;gap:5px;font-size:1.05rem}
+nav button .nm{font-size:.72rem;letter-spacing:.02em;opacity:.85;overflow-wrap:anywhere}
+nav button .plate{width:10px;height:10px;border-radius:50%;background:var(--pc,var(--p5));box-shadow:inset 0 0 0 2px rgba(0,0,0,.15);flex:none}
+nav button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pending{display:flex;flex-direction:column;gap:10px}
+.alerta{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--warn);color:var(--warn);border-radius:3px;padding:0 5px;margin-right:4px}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dayhead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:4px solid var(--pc);padding-bottom:8px}
+.dayhead p{margin:0;color:var(--muted)}
+.ghost{font:inherit;font-size:.85rem;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer}
+.list{display:flex;flex-direction:column;gap:10px}
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.ex.done{border-color:var(--ok)}
+.ex-top{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start}
+.ex-n{font-family:var(--f-mono);font-weight:600;color:var(--pc);font-size:1.05rem;line-height:1.6}
+.ex-name{font-weight:600;font-size:1.05rem;min-width:0}
+.presc{grid-column:2;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:var(--f-mono);font-size:.8rem;background:var(--chip);border-radius:4px;padding:1px 7px;white-space:nowrap}
+.tag.drop{background:var(--accent);color:var(--accent-ink)}
+.sets{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.set{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--bg);font-family:var(--f-mono);font-weight:600;cursor:pointer;color:var(--muted);user-select:none}
+.set[aria-pressed="true"]{background:var(--pc);border-color:var(--pc);color:var(--surface)}
+details{border-top:1px dashed var(--line);padding-top:8px}
+summary{cursor:pointer;font-weight:600;font-size:.9rem;color:var(--muted);list-style:none}
+summary::before{content:"+ ";font-family:var(--f-mono)}
+details[open] summary::before{content:"− "}
+details ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.breno{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--accent);color:var(--accent);border-radius:3px;padding:0 5px;margin-right:4px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.panel p,.panel ul{margin:0}
+.panel ul{padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.06em;font-size:.85rem;color:var(--muted)}
+td.num,th.num{text-align:right}
+.ok{color:var(--ok);font-weight:600}.warn{color:var(--warn);font-weight:600}
+.timer{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--ink);color:var(--bg);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.timer-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.clock{font-family:var(--f-mono);font-size:1.9rem;font-weight:600;min-width:5ch;font-variant-numeric:tabular-nums}
+.clock.zero{color:var(--p10)}
+.timer button{font-family:var(--f-mono);font-weight:600;font-size:.9rem;background:transparent;color:var(--bg);border:1px solid color-mix(in srgb,var(--bg) 40%,transparent);border-radius:6px;padding:6px 10px;cursor:pointer}
+.timer .lbl{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;opacity:.75}
+.bar{height:3px;background:color-mix(in srgb,var(--bg) 20%,transparent);flex-basis:100%;border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--p10)}
+footer{color:var(--muted);font-size:.8rem}
+.logbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.logbar input{font:inherit;font-family:var(--f-mono);font-size:.9rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+#logstate{font-size:.8rem;color:var(--ok)}
+#logstate.local{color:var(--muted)}
+#logstate.nostore{color:var(--warn);font-weight:600}
+.sendbox h3{margin:0}
+.sendsum{color:var(--muted)}
+.sendrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn-wa{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border-radius:8px;background:var(--ok);color:var(--surface);font-weight:700;text-decoration:none;flex:1 1 200px}
+.sendrow .ghost{min-height:48px;padding:0 16px;font-size:.95rem}
+.sendtxt{width:100%;min-height:8rem;font-family:var(--f-mono);font-size:.85rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px}
+/* Séries: uma linha por série — número, kg, reps e o ✓ que marca e inicia o descanso */
+.last{margin:0;font-size:.85rem;color:var(--muted)}
+.last b{font-family:var(--f-mono);font-weight:600;color:var(--ink)}
+.lg{display:grid;grid-template-columns:2rem minmax(0,1fr) minmax(0,1fr) 3rem;gap:6px 8px;align-items:center}
+.lg .h{font-family:var(--f-display);font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center}
+.lg .h:first-child{text-align:left}
+.lg .sn{font-family:var(--f-mono);font-weight:600;color:var(--pc);font-size:1.05rem}
+.lg input{width:100%;min-width:0;height:44px;font-family:var(--f-mono);font-size:1.05rem;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:0 6px;text-align:center}
+.lg input::placeholder{color:var(--muted);opacity:.55;font-weight:500}
+.lg input:focus{border-color:var(--pc);outline:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--pc) 30%,transparent)}
+.lg .set{width:100%;height:44px;border-radius:8px;font-size:1.25rem}
+.lg .set[aria-pressed="true"]{color:var(--surface)}
+.meta{margin:0;font-size:.9rem;color:var(--ink)}
+.meta b{font-family:var(--f-mono);font-weight:600;color:var(--pc)}
+.lg .sn.extra{color:var(--muted)}
+.addset{align-self:flex-start;min-height:40px}
+.lg input.ok{background:color-mix(in srgb,var(--pc) 12%,var(--surface));border-color:color-mix(in srgb,var(--pc) 45%,var(--line))}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .9s linear}}
+/* Celular: cabeçalho compacto para o 1º exercício aparecer na tela, letra maior, timer numa linha só */
+@media (max-width:600px){
+  body{font-size:16px}
+  .wrap{gap:14px;padding-block:12px 96px}
+  .who-lbl{display:none}
+  .who button{font-size:.95rem;padding:6px 14px}
+  h1{font-size:1.9rem}
+  header{gap:8px}
+  .stats{display:flex;overflow-x:auto;gap:6px;margin-inline:-16px;padding-inline:16px;scrollbar-width:none}
+  .stats::-webkit-scrollbar{display:none}
+  .stat{flex:0 0 auto;padding:6px 10px}
+  .stat b{font-size:1.05rem}
+  nav button{padding:8px 2px}
+  nav button .wd{font-size:1.1rem}
+  nav button .nm{font-size:.7rem;letter-spacing:0;white-space:nowrap;overflow-wrap:normal}
+  .ex{padding:14px;gap:12px}
+  .ex-n{font-size:1.15rem}
+  .ex-name{font-size:1.2rem;line-height:1.35}
+  .tag{font-size:.92rem;padding:2px 8px}
+  .sets .set{width:50px;height:50px;font-size:1.1rem}
+  .lg input,.lg .set{height:48px}
+  summary{font-size:1rem;padding-block:4px}
+  details ul{gap:8px}
+  .panel{padding:14px}
+  table{font-size:.95rem}
+  .timer{padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+  .timer-in{flex-wrap:nowrap;gap:6px}
+  .timer .lbl{display:none}
+  .clock{font-size:1.6rem;min-width:4.2ch}
+  .timer button{flex:1 1 0;min-width:0;padding:9px 2px;font-size:.85rem}
+  .bar{position:absolute;top:0;left:0;right:0;border-radius:0}
+}
+.navrow.info{grid-template-columns:repeat(2,minmax(0,1fr))}
+.envbar{background:var(--warn);color:var(--surface);font-family:var(--f-display);font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding:6px 12px;border-radius:6px}
+</style>
+
+<div class="wrap">
+  <div class="envbar" role="note">Ambiente de teste · dados separados dos treinos de verdade</div>
+  <div class="who" id="who" role="group" aria-label="Ficha de quem"></div>
+  <header id="head"></header>
+
+  <nav id="tabs" role="tablist" aria-label="Seções da ficha"></nav>
+  <main id="view"></main>
+
+  <footer>Montado pelo seu personal (Claude) com base em meta-análises 2017–2026 e nas execuções do Breno Aceti. Marcações de série ficam salvas só neste aparelho, separadas por pessoa.</footer>
+</div>
+
+<div class="timer" role="region" aria-label="Timer de descanso">
+  <div class="timer-in">
+    <span class="lbl">Descanso</span>
+    <span class="clock" id="clock">0:00</span>
+    <button type="button" data-t="60">60s</button>
+    <button type="button" data-t="90">90s</button>
+    <button type="button" data-t="120">2min</button>
+    <button type="button" data-t="180">3min</button>
+    <button type="button" id="stop">Parar</button>
+    <div class="bar"><i id="barfill"></i></div>
+  </div>
+</div>
+
+<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste"};</script>
+<script>
+const IG = id => `https://www.instagram.com/breno.aceti/reel/${id}/`;
+const b = (id, txt) => `<span class="breno">Breno</span>${txt} <a href="${IG(id)}" target="_blank" rel="noopener">ver vídeo</a>`;
+
+// Catálogo de dicas de execução por exercício (as do Breno trazem o link do vídeo)
+const CAT = {
+ "Desenvolvimento com halteres, sentado": [
+  "<span class=\"breno\">Breno</span>Encosto entre 75° e 80°, coluna apoiada e pés firmes. <a href=\"https://www.instagram.com/breno.aceti/reel/Dc9LwoEhC15/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Cotovelos levemente à frente da linha do ombro, sem abrir a 90°. <a href=\"https://www.instagram.com/breno.aceti/reel/Dc9LwoEhC15/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Halteres descem até a altura das orelhas/queixo, antebraços na vertical.",
+  "Suba sem arremessar e controle a descida."
+ ],
+ "Supino vertical inclinado (máquina)": [
+  "<span class=\"breno\">Breno</span>Ajuste a altura do banco: não aceite a máquina como veio. <a href=\"https://www.instagram.com/breno.aceti/reel/Dd3qChRhunr/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Cotovelos moderados, sem abrir os braços todo.",
+  "<span class=\"breno\">Breno</span>Máquina é o lugar seguro para chegar perto da falha. <a href=\"https://www.instagram.com/breno.aceti/reel/DeOxulyB6dC/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Voador (peck deck) ou crossover": [
+  "<span class=\"breno\">Breno</span>Pegada um pouco abaixo da linha do ombro. <a href=\"https://www.instagram.com/breno.aceti/reel/DdrsNNpvxqX/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "No fim do movimento, não jogue os ombros para a frente; aproxime os braços.",
+  "Segure a volta e sinta o peito alongar.",
+  "<span class=\"breno\">Breno</span>No crossover: polia perto da altura do ombro, um pé à frente, sem pular nem balançar. <a href=\"https://www.instagram.com/breno.aceti/reel/DdOzt3qR3E3/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Elevação lateral na polia, unilateral": [
+  "<span class=\"breno\">Breno</span>Polia baixa, cabo passando atrás do corpo: tensão desde o início. <a href=\"https://www.instagram.com/breno.aceti/reel/DdOgr1vhI8R/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Suba até a linha do ombro, desça em 2 s."
+ ],
+ "Tríceps pulley (barra ou corda)": [
+  "<span class=\"breno\">Breno</span>Dê um pequeno passo para trás. <a href=\"https://www.instagram.com/breno.aceti/reel/Ddw0jQjPPHq/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Cotovelos levemente à frente do tronco e parados.",
+  "Empurre em direção ao chão, não para trás."
+ ],
+ "Tríceps francês na polia (corda)": [
+  "<span class=\"breno\">Breno</span>Suba um pouco a polia para entrar e sair fácil do exercício. <a href=\"https://www.instagram.com/breno.aceti/reel/DdlyzlohNfD/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Os cotovelos podem abrir naturalmente; não precisa espremer. <a href=\"https://www.instagram.com/breno.aceti/reel/DdP04Wmtnki/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Alongue bem atrás da cabeça: dá mais hipertrofia na cabeça longa."
+ ],
+ "Barra fixa (ou graviton)": [
+  "Comece pendurado com o braço esticado.",
+  "Puxe o peito em direção à barra, ombros para baixo.",
+  "Sem balanço (kipping).",
+  "<span class=\"breno\">Breno</span>Ele faz 3 séries bem perto da falha como primeiro exercício. <a href=\"https://www.instagram.com/breno.aceti/reel/Dd1Z3kzBuUU/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Remada baixa, pegada neutra (triângulo)": [
+  "<span class=\"breno\">Breno</span>Puxe em direção ao abdômen, não alto no peito. <a href=\"https://www.instagram.com/breno.aceti/reel/DeHdI8ix16p/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Ombros baixos, escápulas controladas, cotovelos perto do tronco. <a href=\"https://www.instagram.com/breno.aceti/reel/Dd14krIvL_a/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Deixe a escápula ir à frente no alongamento sem arredondar a lombar."
+ ],
+ "Pulldown articulado unilateral": [
+  "Braço estica todo em cima.",
+  "Cotovelo desce em direção ao quadril.",
+  "<span class=\"breno\">Breno</span>Em máquina unilateral, não descole o peito do apoio. <a href=\"https://www.instagram.com/breno.aceti/reel/DdMLv0dxON9/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Voador invertido ou face pull": [
+  "<span class=\"breno\">Breno</span>Peito apoiado, cotovelos levemente flexionados, abra os braços. <a href=\"https://www.instagram.com/breno.aceti/reel/DeB52oIhQ_d/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Não transforme em encolhimento de trapézio.",
+  "<span class=\"breno\">Breno</span>Unilateral pode dar amplitude mais confortável. <a href=\"https://www.instagram.com/breno.aceti/reel/DdCpMLHvcZc/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Elevação lateral com halteres": [
+  "<span class=\"breno\">Breno</span>Pode fazer sentado para tirar o balanço. <a href=\"https://www.instagram.com/breno.aceti/reel/DdG0mdBB4Ts/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Não comece a repetição encolhendo os ombros.",
+  "Conduza pelo cotovelo até a linha do ombro."
+ ],
+ "Rosca direta com barra W": [
+  "<span class=\"breno\">Breno</span>Cotovelo levemente à frente é aceitável se ficar estável. <a href=\"https://www.instagram.com/breno.aceti/reel/DeMZeX3hS-f/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Sem balançar o tronco para subir a barra."
+ ],
+ "Rosca scott (máquina)": [
+  "<span class=\"breno\">Breno</span>Ombro levemente elevado e um espaço entre a axila e o apoio: protege o tendão. <a href=\"https://www.instagram.com/breno.aceti/reel/DdRD6qoxWSZ/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Desça até quase estender o cotovelo, sempre controlado."
+ ],
+ "Agachamento livre": [
+  "Pés na largura dos ombros, pontas levemente para fora.",
+  "Joelhos seguem a direção dos pés; podem passar da ponta do pé.",
+  "Puxe o ar e trave o abdômen antes de cada descida.",
+  "<span class=\"breno\">Breno</span>Uma leve retroversão no fundo é normal. Agachamento completo dá mais glúteo e adutor que meio agachamento. <a href=\"https://www.instagram.com/breno.aceti/reel/DeC0KfQhKXb/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Leg press 45°": [
+  "<span class=\"breno\">Breno</span>A posição do pé não seleciona músculo; use a mais estável. <a href=\"https://www.instagram.com/breno.aceti/reel/DeMoizYRGei/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Amplitude antes de carga: se a descida encurta, tire peso. <a href=\"https://www.instagram.com/breno.aceti/reel/DdWQP6nBiKe/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Quadril não descola do banco; não trave o joelho no topo."
+ ],
+ "Cadeira extensora": [
+  "Eixo da máquina alinhado com o joelho.",
+  "Pausa de 1 s em cima, descida controlada."
+ ],
+ "Stiff com barra": [
+  "<span class=\"breno\">Breno</span>Carga rente ao corpo e quadril para trás; joelho quase estendido. <a href=\"https://www.instagram.com/breno.aceti/reel/DdOZUMHxENL/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Desça até sentir o posterior alongar sem arredondar a lombar.",
+  "<span class=\"breno\">Breno</span>Polegar sempre envolvendo a barra. <a href=\"https://www.instagram.com/breno.aceti/reel/DeOxulyB6dC/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Mesa flexora": [
+  "Quadril colado no banco durante toda a série.",
+  "Controle a volta; não deixe o peso cair."
+ ],
+ "Panturrilha em pé (máquina)": [
+  "<span class=\"breno\">Breno</span>Em pé trabalha mais o gastrocnêmio. Desça bem e suba contraindo forte. <a href=\"https://www.instagram.com/breno.aceti/reel/DdmPkpcxKh5/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Pausa de 2 s embaixo, sem quicar."
+ ],
+ "Abdominal na polia": [
+  "<span class=\"breno\">Breno</span>Pense em encurtar o tronco: flexão da coluna. <a href=\"https://www.instagram.com/breno.aceti/reel/DdRaHj2h9aI/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "O quadril fica parado."
+ ],
+ "Supino inclinado com halteres": [
+  "<span class=\"breno\">Breno</span>Inclinação perto de 30°: mais alto vira treino de deltoide. <a href=\"https://www.instagram.com/breno.aceti/reel/DdjKhL9hBLJ/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Entre com os halteres apoiados nas coxas e saia controlando; nada de jogar no chão. <a href=\"https://www.instagram.com/breno.aceti/reel/DdecbdWhlGP/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Escápulas estáveis e pés firmes; cotovelos a uns 45–60° do tronco."
+ ],
+ "Puxada alta (pulley)": [
+  "<span class=\"breno\">Breno</span>Trave as pernas no apoio e incline levemente o tronco para trás. <a href=\"https://www.instagram.com/breno.aceti/reel/DdZCqFlxruB/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Comece descendo as escápulas, depois complete com os braços. <a href=\"https://www.instagram.com/breno.aceti/reel/DdZCqFlxruB/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Leve a barra ao peito alto sem virar remada. <a href=\"https://www.instagram.com/breno.aceti/reel/DeHdI8ix16p/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Pegada mais larga não dá mais dorsal: use a que der amplitude. <a href=\"https://www.instagram.com/breno.aceti/reel/DePzmeDv5M4/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Supino vertical reto (máquina)": [
+  "<span class=\"breno\">Breno</span>Pegada na linha do meio do peito, não alta. <a href=\"https://www.instagram.com/breno.aceti/reel/DeM_W89Rz5t/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Cotovelos moderados, sem gaivota.",
+  "Escápulas estáveis; o ombro não vai à frente no fim."
+ ],
+ "Remada cavalinho ou máquina com apoio": [
+  "<span class=\"breno\">Breno</span>Apoio no peito, não na barriga. <a href=\"https://www.instagram.com/breno.aceti/reel/DdMLv0dxON9/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Coluna neutra; puxe em direção ao umbigo.",
+  "Na volta, deixe as escápulas irem à frente sem arredondar a lombar."
+ ],
+ "Rosca inclinada com halteres": [
+  "Banco a 45–60°, braço pendurado atrás do corpo (bíceps alongado).",
+  "Suba sem levar o ombro para a frente."
+ ],
+ "Cadeira flexora (sentado)": [
+  "<span class=\"breno\">Breno</span>Apoio perto do tornozelo, joelho alinhado com o eixo, core firme. <a href=\"https://www.instagram.com/breno.aceti/reel/DeCYrGyBpwU/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Sentada rende mais que deitada: o posterior trabalha alongado. <a href=\"https://www.instagram.com/breno.aceti/reel/DeK9-cGB7Yy/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Hack machine ou agachamento pêndulo": [
+  "Desça fundo com controle; joelhos acompanham os pés.",
+  "Lombar apoiada no encosto o tempo todo."
+ ],
+ "Agachamento búlgaro": [
+  "<span class=\"breno\">Breno</span>Ache uma distância entre os pés que fique estável antes da 1ª rep. <a href=\"https://www.instagram.com/breno.aceti/reel/DeAkdH9xumN/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Tronco levemente inclinado à frente para pegar mais glúteo.",
+  "Desça até o joelho de trás quase tocar o chão."
+ ],
+ "Elevação pélvica": [
+  "Escápulas no banco, queixo levemente para baixo.",
+  "Suba até estender o quadril, sem hiperestender a lombar; pausa de 1 s."
+ ],
+ "Elevação lateral na polia": [
+  "<span class=\"breno\">Breno</span>Polia baixa, cabo passando atrás do corpo: tensão desde o início. <a href=\"https://www.instagram.com/breno.aceti/reel/DdOgr1vhI8R/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Suba até a linha do ombro, desça em 2 s."
+ ],
+ "Rosca martelo sentado": [
+  "<span class=\"breno\">Breno</span>Sentado tira o embalo; halteres ao lado do corpo, pegada neutra. <a href=\"https://www.instagram.com/breno.aceti/reel/DeKXRm8xpvC/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Trabalha braquial e antebraço: engrossa o braço visto de lado."
+ ],
+ "Panturrilha sentado (sóleo)": [
+  "<span class=\"breno\">Breno</span>Sentado trabalha mais o sóleo. Desça até alongar bem. <a href=\"https://www.instagram.com/breno.aceti/reel/DdmPkpcxKh5/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Pausa de 2 s embaixo."
+ ],
+ "Caminhada inclinada na esteira (opcional)": [
+  "Ritmo em que dá para conversar.",
+  "Ajuda o gasto do dia sem atrapalhar o ganho de músculo. Não faça antes do treino de pernas."
+ ],
+ "Cadeira abdutora": [
+  "Tronco levemente inclinado à frente pega mais glúteo.",
+  "Controle a volta; não deixe as placas baterem."
+ ],
+ "Elevação de pernas ou prancha": [
+  "Na elevação de pernas, enrole a pelve no fim do movimento.",
+  "Na prancha, glúteo contraído e costelas para baixo."
+ ],
+ "Supino vertical inclinado (máquina), pegada neutra": [
+  "<span class=\"breno\">Breno</span>Ajuste a altura do banco: não aceite a máquina como veio. <a href=\"https://www.instagram.com/breno.aceti/reel/Dd3qChRhunr/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Cotovelos moderados, sem abrir os braços todo.",
+  "<span class=\"breno\">Breno</span>Máquina é o lugar seguro para chegar perto da falha. <a href=\"https://www.instagram.com/breno.aceti/reel/DeOxulyB6dC/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Desenvolvimento na máquina, pegada neutra": [
+  "<span class=\"breno\">Breno</span>Encosto entre 75° e 80°, coluna apoiada e pés firmes. <a href=\"https://www.instagram.com/breno.aceti/reel/Dc9LwoEhC15/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Cotovelos levemente à frente da linha do ombro, sem abrir a 90°. <a href=\"https://www.instagram.com/breno.aceti/reel/Dc9LwoEhC15/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Halteres descem até a altura das orelhas/queixo, antebraços na vertical.",
+  "Suba sem arremessar e controle a descida."
+ ],
+ "Voador (peck deck)": [
+  "<span class=\"breno\">Breno</span>Pegada um pouco abaixo da linha do ombro. <a href=\"https://www.instagram.com/breno.aceti/reel/DdrsNNpvxqX/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "No fim do movimento, não jogue os ombros para a frente; aproxime os braços.",
+  "Segure a volta e sinta o peito alongar.",
+  "<span class=\"breno\">Breno</span>No crossover: polia perto da altura do ombro, um pé à frente, sem pular nem balançar. <a href=\"https://www.instagram.com/breno.aceti/reel/DdOzt3qR3E3/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Puxada alta, pegada neutra ou supinada": [
+  "<span class=\"breno\">Breno</span>Trave as pernas no apoio e incline levemente o tronco para trás. <a href=\"https://www.instagram.com/breno.aceti/reel/DdZCqFlxruB/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Comece descendo as escápulas, depois complete com os braços. <a href=\"https://www.instagram.com/breno.aceti/reel/DdZCqFlxruB/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Leve a barra ao peito alto sem virar remada. <a href=\"https://www.instagram.com/breno.aceti/reel/DeHdI8ix16p/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "<span class=\"breno\">Breno</span>Pegada mais larga não dá mais dorsal: use a que der amplitude. <a href=\"https://www.instagram.com/breno.aceti/reel/DePzmeDv5M4/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Stiff com halteres": [
+  "<span class=\"breno\">Breno</span>Carga rente ao corpo e quadril para trás; joelho quase estendido. <a href=\"https://www.instagram.com/breno.aceti/reel/DdOZUMHxENL/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Desça até sentir o posterior alongar sem arredondar a lombar.",
+  "<span class=\"breno\">Breno</span>Polegar sempre envolvendo a barra. <a href=\"https://www.instagram.com/breno.aceti/reel/DeOxulyB6dC/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ],
+ "Supino vertical reto (máquina), pegada neutra": [
+  "<span class=\"breno\">Breno</span>Pegada na linha do meio do peito, não alta. <a href=\"https://www.instagram.com/breno.aceti/reel/DeM_W89Rz5t/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Cotovelos moderados, sem gaivota.",
+  "Escápulas estáveis; o ombro não vai à frente no fim."
+ ],
+ "Remada máquina com apoio no peito": [
+  "<span class=\"breno\">Breno</span>Apoio no peito, não na barriga. <a href=\"https://www.instagram.com/breno.aceti/reel/DdMLv0dxON9/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>",
+  "Coluna neutra; puxe em direção ao umbigo.",
+  "Na volta, deixe as escápulas irem à frente sem arredondar a lombar."
+ ],
+ "Graviton (barra fixa quando fizer 3×8 sem ajuda)": [
+  "Comece pendurado com o braço esticado.",
+  "Puxe o peito em direção à barra, ombros para baixo.",
+  "Sem balanço (kipping).",
+  "<span class=\"breno\">Breno</span>Ele faz 3 séries bem perto da falha como primeiro exercício. <a href=\"https://www.instagram.com/breno.aceti/reel/Dd1Z3kzBuUU/\" target=\"_blank\" rel=\"noopener\">ver vídeo</a>"
+ ]
+};
+const PLATES = {d1:"--p25", d2:"--p20", d3:"--p15", d4:"--p10", d5:"--p5"};
+const fmtCue = c => /^CLAV[ÍI]CULA:\s*/i.test(c) ? `<span class="alerta">Clavícula</span>${c.replace(/^CLAV[ÍI]CULA:\s*/i, "")}` : c;
+const fromPlan = plan => plan.days.map(d => ({id:d.id, wd:d.wd, name:d.name, sub:d.sub, plate:PLATES[d.id],
+  ex: d.ex.map(e => [e.name, e.sets, e.reps, e.sobrar, e.rest, e.flag || "", [...(CAT[e.name] || []), ...(e.cues || []).map(fmtCue)]])}));
+
+// Fichas montadas pelo agente montador-ficha e conferidas pelo revisor-ficha (08/10/2026)
+// Divisão: Seg Empurrar · Ter Pernas A · Qua Puxar · Qui Pernas B · Sex Superiores
+const PLAN_RAFAEL = {"days":[{"id":"d1","wd":"Seg","name":"Empurrar","sub":"Peito (ênfase superior), ombro lateral e tríceps","ex":[{"name":"Supino inclinado com halteres","sets":3,"reps":"6–10","sobrar":"2","rest":150,"flag":"","cues":[]},{"name":"Supino vertical reto (máquina)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Desenvolvimento com halteres, sentado","sets":2,"reps":"6–10","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral na polia, unilateral","sets":4,"reps":"12–15","sobrar":"0–1","rest":60,"flag":"","cues":[]},{"name":"Voador (peck deck) ou crossover","sets":2,"reps":"10–15","sobrar":"0–1","rest":75,"flag":"","cues":[]},{"name":"Tríceps pulley (barra ou corda)","sets":3,"reps":"10–12","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Tríceps francês na polia (corda)","sets":3,"reps":"12–15","sobrar":"0–1","rest":60,"flag":"drop na última","cues":[]}]},{"id":"d2","wd":"Ter","name":"Pernas A","sub":"Quadríceps, um pouco de posterior e glúteo, panturrilha e abdômen","ex":[{"name":"Agachamento livre","sets":3,"reps":"6–10","sobrar":"2","rest":180,"flag":"","cues":[]},{"name":"Leg press 45°","sets":3,"reps":"10–15","sobrar":"1","rest":150,"flag":"","cues":[]},{"name":"Cadeira extensora","sets":3,"reps":"12–15","sobrar":"0–1","rest":75,"flag":"drop na última","cues":[]},{"name":"Mesa flexora","sets":3,"reps":"10–12","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Panturrilha em pé (máquina)","sets":4,"reps":"10–15","sobrar":"0–1","rest":60,"flag":"","cues":[]},{"name":"Abdominal na polia","sets":3,"reps":"10–15","sobrar":"1","rest":60,"flag":"","cues":[]}]},{"id":"d3","wd":"Qua","name":"Puxar","sub":"Costas (largura), ombro posterior e lateral, bíceps","ex":[{"name":"Graviton (barra fixa quando fizer 3×8 sem ajuda)","sets":3,"reps":"6–10","sobrar":"1–2","rest":150,"flag":"","cues":["1ª semana: use a assistência que deixe sobrar 3 no topo da faixa (referência ~30 kg de assistência).","Quando a dupla progressão permitir, tire 2,5–5 kg de assistência."]},{"name":"Remada baixa, pegada neutra (triângulo)","sets":3,"reps":"8–12","sobrar":"1–2","rest":120,"flag":"","cues":[]},{"name":"Pulldown articulado unilateral","sets":2,"reps":"10–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral com halteres","sets":5,"reps":"12–20","sobrar":"0–1","rest":60,"flag":"","cues":["Só a última série vai até a falha; as outras param sobrando 1."]},{"name":"Voador invertido ou face pull","sets":4,"reps":"12–15","sobrar":"1","rest":60,"flag":"isometria 2 s no pico","cues":["Use o voador invertido da máquina, revezando com a Laysa: sua série cabe no descanso dela."]},{"name":"Rosca inclinada com halteres","sets":3,"reps":"8–12","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Rosca scott (máquina)","sets":2,"reps":"10–15","sobrar":"0–1","rest":60,"flag":"drop na última","cues":[]}]},{"id":"d4","wd":"Qui","name":"Pernas B","sub":"Posteriores de coxa e glúteo, um pouco de quadríceps, panturrilha e abdômen","ex":[{"name":"Stiff com barra","sets":3,"reps":"8–10","sobrar":"2","rest":150,"flag":"","cues":[]},{"name":"Cadeira flexora (sentado)","sets":4,"reps":"10–12","sobrar":"0–1","rest":75,"flag":"drop na última","cues":[]},{"name":"Elevação pélvica","sets":4,"reps":"8–12","sobrar":"1–2","rest":120,"flag":"","cues":[]},{"name":"Agachamento búlgaro","sets":3,"reps":"8–12 cada perna","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Panturrilha sentado (sóleo)","sets":4,"reps":"12–15","sobrar":"0–1","rest":60,"flag":"","cues":[]},{"name":"Elevação de pernas ou prancha","sets":3,"reps":"10–15 / 30–45 s","sobrar":"1","rest":60,"flag":"","cues":[]}]},{"id":"d5","wd":"Sex","name":"Superiores","sub":"Peito superior, costas, ombro lateral e braços","ex":[{"name":"Supino vertical inclinado (máquina)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Puxada alta (pulley)","sets":3,"reps":"8–12","sobrar":"1–2","rest":120,"flag":"","cues":[]},{"name":"Remada máquina com apoio no peito","sets":3,"reps":"8–12","sobrar":"1–2","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral na polia, unilateral","sets":4,"reps":"12–15","sobrar":"0–1","rest":60,"flag":"drop na última","cues":[]},{"name":"Crossover de baixo para cima","sets":3,"reps":"12–15","sobrar":"0–1","rest":75,"flag":"","cues":["Polias na altura do quadril, um passo à frente e tronco levemente inclinado.","Leve as mãos para cima e para dentro até a altura do queixo: o foco é o peito superior.","Controle a volta e sinta o peito alongar embaixo, sem jogar os ombros para a frente."]},{"name":"Voador invertido ou face pull","sets":3,"reps":"12–15","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Rosca direta com barra W","sets":3,"reps":"8–12","sobrar":"1–2","rest":90,"flag":"","cues":[]},{"name":"Tríceps francês na polia (corda)","sets":3,"reps":"10–15","sobrar":"1","rest":75,"flag":"","cues":[]}]}]};
+const PLAN_LAURA = {"days":[{"id":"d1","wd":"Seg","name":"Empurrar","sub":"Peito, ombro e tríceps","ex":[{"name":"Supino inclinado com halteres","sets":3,"reps":"8–12","sobrar":"2","rest":150,"flag":"","cues":[]},{"name":"Supino vertical reto (máquina)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Desenvolvimento com halteres, sentado","sets":3,"reps":"8–12","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Voador (peck deck)","sets":3,"reps":"12–15","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Elevação lateral com halteres","sets":4,"reps":"12–15","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Tríceps pulley (barra ou corda)","sets":3,"reps":"10–15","sobrar":"1","rest":75,"flag":"drop na última","cues":[]},{"name":"Tríceps francês na polia (corda)","sets":2,"reps":"12–15","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Caminhada inclinada na esteira (opcional)","sets":1,"reps":"15–20 min","sobrar":"—","rest":0,"flag":"cardio leve","cues":[]}]},{"id":"d2","wd":"Ter","name":"Pernas A","sub":"Quadríceps, um pouco de posterior e glúteo, panturrilha e abdômen","ex":[{"name":"Agachamento livre","sets":3,"reps":"6–10","sobrar":"2","rest":180,"flag":"","cues":[]},{"name":"Leg press 45°","sets":4,"reps":"10–12","sobrar":"1","rest":150,"flag":"","cues":[]},{"name":"Cadeira extensora","sets":3,"reps":"12–15","sobrar":"1","rest":90,"flag":"drop na última","cues":[]},{"name":"Cadeira flexora (sentado)","sets":5,"reps":"10–15","sobrar":"1","rest":90,"flag":"","cues":[]},{"name":"Panturrilha em pé (máquina)","sets":4,"reps":"10–15","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Abdominal na polia","sets":4,"reps":"10–15","sobrar":"1","rest":60,"flag":"","cues":[]}]},{"id":"d3","wd":"Qua","name":"Puxar","sub":"Costas, ombro posterior e lateral, bíceps","ex":[{"name":"Graviton (barra fixa quando fizer 3×8 sem ajuda)","sets":3,"reps":"6–10","sobrar":"1","rest":150,"flag":"","cues":["1ª semana: escolha a assistência que deixe sobrar 3 no topo da faixa.","Quando a dupla progressão permitir, tire 2,5–5 kg de assistência."]},{"name":"Remada baixa, pegada neutra (triângulo)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Pulldown articulado unilateral","sets":3,"reps":"10–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral com halteres","sets":5,"reps":"12–20","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Face pull na polia (corda)","sets":5,"reps":"12–20","sobrar":"1","rest":60,"flag":"drop na última","cues":["Polia na altura do rosto; puxe a corda em direção à testa abrindo as pontas para os lados.","Cotovelos altos e abertos, na linha dos ombros.","Não transforme em encolhimento de trapézio nem jogue o tronco para trás."]},{"name":"Rosca direta com barra W","sets":2,"reps":"8–12","sobrar":"1","rest":90,"flag":"","cues":[]},{"name":"Rosca martelo sentado","sets":2,"reps":"10–12","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Caminhada inclinada na esteira (opcional)","sets":1,"reps":"15–20 min","sobrar":"—","rest":0,"flag":"cardio leve","cues":[]}]},{"id":"d4","wd":"Qui","name":"Pernas B","sub":"Posteriores de coxa e glúteo, um pouco de quadríceps, panturrilha e abdômen","ex":[{"name":"Stiff com barra","sets":4,"reps":"8–10","sobrar":"2","rest":150,"flag":"","cues":[]},{"name":"Elevação pélvica","sets":4,"reps":"8–12","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Agachamento búlgaro","sets":3,"reps":"8–12 cada perna","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Mesa flexora","sets":4,"reps":"10–15","sobrar":"1","rest":75,"flag":"drop na última","cues":[]},{"name":"Cadeira abdutora","sets":2,"reps":"15–20","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Panturrilha sentado (sóleo)","sets":4,"reps":"12–20","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Elevação de pernas ou prancha","sets":3,"reps":"10–15 / 30–45 s","sobrar":"1","rest":60,"flag":"","cues":[]}]},{"id":"d5","wd":"Sex","name":"Superiores","sub":"Peito, costas, ombro e braços","ex":[{"name":"Supino vertical inclinado (máquina)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Remada máquina com apoio no peito","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Puxada alta (pulley)","sets":2,"reps":"10–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral na polia, unilateral","sets":3,"reps":"12–15","sobrar":"1","rest":60,"flag":"drop na última","cues":[]},{"name":"Voador (peck deck)","sets":2,"reps":"12–15","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Crucifixo inverso com halteres, peito apoiado no banco inclinado","sets":4,"reps":"12–20","sobrar":"1","rest":60,"flag":"","cues":["Banco a 30–45°, peito apoiado, braços pendurados com os cotovelos levemente flexionados.","Abra os braços para os lados até a linha do corpo, sem encolher os ombros.","Desça controlando em 2 s; carga leve, quem trabalha é o ombro de trás."]},{"name":"Rosca inclinada com halteres","sets":2,"reps":"10–12","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Tríceps francês na polia (corda)","sets":2,"reps":"10–15","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Caminhada inclinada na esteira (opcional)","sets":1,"reps":"15–20 min","sobrar":"—","rest":0,"flag":"cardio leve","cues":[]}]}]};
+const PLAN_LAYSA = {"days":[{"id":"d1","wd":"Seg","name":"Empurrar","sub":"Peito, ombro e tríceps","ex":[{"name":"Supino inclinado com halteres","sets":3,"reps":"8–12","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Supino vertical reto (máquina)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Desenvolvimento com halteres, sentado","sets":3,"reps":"8–12","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Voador (peck deck)","sets":3,"reps":"12–15","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Elevação lateral com halteres","sets":4,"reps":"12–15","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Tríceps pulley (barra ou corda)","sets":3,"reps":"10–15","sobrar":"1","rest":75,"flag":"drop na última","cues":[]},{"name":"Tríceps francês na polia (corda)","sets":2,"reps":"12–15","sobrar":"1","rest":75,"flag":"","cues":[]}]},{"id":"d2","wd":"Ter","name":"Pernas A","sub":"Quadríceps, um pouco de posterior e glúteo, panturrilha e abdômen","ex":[{"name":"Agachamento livre","sets":3,"reps":"6–10","sobrar":"2","rest":180,"flag":"","cues":[]},{"name":"Leg press 45°","sets":3,"reps":"10–12","sobrar":"1","rest":150,"flag":"","cues":[]},{"name":"Cadeira flexora (sentado)","sets":5,"reps":"10–15","sobrar":"1","rest":75,"flag":"","cues":["Faça antes da extensora: assim você não disputa a extensora com o Rafael e a Laura."]},{"name":"Cadeira extensora","sets":4,"reps":"12–15","sobrar":"1","rest":75,"flag":"drop na última","cues":[]},{"name":"Panturrilha em pé (máquina)","sets":4,"reps":"10–15","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Abdominal na polia","sets":4,"reps":"10–15","sobrar":"1","rest":60,"flag":"","cues":[]}]},{"id":"d3","wd":"Qua","name":"Puxar","sub":"Costas, ombro posterior e lateral, bíceps","ex":[{"name":"Graviton (barra fixa quando fizer 3×8 sem ajuda)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":["Semanas 1–2 (retorno): contrapeso que deixa sobrar 3; da semana 3 em diante, sobrar 1. Quando bater o topo em todas as séries, tire 2,5–5 kg de assistência.","Fez 3×8 sem ajuda nenhuma: passe para a barra fixa, 6–10 reps sobrando 2."]},{"name":"Remada baixa, pegada neutra (triângulo)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Pulldown articulado unilateral","sets":2,"reps":"10–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral com halteres","sets":4,"reps":"12–20","sobrar":"1","rest":60,"flag":"","cues":["Junto com o Rafael e a Laura: revezem no mesmo lugar (Rafael 5, Laura 5, você 4)."]},{"name":"Voador invertido na máquina","sets":5,"reps":"12–15","sobrar":"1","rest":60,"flag":"","cues":["Peito apoiado no banco, pegadas na altura do ombro, cotovelos levemente flexionados.","Abra os braços até a linha do corpo sem encolher os ombros: não vire treino de trapézio.","Controle a volta em 2 s, sem deixar as placas baterem.","O Rafael reveza esta máquina com você."]},{"name":"Rosca inclinada com halteres","sets":3,"reps":"10–12","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Rosca scott (máquina)","sets":2,"reps":"10–15","sobrar":"1","rest":60,"flag":"drop na última","cues":[]}]},{"id":"d4","wd":"Qui","name":"Pernas B","sub":"Posteriores de coxa e glúteo, um pouco de quadríceps, panturrilha e abdômen","ex":[{"name":"Stiff com barra","sets":3,"reps":"8–10","sobrar":"2","rest":150,"flag":"","cues":[]},{"name":"Elevação pélvica","sets":4,"reps":"8–12","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Agachamento búlgaro","sets":3,"reps":"8–12 cada perna","sobrar":"2","rest":120,"flag":"","cues":[]},{"name":"Mesa flexora","sets":4,"reps":"10–15","sobrar":"1","rest":75,"flag":"drop na última","cues":[]},{"name":"Cadeira abdutora","sets":2,"reps":"15–20","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Panturrilha sentado (sóleo)","sets":4,"reps":"12–20","sobrar":"1","rest":60,"flag":"","cues":[]},{"name":"Elevação de pernas ou prancha","sets":4,"reps":"10–15 / 30–45 s","sobrar":"1","rest":60,"flag":"","cues":[]}]},{"id":"d5","wd":"Sex","name":"Superiores","sub":"Peito, costas, ombros e tríceps","ex":[{"name":"Supino vertical inclinado (máquina)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Remada máquina com apoio no peito","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Elevação lateral na polia, unilateral","sets":4,"reps":"12–15","sobrar":"1","rest":60,"flag":"drop na última","cues":["Polia dupla: reveze os lados com a Laura e o Rafael (unilateral, 60 s de descanso cabe)."]},{"name":"Puxada alta (pulley)","sets":3,"reps":"8–12","sobrar":"1","rest":120,"flag":"","cues":[]},{"name":"Voador invertido na máquina","sets":4,"reps":"12–15","sobrar":"1","rest":60,"flag":"","cues":["Peito apoiado no banco, pegadas na altura do ombro, cotovelos levemente flexionados.","Abra os braços até a linha do corpo sem encolher os ombros: não vire treino de trapézio.","Controle a volta em 2 s, sem deixar as placas baterem."]},{"name":"Crossover de baixo para cima","sets":3,"reps":"12–15","sobrar":"1","rest":75,"flag":"","cues":[]},{"name":"Tríceps francês na polia (corda)","sets":2,"reps":"10–15","sobrar":"1","rest":75,"flag":"","cues":[]}]}]};
+const DAYS = fromPlan(PLAN_RAFAEL);
+const DAYS_LAURA = fromPlan(PLAN_LAURA);
+const DAYS_LAYSA = fromPlan(PLAN_LAYSA);
+
+const EXTRA = [
+ {id:"regras", name:"Regras", plate:"--p20"},
+ {id:"breno", name:"Breno", plate:"--p10"}
+];
+
+const store = {
+  get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+
+function renderDay(d){
+  const marks = getMarks(markKey(d.id));
+  const cards = d.ex.map((e,i)=>{
+    const [name,sets,reps,rir,rest,flag,cues] = e;
+    const log = rir !== "—";
+    const boxes = log ? setRows(d, i, name, sets, marks, reps) : `<div class="sets">${Array.from({length:sets},(_,s)=>
+      `<button type="button" class="set" data-ex="${i}" data-s="${s}" aria-pressed="${!!marks[i+"-"+s]}" aria-label="Série ${s+1} de ${name}">${s+1}</button>`).join("")}</div>`;
+    const allDone = Array.from({length:sets}).every((_,s)=>marks[i+"-"+s]);
+    return `<article class="ex${allDone?" done":""}" id="ex-${d.id}-${i}">
+      <div class="ex-top">
+        <span class="ex-n">${String(i+1).padStart(2,"0")}</span>
+        <h3 class="ex-name">${name}</h3>
+        <div class="presc">
+          <span class="tag">${sets} × ${reps}</span>
+          ${rir==="—" ? "" : `<span class="tag">${rir==="0" ? "até a falha" : "sobrar "+rir}</span>`}
+          ${rest ? `<span class="tag">${fmt(rest)} descanso</span>` : ""}
+          ${flag?`<span class="tag drop">${flag}</span>`:""}
+        </div>
+      </div>
+      ${log ? `<p class="last" data-name="${esc(name)}"></p><p class="meta" hidden></p>` : ""}
+      ${boxes}
+      <details><summary>Execução</summary><ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul></details>
+    </article>`;
+  }).join("");
+  const total = d.ex.reduce((a,e)=>a+(e[4] ? e[1] : 0),0);
+  return `<section style="--pc:var(${d.plate})" class="list">
+    <div class="dayhead"><div><div class="eyebrow">${d.wd} · ${d.sub}</div><h2>${d.name}</h2></div>
+    <div style="display:flex;gap:8px;align-items:center"><span class="num" style="color:var(--muted)">${total} séries</span><button type="button" class="ghost" id="reset">Zerar marcações</button></div></div>
+    <div class="logbar"><label for="logdate">Treino de</label><input type="date" id="logdate" value="${logDate}"><span id="logstate" aria-live="polite">${modeText()}</span></div>
+    ${cards}
+    ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
+      <p id="sendsum" class="sendsum"></p>
+      <div class="sendrow"><a class="btn-wa" id="sendwa" href="https://wa.me/" target="_blank" rel="noopener">Enviar no WhatsApp</a><button type="button" class="ghost" id="copytxt">Copiar texto</button></div>
+      <textarea id="sendtxt" class="sendtxt" readonly hidden aria-label="Texto do treino"></textarea>
+    </div>`}
+  </section>`;
+}
+// Texto do treino do dia para mandar no WhatsApp ou colar no chat do personal
+function treinoText(){
+  const d = person.days?.find(x => x.id === current), doc = LOGS[docId(person.id, logDate)];
+  if (!d || !doc) return "";
+  const lines = d.ex.map((e, i) => {
+    const t = (doc.ex?.[e[0]]?.sets || []).map(s => filled(s) ? `${num(s.kg) || "–"}×${s.reps === "" || s.reps == null ? "–" : s.reps}` : s.done ? "✓" : "").filter(Boolean).join(" · ");
+    return t ? `${i+1}. ${e[0]}: ${t}` : "";
+  }).filter(Boolean);
+  return lines.length ? `Treino ${person.name} · ${d.wd} ${brDate(logDate)} · ${d.name}\n${lines.join("\n")}` : "";
+}
+function refreshSend(){
+  const el = document.getElementById("sendsum"); if (!el) return;
+  const t = treinoText(), n = t ? t.split("\n").length - 1 : 0;
+  el.textContent = n ? `${n} exercício${n > 1 ? "s" : ""} anotado${n > 1 ? "s" : ""}. Mande para o personal no WhatsApp.` : "Anote as séries e mande o treino para o personal no WhatsApp.";
+}
+
+// Registro de cargas: um documento por pessoa e data na coleção "treinos" (banco da ficha, o personal lê).
+// Sem acesso ao banco, salva só neste aparelho.
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+// Data do treino: até as 5h ainda conta como o dia anterior (treinam das 21h às 00h), e a data
+// escolhida vale por 8 h, para um recarregamento no meio da sessão não trocar o dia.
+const trainDay = () => { const d = new Date(Date.now() - 5*3600*1000); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const keepDate = date => store.set("logdate", {date, at: Date.now()});
+let logDate = (() => { const s = store.get("logdate"); return s && s.date && Date.now() - s.at < 8*3600*1000 ? s.date : trainDay(); })();
+let dbRef = null, logMode = "carregando";
+const LOGS = {}, pending = {}, timers = {}, chains = {};
+const docId = (p, date) => `${p}_${date}`;
+const brDate = s => `${s.slice(8,10)}/${s.slice(5,7)}`;
+const num = v => (v === "" || v == null) ? "" : String(v).replace(".", ",");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+const filled = s => s && ((s.kg !== "" && s.kg != null) || (s.reps !== "" && s.reps != null));
+const fmtSets = sets => (sets || []).filter(filled).map(s => `${num(s.kg) || "–"}×${s.reps === "" || s.reps == null ? "–" : s.reps}`).join(" · ");
+const storageOk = (() => { try { localStorage.setItem("_t", "1"); const ok = localStorage.getItem("_t") === "1"; localStorage.removeItem("_t"); return ok; } catch(e) { return false; } })();
+const modeText = () => logMode === "online" ? "Salva online" : logMode === "local" ? (storageOk ? "Salva neste celular" : "Este navegador não guarda os dados: envie pelo WhatsApp antes de fechar") : "";
+try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith("cargas:")) LOGS[key.slice(7)] = JSON.parse(localStorage.getItem(key)); } } catch(e) {}
+
+function lastFor(p, name, before){
+  let best = null;
+  for (const d of Object.values(LOGS)) {
+    if (!d || d.person !== p || !(d.date < before)) continue;
+    const e = d.ex && d.ex[name];
+    if (!e || !(e.sets || []).some(filled)) continue;
+    if (!best || d.date > best.date) best = {date:d.date, sets:e.sets};
+  }
+  return best;
+}
+const addRows = {};   // séries a mais abertas pelo botão "+ série" (por pessoa, data e exercício)
+function setRows(d, i, name, sets, marks, reps){
+  const cur = (LOGS[docId(person.id, logDate)]?.ex?.[name]?.sets) || [];
+  const k = `${person.id}:${logDate}:${name}`;
+  const kgLbl = /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg";   // halter: anota o peso de um halter só
+  const total = Math.max(sets, cur.length, sets + (addRows[k] || 0));
+  const rows = Array.from({length:total}, (_, s) => {
+    const v = cur[s] || {}, on = !!(marks[i+"-"+s] ?? v.done), a = `data-name="${esc(name)}" data-set="${s}" data-n="${total}"`;
+    return `<span class="sn${s >= sets ? " extra" : ""}">${s+1}</span>
+      <input id="kg-${d.id}-${i}-${s}" class="${on?"ok":""}" inputmode="decimal" autocomplete="off" placeholder="${kgLbl}" aria-label="Série ${s+1}: carga em ${kgLbl}" ${a} data-field="kg" value="${esc(num(v.kg))}">
+      <input id="rp-${d.id}-${i}-${s}" class="${on?"ok":""}" inputmode="numeric" autocomplete="off" placeholder="reps" aria-label="Série ${s+1}: repetições" ${a} data-field="reps" value="${esc(v.reps ?? "")}">
+      <button type="button" class="set" data-ex="${i}" data-s="${s}" aria-pressed="${on}" aria-label="Marcar série ${s+1} de ${esc(name)} como feita">✓</button>`;
+  }).join("");
+  const leg = d.id === "d2" || d.id === "d4";
+  return `<div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
+    <button type="button" class="ghost addset" data-ex="${i}" data-k="${esc(k)}" data-total="${total}" data-sets="${sets}">+ série</button>`;
+}
+// Meta do dia pela dupla progressão: bateu o topo da faixa em todas as séries → sobe a carga; senão, mesma carga buscando o topo.
+// No graviton o peso é ajuda: progredir é tirar peso.
+function metaFor(last, reps, sets, leg, name){
+  const m = String(reps).match(/(\d+)\s*[–-]\s*(\d+)/); if (!m || !last) return "";
+  const lo = +m[1], hi = +m[2], help = /Graviton/.test(name);
+  const ok = (last.sets || []).filter(s => typeof s.kg === "number" && typeof s.reps === "number" && s.reps > 0);
+  if (!ok.length) return "";
+  const inRange = ok.filter(s => s.reps >= lo);
+  if (!inRange.length) {
+    const ref = help ? Math.max(...ok.map(s => s.kg)) : Math.min(...ok.map(s => s.kg));
+    return `<b>${num(ref)} kg</b>, buscando ${lo}–${hi} reps (se não sair ${lo}, ${help ? "aumente a ajuda" : "tire uns 10%"})`;
+  }
+  const ref = help ? Math.min(...inRange.map(s => s.kg)) : Math.max(...inRange.map(s => s.kg));
+  const top = ok.filter(s => (help ? s.kg <= ref : s.kg >= ref) && s.reps >= hi).length >= sets;
+  if (!top) return `<b>${num(ref)} kg</b>, buscando ${hi} reps em todas as séries`;
+  const step = help ? 2.5 : /halter/i.test(name) ? (ref < 10 ? 1 : 2) : leg && ref >= 20 ? 5 : 2.5;
+  const next = Math.max(0, help ? ref - step : ref + step);
+  return `<b>${num(next)} kg</b> × ${lo}–${hi} (${help ? "menos ajuda" : "subiu"}: bateu ${hi} em todas)`;
+}
+function refreshCarga(){
+  if (!Object.keys(pending).length) setStatus(modeText());
+  refreshSend();
+  const doc = LOGS[docId(person.id, logDate)];
+  document.querySelectorAll(".lg").forEach(box => {
+    const name = box.dataset.name, sets = doc?.ex?.[name]?.sets || [];
+    const last = lastFor(person.id, name, logDate);
+    const p = box.parentElement.querySelector(".last");
+    if (p) p.innerHTML = last ? `Última vez (${brDate(last.date)}): <b>${fmtSets(last.sets)}</b>` : "Primeira vez: anote kg e reps de cada série.";
+    const mt = box.parentElement.querySelector(".meta");
+    if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name); mt.innerHTML = t ? `Meta de hoje: ${t}` : ""; mt.hidden = !t; }
+    box.querySelectorAll("input").forEach(inp => {
+      const s = +inp.dataset.set, f = inp.dataset.field, lv = last?.sets?.[s]?.[f];
+      const ph = lv === "" || lv == null ? (f === "kg" ? box.dataset.kg : "reps") : (f === "kg" ? num(lv) : String(lv));
+      inp.placeholder = ph; inp.dataset.last = lv === "" || lv == null ? "" : String(lv);
+      if (inp === document.activeElement) return;
+      const v = (sets[s] || {})[f];
+      inp.value = f === "kg" ? num(v) : (v ?? "");
+    });
+  });
+}
+function setStatus(text){ const el = document.getElementById("logstate"); if (el) { el.textContent = text; el.classList.toggle("local", logMode === "local"); el.classList.toggle("nostore", logMode === "local" && !storageOk); } }
+// ✓ com a linha vazia: repete a carga e as reps da última vez
+function autofill(btn){
+  const box = btn.closest(".lg"), s = btn.dataset.s;
+  const ins = [...box.querySelectorAll(`input[data-set="${s}"]`)];
+  if (ins.some(x => x.value.trim() !== "") || !ins.some(x => x.dataset.last)) return;
+  ins.forEach(x => { if (x.dataset.last) { x.value = x.dataset.field === "kg" ? num(x.dataset.last) : x.dataset.last; onLogInput(x); } });
+}
+function onLogInput(inp){
+  const raw = inp.value.trim().replace(",", "."), n = Number(raw);
+  writeSet(inp.dataset.name, +inp.dataset.n, +inp.dataset.set, {[inp.dataset.field]: raw === "" || isNaN(n) ? "" : n});
+}
+// Grava um pedaço de uma série (kg, reps ou feita) no treino da pessoa nesta data
+function writeSet(name, n, s, patch){
+  const id = docId(person.id, logDate);
+  const doc = LOGS[id] ? JSON.parse(JSON.stringify(LOGS[id])) : {person:person.id, date:logDate, day:current, ex:{}};
+  const e = doc.ex[name] || (doc.ex[name] = {sets:[]});
+  while (e.sets.length < Math.max(n, s + 1)) e.sets.push({kg:"", reps:""});
+  Object.assign(e.sets[s], patch);
+  doc.updated = new Date().toISOString();
+  LOGS[id] = doc; pending[id] = true; refreshSend(); keepDate(logDate);
+  setStatus("Salvando…");
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => saveLog(id), 700);
+}
+function saveLog(id){
+  chains[id] = (chains[id] || Promise.resolve()).then(async () => {
+    const body = LOGS[id];
+    store.set("cargas:" + id, body);   // cópia no aparelho até o banco confirmar
+    if (logMode === "online" && dbRef) {
+      for (let t = 0; t < 2; t++) {
+        try { await dbRef.collection("treinos").doc(id).set(body); delete pending[id]; try { localStorage.removeItem("cargas:" + id); } catch(e) {} setStatus("Salvo online ✓"); return; }
+        catch(e) { if (SUPA || !(e && e.code === "unavailable") || t) break; await new Promise(r => setTimeout(r, 400 + Math.random()*600)); }
+      }
+      if (!SUPA) logMode = "local";
+    }
+    delete pending[id];
+    setStatus(SUPA ? "Sem internet: salvo no celular, sobe quando voltar" : "Salvo neste celular ✓"); refreshCarga();
+  });
+}
+// Treinos que ficaram no aparelho sobem para o banco quando ele fica disponível (o mais novo vence)
+const ts = s => Date.parse(s || 0) || 0;
+function syncLocal(server){
+  let keys = [];
+  try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith("cargas:")) keys.push(key.slice(7)); } } catch(e) { return; }
+  for (const id of keys) if (LOGS[id] && !(server[id] && ts(server[id].updated) >= ts(LOGS[id].updated))) saveLog(id);
+}
+// Versão do site (GitHub Pages): o banco é o Supabase do Rafael, sem login para ninguém
+const SUPA = window.SUPA || null;
+function supaDb(){
+  const h = {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key, "Content-Type": "application/json"};
+  const ref = {
+    doc: id => ({ async set(b){
+      const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.table || "treinos"}?on_conflict=id`, {method: "POST", headers: {...h, Prefer: "resolution=merge-duplicates,return=minimal"},
+        body: JSON.stringify({id, person: b.person, date: b.date, day: b.day, ex: b.ex, updated: b.updated})});
+      if (!r.ok) throw {code: "unavailable"};
+    }}),
+    orderBy: () => ref, limit: () => ref,
+    onSnapshot(next){
+      const load = async () => { try {
+        const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.table || "treinos"}?select=*&order=date.desc&limit=1000`, {headers: h});
+        if (!r.ok) return;
+        const rows = await r.json();
+        next({docs: rows.map(x => ({id: x.id, data: () => ({person: x.person, date: x.date, day: x.day, ex: x.ex, updated: x.updated})})), metadata: {fromCache: false}});
+      } catch(e) {} };
+      load(); setInterval(load, 60000);
+      addEventListener("online", load);
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+    }
+  };
+  return {collection: () => ref};
+}
+(async () => {
+  await null;   // espera o resto do script (pessoa e dia) existir antes de desenhar
+  let db = null;
+  if (SUPA) db = supaDb();
+  else try { db = await window.claude?.use?.("db"); } catch(e) {}
+  if (!db) { logMode = "local"; refreshCarga(); return; }
+  dbRef = db; logMode = "online"; refreshCarga();
+  db.collection("treinos").orderBy("date", "desc").limit(500).onSnapshot(snap => {
+    const server = {};
+    for (const d of snap.docs) {
+      const v = d.data(); server[d.id] = v;
+      if (!pending[d.id] && !(LOGS[d.id] && ts(LOGS[d.id].updated) > ts(v.updated))) LOGS[d.id] = v;
+    }
+    if (!snap.metadata.fromCache) syncLocal(server);
+    refreshCarga();
+  }, () => { logMode = "local"; refreshCarga(); });
+})();
+
+const PANELS = {
+ regras:`<section class="list" style="--pc:var(--p20)">
+  <div class="dayhead"><div><div class="eyebrow">Vale para todos os dias</div><h2>Regras do bloco</h2></div></div>
+  <div class="panel"><h3>"Sobrar 2": quantas repetições ficam no tanque</h3><p>Pare a série quando sentir que ainda conseguiria fazer mais 2 repetições bem feitas. "Sobrar 1" = parar quando só faria mais 1. "Até a falha" = ir até não conseguir mais nenhuma. Na sigla em inglês isso se chama RIR. Ir à falha em tudo não dá mais músculo e cansa mais; sobrar 1–2 dá o mesmo resultado.</p></div>
+  <div class="panel"><h3>Falha: em quais séries?</h3><ul>
+   <li><b>Exercícios pesados com barra/halter</b> (agachamento, stiff, supino e desenvolvimento com halteres, barra fixa, remadas): <b>nunca</b> até a falha. Todas as séries sobrando 1–2.</li>
+   <li><b>Isoladores marcados "sobrar 0–1"</b> (máquina, polia ou halter, como a elevação lateral): as outras séries sobrando 1; <b>só a última</b> pode ir até a falha.</li>
+   <li><b>"Até a falha" ou "drop na última"</b>: falha só na última série.</li>
+   <li>É normal o mesmo peso render menos repetições nas últimas séries por causa do cansaço. Não precisa tirar peso por isso.</li>
+  </ul></div>
+  <div class="panel"><h3>Alguém te ajudou a subir?</h3><ul>
+   <li>Repetição com ajuda <b>não conta</b>. Anote só as que você fez sozinho.</li>
+   <li>Ajuda na última repetição da última série, de vez em quando: o peso está certo, você só foi além da falha. Mantenha.</li>
+   <li>Precisou de ajuda já na 1ª ou 2ª série, ou em várias repetições: o peso está alto. <b>Tire 5–10%</b>.</li>
+   <li>Ter alguém do lado por segurança no supino e no agachamento é ótimo, desde que a pessoa só encoste na barra se você travar.</li>
+  </ul></div>
+  <div class="panel"><h3>Drop na última</h3><p>Na última série, quando chegar ao fim das repetições, tire uns 20–30% do peso na hora e continue até quase não conseguir mais. Só nos exercícios marcados.</p></div>
+  <div class="panel"><h3>1ª semana da ficha</h3><p>Semana de teste em todos os exercícios: escolha a carga que deixa sobrar 3 no topo da faixa de repetições, <b>sem drop e sem isometria</b>, e anote as cargas. Nos exercícios que você já fazia, parta da carga que já usava. Da 2ª semana em diante, "sobrar" e drops como está na ficha.</p></div>
+  <div class="panel"><h3>Progressão dupla</h3><p>Bateu o topo da faixa de reps em todas as séries sobrando o que a ficha pede? Sobe a carga: <b>+1–2,5 kg</b> nos exercícios de cima, <b>+2,5–5 kg</b> nos de perna, e volta para o fundo da faixa. Se o menor salto for grande demais (halter, polia), primeiro faça o topo +2 reps em 2 sessões, depois suba. No graviton, tire 2,5–5 kg de assistência.</p></div>
+  <div class="panel"><h3>Execução</h3><ul>
+   <li>Aquecimento: 5 min leve + 50% × 8, 70% × 4, 85% × 1–2 no primeiro exercício de cada grupo.</li>
+   <li>Descida controlada em ~2 s, sem quicar; priorize a posição alongada.</li>
+   <li>Drop-set só onde está marcado: última série dos isolados.</li>
+   <li>Descanso: 2–3 min nos compostos, 1–2 min nos isolados.</li>
+   <li>Respiração: solte o ar na fase de esforço. Prender o ar só por uma rep nas séries bem pesadas.</li>
+   <li>Sábado e domingo são descanso. Se perder um dia, siga a ordem: o próximo treino é o que vem na lista.</li>
+  </ul></div>
+  <div class="panel"><h3>Deload: semana 7 (todos juntos)</h3><p>Mesmos exercícios e mesmas cargas, <b>40–50% menos séries</b>, sobrando 3. Antecipe se 2 ou mais sinais aparecerem juntos por 2–3 sessões: "sobrar" caindo com a mesma carga, reps caindo nos exercícios principais, disposição baixa ou faltas, sono abaixo de 5 h em 3+ noites.</p></div>
+  <div class="panel"><h3 class="warn">Pare na hora</h3><p>Dor aguda ou em pontada na articulação, dor que irradia, dormência, perda de força, dor no peito, falta de ar fora do normal, tontura. Procure médico ou fisioterapeuta.</p></div>
+ </section>`,
+ breno:`<section class="list" style="--pc:var(--p10)">
+  <div class="dayhead"><div><div class="eyebrow">46 vídeos de execução lidos · out/2026</div><h2>O que o Breno ensina</h2></div></div>
+  <div class="panel"><p>A linha dele é baseada em evidência e bate com a sua ficha: nenhuma pegada ou posição do pé "isola" parte do músculo; o que importa é execução controlada, amplitude, progressão de carga e consistência. As dicas dele estão dentro de cada exercício, marcadas com <span class="breno">Breno</span> e o link do vídeo.</p></div>
+  <div class="panel"><h3>O que eu peguei dele para a sua ficha</h3><div class="tbl"><table>
+   <thead><tr><th>Mudança</th><th>Por quê</th><th>Vídeo</th></tr></thead>
+   <tbody>
+    <tr><td>Os mesmos 5 treinos da divisão dele (Empurrar, Puxar, Pernas, Superiores, Pernas), na ordem que você escolheu: Seg Empurrar · Ter Pernas · Qua Puxar · Qui Pernas · Sex Superiores</td><td>Alterna dia de cima e dia de perna; cada músculo 2x por semana sem repetir em dias seguidos</td><td><a href="${IG("DdJjEH_xSlK")}" target="_blank" rel="noopener">5x/semana</a></td></tr>
+    <tr><td>Supino inclinado a ~30°</td><td>Mais inclinado vira treino de deltoide anterior</td><td><a href="${IG("DdjKhL9hBLJ")}" target="_blank" rel="noopener">inclinado</a></td></tr>
+    <tr><td>Desenvolvimento com encosto a 75–80°</td><td>Mais estável e cotovelo no plano da escápula</td><td><a href="${IG("Dc9LwoEhC15")}" target="_blank" rel="noopener">desenvolvimento</a></td></tr>
+    <tr><td>Voador invertido no Pull</td><td>Ombro "3D" precisa do posterior</td><td><a href="${IG("DeB52oIhQ_d")}" target="_blank" rel="noopener">posterior</a></td></tr>
+    <tr><td>Respirar soltando o ar no esforço</td><td>Prender o ar em toda rep pode dar tontura</td><td><a href="${IG("DeKH-_6RGBi")}" target="_blank" rel="noopener">respiração</a></td></tr>
+   </tbody></table></div></div>
+  <div class="panel"><h3>Ideias dele que se repetem</h3><ul>
+   <li>Não existe execução perfeita e universal: ajuste à sua estrutura e ao conforto da articulação.</li>
+   <li>Carga não é ego: se a amplitude encurta ou o corpo balança, o peso venceu você.</li>
+   <li>Falha é ferramenta, não obrigação: 1–2 repetições na reserva na maioria das séries. <a href="${IG("DdSJwqqPQgu")}" target="_blank" rel="noopener">vídeo</a></li>
+   <li>Tríceps é cerca de 2/3 do braço: para "manga apertada", não esqueça dele. <a href="${IG("DeKwBLcPNF3")}" target="_blank" rel="noopener">vídeo</a></li>
+  </ul></div>
+  <div class="panel"><p><b>Onde eu divirjo:</b> ele coloca elevação frontal em quase todo treino de ombro. Para você, o deltoide da frente já recebe volume dos supinos e do desenvolvimento, então esse tempo vai para o ombro lateral e posterior, que dão largura.</p></div>
+ </section>`
+};
+
+const PANELS_LAURA = PANELS, PANELS_LAYSA = PANELS;
+// Pessoas que treinam juntas. Cada uma tem a própria ficha.
+const PEOPLE = [
+ {id:"rafael", name:"Rafael", art:"do", days:DAYS, panels:PANELS,
+  eyebrow:"Bloco 1 · Base Cavill · 6 semanas desde 08/10/2026",
+  },
+ {id:"laura", name:"Laura", art:"da", days:DAYS_LAURA, panels:PANELS_LAURA,
+  eyebrow:"Bloco 1 · Recomposição · 6 semanas desde 08/10/2026",
+  },
+ {id:"laysa", name:"Laysa", art:"da", days:DAYS_LAYSA, panels:PANELS_LAYSA,
+  eyebrow:"Bloco 1 · Volta aos treinos · 6 semanas desde 08/10/2026",
+  },
+ {id:"a3", name:"Amiga 3", art:"da", days:null}
+];
+
+const who = document.getElementById("who"), head = document.getElementById("head");
+const tabs = document.getElementById("tabs"), view = document.getElementById("view");
+let person = PEOPLE.find(p=>p.id===store.get("person")) || PEOPLE[0];
+let current = store.get("tab:"+person.id) || "d1";
+const markKey = dayId => "marks4:"+person.id+":"+dayId+":"+logDate;
+const MARKS = {};
+const getMarks = k => MARKS[k] || (MARKS[k] = store.get(k) || {});
+
+const PENDING = p => `<section class="list pending" style="--pc:var(--p5)">
+  <div class="dayhead"><div><div class="eyebrow">Ficha em construção</div><h2>Falta a avaliação ${p.art} ${p.name}</h2></div></div>
+  <div class="panel"><p>Cada pessoa precisa de uma ficha própria: objetivo, experiência, cargas e histórico de lesão mudam o volume, os exercícios e a progressão. Mande para o personal (Claude, no chat):</p><ul>
+   <li>Nome, idade, peso e altura</li>
+   <li>Objetivo principal (ex.: glúteo e pernas, emagrecer, ganhar massa, definir)</li>
+   <li>Há quanto tempo treina e cargas que usa hoje</li>
+   <li>Lesões, dores, cirurgias, gravidez ou condição médica</li>
+   <li>Se treina junto com você de segunda a sexta ou em outros dias</li>
+   <li>Medidas, se tiver: cintura, quadril, coxa, braço</li>
+  </ul></div>
+  <div class="panel"><p>Enquanto isso, as abas <b>Regras</b> e <b>Breno</b> do Rafael valem para todo mundo: sobrar 1–2 repetições, progressão de carga e execução controlada.</p></div>
+ </section>`;
+
+function drawWho(){
+  who.innerHTML = `<span class="who-lbl">Ficha de</span>` + PEOPLE.map(p=>`<button type="button" data-person="${p.id}" aria-pressed="${p.id===person.id}">${p.name}</button>`).join("");
+}
+function drawHead(){
+  head.innerHTML = `<div class="eyebrow">${person.eyebrow || "Aguardando avaliação"}</div>
+    <h1>Ficha ${person.art} ${person.name}</h1>
+    ${person.stats ? `<div class="stats">${person.stats.map(([l,v,s])=>`<div class="stat"><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>` : ""}`;
+}
+function drawTabs(){
+  if (!person.days){ tabs.hidden = true; tabs.innerHTML = ""; return; }
+  tabs.hidden = false;
+  const btn = t => `<button type="button" role="tab" data-tab="${t.id}" aria-selected="${t.id===current}" style="--pc:var(${t.plate})">${t.wd ? `<span class="wd"><span class="plate"></span>${t.wd}</span><span class="nm">${t.name}</span>` : `<span class="wd"><span class="plate"></span>${t.name}</span>`}</button>`;
+  tabs.innerHTML = `<div class="navrow days">${person.days.map(btn).join("")}</div><div class="navrow info">${EXTRA.map(btn).join("")}</div>`;
+}
+function draw(){
+  drawWho(); drawHead(); drawTabs();
+  if (!person.days){ view.innerHTML = PENDING(person); return; }
+  if (![...person.days, ...EXTRA].find(t=>t.id===current)) current = "d1";
+  const d = person.days.find(x=>x.id===current);
+  view.innerHTML = d ? renderDay(d) : person.panels[current];
+  if (d) refreshCarga();
+}
+view.addEventListener("input", e => { if (e.target.closest(".lg")) onLogInput(e.target); });
+view.addEventListener("change", e => { if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); draw(); } });
+who.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-person]"); if(!btn) return;
+  person = PEOPLE.find(p=>p.id===btn.dataset.person); store.set("person", person.id);
+  current = store.get("tab:"+person.id) || "d1"; draw();
+});
+tabs.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-tab]"); if(!btn) return;
+  current = btn.dataset.tab; store.set("tab:"+person.id, current); draw();
+  window.scrollTo({top:0});
+});
+view.addEventListener("click", e=>{
+  const add = e.target.closest(".addset");
+  if (add){
+    addRows[add.dataset.k] = +add.dataset.total - +add.dataset.sets + 1;
+    const y = scrollY; draw(); scrollTo(0, y);
+    document.getElementById(`kg-${current}-${add.dataset.ex}-${add.dataset.total}`)?.focus();
+    return;
+  }
+  const wa = e.target.closest("#sendwa"), cp = e.target.closest("#copytxt");
+  if (wa || cp){
+    const t = treinoText(), sum = document.getElementById("sendsum");
+    if (!t){ e.preventDefault(); sum.textContent = "Nada anotado ainda: preencha kg e reps ou marque ✓ em alguma série."; return; }
+    if (wa){ wa.href = "https://wa.me/?text=" + encodeURIComponent(t); return; }
+    const box = document.getElementById("sendtxt"), showBox = () => { box.hidden = false; box.value = t; box.focus(); box.select(); sum.textContent = "Selecionei o texto: toque e segure para copiar."; };
+    try { navigator.clipboard.writeText(t).then(() => { sum.textContent = "Copiado. Cole no WhatsApp ou no chat."; }, showBox); } catch(err){ showBox(); }
+    return;
+  }
+  const set = e.target.closest(".set");
+  if (set){
+    const k = markKey(current), m = getMarks(k), key = set.dataset.ex+"-"+set.dataset.s;
+    m[key] = set.getAttribute("aria-pressed") !== "true"; store.set(k, m);
+    const d = person.days.find(x=>x.id===current), i = +set.dataset.ex, [, n, , , rest] = d.ex[i];
+    set.setAttribute("aria-pressed", String(m[key]));
+    set.closest(".lg")?.querySelectorAll(`input[data-set="${set.dataset.s}"]`).forEach(x => x.classList.toggle("ok", m[key]));
+    set.closest(".ex").classList.toggle("done", Array.from({length:n}).every((_, s) => m[i+"-"+s]));
+    if (m[key] && set.closest(".lg")) autofill(set);
+    if (set.closest(".lg")) writeSet(d.ex[i][0], n, +set.dataset.s, {done: m[key]});
+    if (m[key] && rest) startTimer(rest);
+    return;
+  }
+  if (e.target.id==="reset"){ const k = markKey(current); MARKS[k] = {}; store.set(k, {}); draw(); }
+});
+
+// Timer
+const clock = document.getElementById("clock"), fill = document.getElementById("barfill");
+let endAt = 0, total = 0, tick = null, actx = null;
+function beep(){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    [0,0.25,0.5].forEach(t=>{
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.frequency.value = 880; o.connect(g); g.connect(actx.destination);
+      g.gain.setValueAtTime(0.2, actx.currentTime+t); g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime+t+0.2);
+      o.start(actx.currentTime+t); o.stop(actx.currentTime+t+0.2);
+    });
+  }catch(e){}
+  try{ navigator.vibrate && navigator.vibrate([200,100,200]); }catch(e){}
+}
+function startTimer(sec){
+  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); actx.resume && actx.resume(); }catch(e){}
+  total = sec; endAt = Date.now() + sec*1000; clock.classList.remove("zero");
+  clearInterval(tick); update(); tick = setInterval(update, 250);
+}
+function update(){
+  const left = Math.max(0, Math.ceil((endAt - Date.now())/1000));
+  clock.textContent = fmt(left);
+  fill.style.width = total ? ((total-left)/total*100)+"%" : "0";
+  if (left===0 && tick){ clearInterval(tick); tick=null; clock.classList.add("zero"); clock.textContent="Vai!"; beep(); }
+}
+document.querySelectorAll(".timer [data-t]").forEach(bt=>bt.addEventListener("click",()=>startTimer(+bt.dataset.t)));
+document.getElementById("stop").addEventListener("click",()=>{ clearInterval(tick); tick=null; total=0; clock.textContent="0:00"; clock.classList.remove("zero"); fill.style.width="0"; });
+
+draw();
+</script>
+
+</body></html>
