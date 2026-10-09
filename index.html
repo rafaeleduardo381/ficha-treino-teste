@@ -340,10 +340,37 @@ body[data-tela="treino"] .top,body[data-tela="perfil"] .top{display:none}
 .sbtn:disabled{opacity:.35;cursor:default}
 /* Topo com perfil */
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:inherit;font-weight:800;font-size:1.1rem;color:var(--lime-ink);background:var(--lime);border:0;cursor:pointer;box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--line)}
+.avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:inherit;font-weight:800;font-size:1.1rem;color:var(--lime-ink);background:var(--av,var(--lime));border:0;cursor:pointer;box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--line)}
 .avatar.big{width:64px;height:64px;font-size:1.6rem;cursor:default}
 body[data-tela="treino"] .toprow{justify-content:flex-end}
-.pf-head{display:flex;align-items:center;gap:14px}
+.pf-top{display:flex;align-items:center;gap:12px}
+.pf-top .eyebrow{margin:0}
+.pf-hero{gap:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--pc) 14%,var(--surface)) 0%,var(--surface) 60%)}
+.pf-id{display:flex;align-items:center;gap:14px}
+.pf-id h2{margin:0;font-size:1.6rem;line-height:1.1}
+.pf-goal{margin:4px 0 0;font-size:.88rem;color:var(--soft);line-height:1.35}
+.pf-bloco{display:flex;flex-direction:column;gap:8px}
+.pf-bl-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.88rem}
+.pf-bl-h span{color:var(--muted);font-size:.8rem;white-space:nowrap}
+.pf-segs{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.pf-segs i{height:6px;border-radius:3px;background:var(--surface2)}
+.pf-segs i.ok{background:color-mix(in srgb,var(--pc) 55%,var(--surface2))}
+.pf-segs i.now{background:var(--pc)}
+.pf-bloco small{font-size:.78rem;color:var(--muted)}
+.pf-swap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pf-p{display:flex;flex-direction:column;align-items:center;gap:6px;font:inherit;font-size:.78rem;font-weight:700;color:var(--muted);background:none;border:0;border-radius:14px;padding:8px 2px;cursor:pointer;min-width:0}
+.pf-p span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pf-p .avatar.sm{width:46px;height:46px;font-size:1.05rem;box-shadow:0 0 0 3px var(--surface),0 0 0 4px var(--line)}
+.pf-p[aria-pressed="true"]{color:var(--ink);background:var(--surface2)}
+.pf-p[aria-pressed="true"] .avatar.sm{box-shadow:0 0 0 3px var(--surface2),0 0 0 5px var(--av)}
+.pf-metas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.pf-metas li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.pf-metas li:first-child{border-top:0;padding-top:2px}
+.pf-metas .mt-l{flex:1;min-width:0;font-weight:700;font-size:.92rem}
+.pf-metas small{display:block;font-weight:500;font-size:.76rem;color:var(--muted);margin-top:1px}
+.pf-metas b{text-align:right;font-size:.92rem;font-variant-numeric:tabular-nums}
+.tile b small{font-size:.85rem;color:var(--muted);font-weight:700}
+.pf-sec{margin:8px 2px -2px;font-size:1rem}
 .pf-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .pf-list li{display:flex;justify-content:space-between;gap:12px;font-size:.9rem;color:var(--soft)}
 .pf-list b{color:var(--ink);text-align:right}
@@ -912,7 +939,7 @@ function supaDb(){
       if (!pending[d.id] && !(LOGS[d.id] && ts(LOGS[d.id].updated) > ts(v.updated))) LOGS[d.id] = v;
     }
     if (!snap.metadata.fromCache) syncLocal(server);
-    refreshCarga(); refreshToday();
+    refreshCarga(); refreshToday(); refreshStats();
   }, () => { logMode = "local"; refreshCarga(); });
   db.collection("checkins").orderBy("date", "desc").limit(500).onSnapshot(snap => {
     const server = {};
@@ -921,7 +948,7 @@ function supaDb(){
       if (!chkPending[d.id] && !(CHK[d.id] && ts(CHK[d.id].updated) > ts(v.updated))) CHK[d.id] = v;
     }
     if (!snap.metadata.fromCache) syncChk(server);
-    refreshToday();
+    refreshToday(); refreshStats();
   }, () => {});
 })();
 
@@ -1531,16 +1558,16 @@ const PANELS = {
 const PANELS_LAURA = PANELS, PANELS_LAYSA = PANELS;
 // Pessoas que treinam juntas. Cada uma tem a própria ficha.
 const PEOPLE = [
- {id:"rafael", name:"Rafael", art:"do", days:DAYS, panels:PANELS,
+ {id:"rafael", name:"Rafael", art:"do", days:DAYS, panels:PANELS, cor:"--lime", bloco:"Base Cavill", goal:"Hipertrofia: ombros, peito superior, costas em V e braços",
   eyebrow:"Bloco 1 · Base Cavill · 6 semanas desde 08/10/2026",
   },
- {id:"laura", name:"Laura", art:"da", days:DAYS_LAURA, panels:PANELS_LAURA,
+ {id:"laura", name:"Laura", art:"da", days:DAYS_LAURA, panels:PANELS_LAURA, cor:"--coral", bloco:"Recomposição", goal:"Perder gordura, ganhar músculo e definir",
   eyebrow:"Bloco 1 · Recomposição · 6 semanas desde 08/10/2026",
   },
- {id:"laysa", name:"Laysa", art:"da", days:DAYS_LAYSA, panels:PANELS_LAYSA,
+ {id:"laysa", name:"Laysa", art:"da", days:DAYS_LAYSA, panels:PANELS_LAYSA, cor:"--violet", bloco:"Volta aos treinos", goal:"Ganhar músculo e definir",
   eyebrow:"Bloco 1 · Volta aos treinos · 6 semanas desde 08/10/2026",
   },
- {id:"a3", name:"Amiga 3", art:"da", days:null}
+ {id:"a3", name:"Amiga 3", art:"da", days:null, cor:"--blue"}
 ];
 
 const who = document.getElementById("who"), head = document.getElementById("head");
@@ -1569,7 +1596,7 @@ const PENDING = p => `<section class="list pending" style="--pc:var(--p5)">
 
 function drawWho(){
   who.hidden = true; who.innerHTML = "";
-  const pf = document.getElementById("perfilbtn"); if (pf) { pf.textContent = person.name.slice(0, 1); pf.setAttribute("aria-label", `Perfil ${person.art} ${person.name}`); }
+  const pf = document.getElementById("perfilbtn"); if (pf) { pf.textContent = person.name.slice(0, 1); pf.style.setProperty("--av", `var(${person.cor || "--lime"})`); pf.setAttribute("aria-label", `Perfil ${person.art} ${person.name}`); }
 }
 function drawHead(){
   head.innerHTML = `<h1>Olá, ${person.name}!</h1>`;
@@ -1587,32 +1614,73 @@ function drawDock(){
   timerEl.hidden = !tm;
   document.body.classList.toggle("has-timer", tm);
 }
+const BLOCO = {start: "2026-10-08", weeks: 6};
+const GUIA_DESC = {dieta: "Calorias, proteína e suplementos", regras: "Sobrar, falha, drop, progressão e deload", medidas: "Peso, medidas e próxima avaliação", breno: "O que veio dos vídeos do Breno Aceti"};
+const dm = s => s.slice(8, 10) + "/" + s.slice(5, 7);
+const kg1 = v => num((Math.round(v * 10) / 10).toFixed(1));
+function blocoInfo(){
+  const w0 = weekOf(BLOCO.start)[0], n = Math.round((parseDate(weekOf(trainDay())[0]) - parseDate(w0)) / 864e5 / 7) + 1;
+  return {sem: Math.min(BLOCO.weeks, Math.max(1, n)), acabou: n > BLOCO.weeks, reav: addDays(w0, BLOCO.weeks * 7)};
+}
+// Valor curto + complemento da meta de peso ("+0,16 a +0,32 kg" / "por semana")
+function metaPeso(p){
+  const t = META_PESO[p]?.txt; if (!t) return null;
+  const m = t.match(/^(.*?) \((.*)\)$/);
+  return t.endsWith(" por semana") ? [t.replace(" por semana", ""), "por semana"] : m ? [m[1], m[2]] : [t, ""];
+}
 function renderPerfil(){
-  const p = person.id, g = GOALS[p] || GOALS.a3, today = trainDay(), pesos = lastDays(30).map(s => pesoAt(p, s)).filter(v => v);
+  const p = person.id, g = GOALS[p] || GOALS.a3, hoje = trainDay(), cor = `var(${person.cor || "--lime"})`;
+  const pesos = lastDays(30).map(d => ({d, v: pesoAt(p, d)})).filter(x => x.v);
   const total = Object.values(LOGS).filter(x => x && x.person === p && trained(p, x.date)).length;
-  const linha = (l, v) => `<li><span>${l}</span><b>${v}</b></li>`;
-  return `<section class="list perfil">
-    <div class="pf-head"><button type="button" class="ghost back" data-screen="hoje" aria-label="Voltar para o Hoje">‹</button><span class="avatar big" aria-hidden="true">${person.name.slice(0, 1)}</span><div><p class="eyebrow">Meu perfil</p><h2>${person.name}</h2><p class="sub">${person.eyebrow || "Ficha em construção"}</p></div></div>
-    <article class="panel"><h3>Trocar de perfil</h3><div class="plist">${PEOPLE.map(x => `<button type="button" class="pitem" data-person="${x.id}" aria-pressed="${x.id === person.id}"><span class="avatar sm" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span>${x.id === person.id ? `<small>você está aqui</small>` : `<span aria-hidden="true">›</span>`}</button>`).join("")}</div></article>
-    <div class="tiles">${tile(total, total === 1 ? "treino registrado" : "treinos registrados")}${tile(bestStreak(p), "maior ofensiva", `atual: ${streakOf(p)}`)}${tile(pesos.length ? num(pesos[pesos.length - 1].toFixed(1)) + " kg" : "—", "peso atual")}${tile(person.days ? person.days.length + "x" : "—", "treinos por semana")}</div>
-    <article class="panel"><h3>Metas diárias</h3><ul class="pf-list">
-      ${linha("Água em dia de treino", ml(g.aguaTreino) + " ml")}${linha("Água em dia de descanso", ml(g.aguaDescanso) + " ml")}
-      ${linha("Calorias", KCAL[p] || "a definir após a avaliação")}${linha("Proteína", PROT[p] || "a definir após a avaliação")}
-      ${linha("Sono", g.sono + " h (mínimo " + g.sonoMin + " h)")}${META_PESO[p] ? linha("Peso", META_PESO[p].txt) : ""}
+  const semana = weekOf(hoje).slice(0, 5).filter(d => trained(p, d)).length, dias = person.days ? person.days.length : 0;
+  const atual = streakOf(p), recorde = bestStreak(p), bl = blocoInfo();
+  // Peso: último registro e quanto andou desde o registro de ~1–2 semanas antes
+  let pesoV = "—", pesoS = "registre no Hoje";
+  if (pesos.length) {
+    const ult = pesos[pesos.length - 1], ant = pesos.filter(x => x.d >= addDays(ult.d, -14) && x.d <= addDays(ult.d, -5)).sort((x, y) => Math.abs(parseDate(x.d) - parseDate(addDays(ult.d, -7))) - Math.abs(parseDate(y.d) - parseDate(addDays(ult.d, -7))))[0];   // o mais perto de 7 dias antes
+    pesoV = kg1(ult.v) + " kg";
+    if (ant) { const dlt = ult.v - ant.v, nd = Math.round((parseDate(ult.d) - parseDate(ant.d)) / 864e5); pesoS = (Math.abs(dlt) < 0.05 ? "estável" : (dlt > 0 ? "+" : "−") + kg1(Math.abs(dlt)) + " kg") + ` em ${nd} dias`; }
+    else pesoS = ult.d === hoje ? "registrado hoje" : "em " + dm(ult.d);
+  }
+  const meta = (ico, c, l, v, sub = "") => `<li style="--c:${c}"><span class="ico">${ico}</span><span class="mt-l">${l}${sub ? `<small>${sub}</small>` : ""}</span><b>${v}</b></li>`;
+  const mp = metaPeso(p), treinoHoje = !!dayIdFor(hoje);
+  const segs = Array.from({length: BLOCO.weeks}, (_, i) => `<i class="${i < bl.sem - 1 || bl.acabou ? "ok" : i === bl.sem - 1 ? "now" : ""}"></i>`).join("");
+  return `<section class="list perfil" style="--pc:${cor}">
+    <div class="pf-top"><button type="button" class="ghost back" data-screen="hoje" aria-label="Voltar para o Hoje">‹</button><p class="eyebrow">Meu perfil</p></div>
+    <article class="panel pf-hero">
+      <div class="pf-id"><span class="avatar big" style="--av:${cor}" aria-hidden="true">${person.name.slice(0, 1)}</span><div><h2>${person.name}</h2><p class="pf-goal">${person.goal || "Ficha em construção: falta a avaliação"}</p></div></div>
+      ${person.days ? `<div class="pf-bloco"><div class="pf-bl-h"><b>Bloco 1 · ${person.bloco}</b><span>${bl.acabou ? "terminou" : `semana ${bl.sem} de ${BLOCO.weeks}`}</span></div><div class="pf-segs" aria-hidden="true">${segs}</div><small>${bl.acabou ? "Hora da reavaliação: medidas, peso e cargas" : `Reavaliação a partir de ${dm(bl.reav)} · treino de seg a sex`}</small></div>` : ""}
+    </article>
+    <article class="panel"><h3>Trocar de perfil</h3><div class="pf-swap">${PEOPLE.map(x => `<button type="button" class="pf-p" data-person="${x.id}" aria-pressed="${x.id === p}" aria-label="${x.id === p ? "Você está no perfil " + x.art + " " + x.name : "Trocar para " + x.name}"><span class="avatar sm" style="--av:var(${x.cor || "--lime"})" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span></button>`).join("")}</div></article>
+    ${person.days ? `<div class="tiles">${tile(`${semana}<small>/${dias}</small>`, "treinos nesta semana", semana >= dias ? "semana completa" : `faltam ${dias - semana}`)}${tile(atual, atual === 1 ? "dia de ofensiva" : "dias de ofensiva", `recorde: ${recorde}`)}${tile(pesoV, "peso", pesoS)}${tile(total, total === 1 ? "treino no total" : "treinos no total", "desde " + dm(BLOCO.start))}</div>` : ""}
+    <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
+      ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
+      ${meta(ICON.sono, "var(--lime)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
+      ${meta(ICONF, "#FF9F43", "Calorias", KCAL[p] || "a definir", KCAL[p] ? "por dia" : "depois da avaliação")}
+      ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", PROT[p] ? "por dia · mais creatina 3–5 g" : "depois da avaliação")}
+      ${mp ? meta(ICON.balanca, "var(--ink)", "Peso", mp[0], mp[1]) : ""}
     </ul><p class="hint">Metas do agente de nutrição do seu personal. São um ponto de partida: ajuste pela média do peso em 2–3 semanas (±100–150 kcal).</p></article>
-    <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}"><span>${t.name}</span><span aria-hidden="true">›</span></button>`).join("")}</div>
+    <h3 class="pf-sec">Guias</h3>
+    <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}"><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div>
   </section>`;
 }
 function renderMais(){
   const desc = {dieta:"Calorias, proteína e suplementos", regras:"Sobrar, falha, drop, progressão e deload", medidas:"Peso, medidas e próxima avaliação", breno:"O que veio dos vídeos do Breno Aceti"};
   return `<section class="list"><h2>Mais</h2><div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}"><span>${t.name}<small>${desc[t.id] || ""}</small></span><span aria-hidden="true">›</span></button>`).join("")}</div></section>`;
 }
+let shownStats = "";
+function refreshStats(){
+  if (screen !== "perfil" && screen !== "progresso") return;
+  const h = screen === "perfil" ? renderPerfil() : renderProgress();
+  if (h === shownStats) return;
+  const y = scrollY; view.innerHTML = shownStats = h; window.scrollTo(0, y);
+}
 function draw(){
   drawWho(); drawHead(); drawTabs(); drawDock();
   if (screen === "hoje") { view.innerHTML = renderToday(); refreshToday(); return; }
   if (screen === "mais") { screen = "perfil"; }
-  if (screen === "progresso") { view.innerHTML = renderProgress(); return; }
-  if (screen === "perfil") { view.innerHTML = renderPerfil(); return; }
+  if (screen === "progresso") { view.innerHTML = shownStats = renderProgress(); return; }
+  if (screen === "perfil") { view.innerHTML = shownStats = renderPerfil(); return; }
   if (EXTRA.find(t => t.id === screen)) { view.innerHTML = `<button type="button" class="ghost back" data-screen="perfil">‹ Perfil</button>` + (person.panels || PANELS)[screen]; return; }
   if (!person.days){ view.innerHTML = PENDING(person); return; }
   if (treinoView === "semana") { view.innerHTML = renderSemana(); return; }
