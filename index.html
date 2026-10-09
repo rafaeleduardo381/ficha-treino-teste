@@ -921,13 +921,13 @@ const ICON = {
 const DOTS = 40;
 const dotsAt = (r, cx, cy, n, rad) => Array.from({length: n}, (_, i) => { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return `<circle class="dot-p" cx="${(cx + r * Math.cos(a)).toFixed(2)}" cy="${(cy + r * Math.sin(a)).toFixed(2)}" r="${rad}"/>`; }).join("");
 const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg id="ring-${key}" viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="1.2"/>${dotsAt(42, 50, 50, DOTS, 2.8)}</svg><span class="cheer" aria-hidden="true">Meta batida!</span><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
-// Liga os pontos do anel a partir de onde estavam, um a um
+// Liga os pontos do anel a partir de onde estavam, um a um, e o número sobe junto até o valor
 const ringState = {}, ringRaf = {};
-function animateRing(k, frac){
+function animateRing(k, frac, v = 0, goal = 1){
   const svg = document.getElementById("ring-" + k), b = document.getElementById("ck-" + k); if (!svg || !b) return;
   const dots = svg.querySelectorAll(".dot-p"), f = Math.max(0, frac || 0), to = Math.round(Math.min(1, f) * DOTS), pctTo = Math.round(f * 100);
-  const from = ringState[k]?.lit ?? 0, pctFrom = ringState[k]?.pct ?? 0;
-  ringState[k] = {lit: to, pct: pctTo};
+  const from = ringState[k]?.lit ?? 0, vFrom = ringState[k]?.v ?? 0;
+  ringState[k] = {lit: to, pct: pctTo, v};
   const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
   dots.forEach((d, i) => {
     const on = i < to, muda = on !== d.classList.contains("on");
@@ -935,7 +935,14 @@ function animateRing(k, frac){
     d.style.transitionDelay = calmo || !muda ? "0ms" : Math.max(0, ordem) * 22 + "ms";
     d.classList.toggle("on", on);
   });
-
+  // o número sobe (ou desce) até o valor novo
+  const txt = x => k === "agua" ? ml(Math.round(x / 10) * 10) : `${num(Math.round(x * 10) / 10)}/${num(goal)}`;
+  cancelAnimationFrame(ringRaf[k]); clearTimeout(ringRaf[k + "t"]);
+  if (calmo || vFrom === v) { b.textContent = txt(v); return; }
+  const t0 = performance.now(), dur = Math.min(1000, 200 + Math.abs(to - from) * 22);
+  const tick = t => { const x = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - x, 3); b.textContent = txt(vFrom + (v - vFrom) * e); if (x < 1) ringRaf[k] = requestAnimationFrame(tick); };
+  ringRaf[k] = requestAnimationFrame(tick);
+  ringRaf[k + "t"] = setTimeout(() => { cancelAnimationFrame(ringRaf[k]); b.textContent = txt(v); }, dur + 80);   // garante o número final mesmo se a animação parar
 }
 function renderToday(){
   for (const k in ringState) delete ringState[k];   // ao abrir a tela, os anéis enchem de novo a partir do zero
@@ -963,9 +970,8 @@ function refreshToday(){
   if (screen !== "hoje" || !document.getElementById("ck-agua")) return;
   const g = goalsFor(person.id, logDate), c = chkOf(person.id, logDate);
   const setRing = (k, v, goal, unit) => {
-    document.getElementById("ck-" + k).textContent = k === "agua" ? ml(v) : `${num(v)}/${num(goal)}`;
     document.getElementById("ck-" + k + "-u").textContent = unit;
-    animateRing(k, v / goal);
+    animateRing(k, v / goal, v, goal);
   };
   setRing("agua", +c.agua || 0, g.agua, `de ${ml(g.agua)} ml`);
   document.getElementById("ck-agua-note").textContent = `+ / − 250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}`;
