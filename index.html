@@ -921,7 +921,7 @@ const ICON = {
 const DOTS = 40;
 const dotsAt = (r, cx, cy, n, rad) => Array.from({length: n}, (_, i) => { const a = -Math.PI / 2 + i / n * 2 * Math.PI; return `<circle class="dot-p" cx="${(cx + r * Math.cos(a)).toFixed(2)}" cy="${(cy + r * Math.sin(a)).toFixed(2)}" r="${rad}"/>`; }).join("");
 const ring = (key, color) => `<div class="ring" style="--c:${color}"><svg id="ring-${key}" viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="42" fill="none" stroke-width="1.2"/>${dotsAt(42, 50, 50, DOTS, 2.8)}</svg><span class="cheer" aria-hidden="true">Meta batida!</span><div class="lbl"><b id="ck-${key}">0</b><small id="ck-${key}-u"></small></div></div>`;
-// Liga os pontos do anel a partir de onde estavam (um a um) e conta a % até o valor novo
+// Liga os pontos do anel a partir de onde estavam, um a um
 const ringState = {}, ringRaf = {};
 function animateRing(k, frac){
   const svg = document.getElementById("ring-" + k), b = document.getElementById("ck-" + k); if (!svg || !b) return;
@@ -935,12 +935,7 @@ function animateRing(k, frac){
     d.style.transitionDelay = calmo || !muda ? "0ms" : Math.max(0, ordem) * 22 + "ms";
     d.classList.toggle("on", on);
   });
-  cancelAnimationFrame(ringRaf[k]);
-  if (calmo || pctFrom === pctTo) { b.textContent = pctTo + "%"; return; }
-  const t0 = performance.now(), dur = Math.min(1000, 160 + Math.abs(to - from) * 22);
-  const tick = t => { const x = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - x, 3); b.textContent = Math.round(pctFrom + (pctTo - pctFrom) * e) + "%"; if (x < 1) ringRaf[k] = requestAnimationFrame(tick); };
-  ringRaf[k] = requestAnimationFrame(tick);
-  clearTimeout(ringRaf[k + "t"]); ringRaf[k + "t"] = setTimeout(() => { cancelAnimationFrame(ringRaf[k]); b.textContent = pctTo + "%"; }, dur + 80);   // garante o número final mesmo se a animação parar
+
 }
 function renderToday(){
   for (const k in ringState) delete ringState[k];   // ao abrir a tela, os anéis enchem de novo a partir do zero
@@ -968,12 +963,13 @@ function refreshToday(){
   if (screen !== "hoje" || !document.getElementById("ck-agua")) return;
   const g = goalsFor(person.id, logDate), c = chkOf(person.id, logDate);
   const setRing = (k, v, goal, unit) => {
+    document.getElementById("ck-" + k).textContent = k === "agua" ? ml(v) : `${num(v)}/${num(goal)}`;
     document.getElementById("ck-" + k + "-u").textContent = unit;
     animateRing(k, v / goal);
   };
-  setRing("agua", +c.agua || 0, g.agua, `${ml(+c.agua || 0)} / ${ml(g.agua)} ml`);
+  setRing("agua", +c.agua || 0, g.agua, `de ${ml(g.agua)} ml`);
   document.getElementById("ck-agua-note").textContent = `+ / − 250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}`;
-  setRing("sono", +c.sono || 0, g.sono, `${num(+c.sono || 0)} / ${num(g.sono)} h`);
+  setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
   document.getElementById("ck-count").textContent = `${((+c.agua || 0) >= g.agua) + ((+c.sono || 0) >= g.sono)}/2`;
