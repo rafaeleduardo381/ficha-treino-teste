@@ -696,12 +696,12 @@ function supaDb(){
 })();
 
 // Check-in diário (água e sono): um registro por pessoa e data na coleção "checkins"
-// Metas do agente de nutrição (2026-10-09): água em copos de 250 ml (treino / descanso), sono em horas (alvo / mínimo)
+// Metas do agente de nutrição (2026-10-09): água em ml por dia (treino / descanso; 13 copos de 250 ml = 3.250 ml), sono em horas (alvo / mínimo)
 const GOALS = {
-  rafael: {aguaTreino: 13, aguaDescanso: 9, sono: 8, sonoMin: 7},
-  laura:  {aguaTreino: 13, aguaDescanso: 9, sono: 8, sonoMin: 7},
-  laysa:  {aguaTreino: 12, aguaDescanso: 8, sono: 8, sonoMin: 7},
-  a3:     {aguaTreino: 12, aguaDescanso: 8, sono: 8, sonoMin: 7}
+  rafael: {aguaTreino: 3250, aguaDescanso: 2250, sono: 8, sonoMin: 7},
+  laura:  {aguaTreino: 3250, aguaDescanso: 2250, sono: 8, sonoMin: 7},
+  laysa:  {aguaTreino: 3000, aguaDescanso: 2000, sono: 8, sonoMin: 7},
+  a3:     {aguaTreino: 3000, aguaDescanso: 2000, sono: 8, sonoMin: 7}
 };
 const CHK = {}, chkPending = {}, chkTimers = {}, chkChains = {};
 const CHKK = NS + "chk:";
@@ -712,6 +712,7 @@ const fmtDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0"
 const dayIdFor = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5 ? "d" + w : null; };
 const goalsFor = (p, s) => { const g = GOALS[p] || GOALS.a3; return {agua: dayIdFor(s) ? g.aguaTreino : g.aguaDescanso, sono: g.sono, sonoMin: g.sonoMin}; };
 const chkOf = (p, s) => CHK[docId(p, s)] || {agua: 0, sono: 0};
+const ml = n => Math.round(+n || 0).toLocaleString("pt-BR");
 function weekOf(s){ const d = parseDate(s), back = (d.getDay() + 6) % 7; d.setDate(d.getDate() - back); return Array.from({length: 7}, (_, i) => { const x = new Date(d); x.setDate(d.getDate() + i); return fmtDate(x); }); }
 // Séries feitas (✓ ou com carga/reps) e séries previstas do treino daquele dia
 function treinoProg(p, s){
@@ -742,7 +743,7 @@ function renderToday(){
     <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count">0/2</span></h2>
     <div class="cards">
       <article class="ck"><div class="ck-h"><span class="ico" style="--c:var(--violet)">${ICON.agua}</span>Água</div>${ring("agua", "var(--violet)")}
-        <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Tirar um copo">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais um copo">+</button></div>
+        <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Menos 250 ml">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais 250 ml">+</button></div>
         <p class="ck-note" id="ck-agua-note">250 ml</p></article>
       <article class="ck"><div class="ck-h"><span class="ico" style="--c:var(--lime)">${ICON.sono}</span>Sono</div>${ring("sono", "var(--lime)")}
         <div class="step"><button type="button" data-ck="sono" data-d="-1" aria-label="Menos meia hora">−</button><button type="button" data-ck="sono" data-d="1" aria-label="Mais meia hora">+</button></div>
@@ -757,12 +758,12 @@ function refreshToday(){
   if (screen !== "hoje" || !document.getElementById("ck-agua")) return;
   const g = goalsFor(person.id, logDate), c = chkOf(person.id, logDate);
   const setRing = (k, v, goal, unit) => {
-    document.getElementById("ck-" + k).textContent = `${num(v)}/${num(goal)}`;
+    const el = document.getElementById("ck-" + k); el.textContent = k === "agua" ? ml(v) : `${num(v)}/${num(goal)}`;
     document.getElementById("ck-" + k + "-u").textContent = unit;
     document.getElementById("ring-" + k).style.strokeDashoffset = 263.9 * (1 - Math.min(1, v / goal));
   };
-  setRing("agua", +c.agua || 0, g.agua, "copos");
-  document.getElementById("ck-agua-note").textContent = `250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}`;
+  setRing("agua", +c.agua || 0, g.agua, `de ${ml(g.agua)} ml`);
+  document.getElementById("ck-agua-note").textContent = `+ / − 250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}`;
   setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("ck-count").textContent = `${((+c.agua || 0) >= g.agua) + ((+c.sono || 0) >= g.sono)}/2`;
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
@@ -777,8 +778,8 @@ function refreshToday(){
 function writeChk(field, dir){
   const id = docId(person.id, logDate);
   const c = CHK[id] ? {...CHK[id]} : {person: person.id, date: logDate, agua: 0, sono: 0};
-  const v = (+c[field] || 0) + dir * (field === "agua" ? 1 : 0.5);
-  c[field] = Math.max(0, Math.min(field === "agua" ? 30 : 14, v));
+  const v = (+c[field] || 0) + dir * (field === "agua" ? 250 : 0.5);
+  c[field] = Math.max(0, Math.min(field === "agua" ? 10000 : 14, v));
   c.updated = new Date().toISOString();
   CHK[id] = c; chkPending[id] = true; keepDate(logDate);
   refreshToday(); setChkStatus("Salvando…");
