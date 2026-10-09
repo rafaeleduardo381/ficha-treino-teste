@@ -1156,7 +1156,9 @@ function toast(html){
 // ───────────── Check-in extra: qualidade do sono, alimentação, peso (campos do agente de nutrição) ─────────────
 const SONO_Q = ["Péssimo", "Ruim", "Ok", "Bom", "Ótimo"];
 const DIETA_OP = [[1, "Segui o plano"], [0.5, "Saí um pouco"], [0, "Saí do plano"]];
-const PROT = {rafael: "125–140 g", laura: "120–130 g", laysa: "90–110 g"};
+// Metas do agente de nutrição (revistas em 2026-10-09 com as sessões novas)
+const PROT = {rafael: "125–140 g", laura: "130–145 g", laysa: "100–120 g"};
+const KCAL = {rafael: "2.900–3.000 kcal", laura: "1.950–2.050 kcal", laysa: "2.150–2.250 kcal"};
 const META_PESO = {rafael: {txt: "+0,16 a +0,32 kg por semana", lo: 0.16, hi: 0.32}, laura: {txt: "−0,15 a −0,3 kg por semana", lo: -0.3, hi: -0.15}, laysa: {txt: "estável (reagir só se a média andar 2–3 semanas)", lo: -0.15, hi: 0.15}};
 function setChk(patch){
   const id = docId(person.id, logDate);
@@ -1226,7 +1228,7 @@ function renderSheet(){
   sh.innerHTML = `<div class="sheet-bg" data-close></div><div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-t">
     <div class="sheet-grab" aria-hidden="true"></div>
     <h2 id="sheet-t">Como foi a alimentação ${quando}?</h2>
-    <p class="hint">Marque no fim do dia. "O plano" é o que o seu personal passou: proteína ${PROT[person.id] || "da sua meta"} por dia, creatina 3–5 g e as calorias do seu objetivo.</p>
+    <p class="hint">Marque no fim do dia. "O plano" é o que o seu personal passou: ${KCAL[person.id] ? KCAL[person.id] + " e " : ""}proteína ${PROT[person.id] || "da sua meta"} por dia, mais creatina 3–5 g.</p>
     <div class="opts">${DIETA_OP.map(([v, t]) => `<button type="button" class="opt" data-dieta="${v}" aria-pressed="${c.dieta != null && +c.dieta === v}"><b>${t}</b><small>${DIETA_DESC[v]}</small></button>`).join("")}</div>
     <div class="togs"><button type="button" class="tog" data-flag="proteina" aria-pressed="${!!c.proteina}"><span>Bati a proteína</span><small>${PROT[person.id] ? "meta " + PROT[person.id] : ""}</small></button><button type="button" class="tog" data-flag="creatina" aria-pressed="${!!c.creatina}"><span>Tomei creatina</span><small>3–5 g</small></button></div>
     <button type="button" class="done-btn" data-close>Pronto</button>
@@ -1592,11 +1594,12 @@ function renderPerfil(){
   return `<section class="list perfil">
     <div class="pf-head"><button type="button" class="ghost back" data-screen="hoje" aria-label="Voltar para o Hoje">‹</button><span class="avatar big" aria-hidden="true">${person.name.slice(0, 1)}</span><div><p class="eyebrow">Meu perfil</p><h2>${person.name}</h2><p class="sub">${person.eyebrow || "Ficha em construção"}</p></div></div>
     <article class="panel"><h3>Trocar de perfil</h3><div class="plist">${PEOPLE.map(x => `<button type="button" class="pitem" data-person="${x.id}" aria-pressed="${x.id === person.id}"><span class="avatar sm" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span>${x.id === person.id ? `<small>você está aqui</small>` : `<span aria-hidden="true">›</span>`}</button>`).join("")}</div></article>
-    <div class="tiles">${tile(total, "treinos registrados")}${tile(bestStreak(p), "maior ofensiva", `atual: ${streakOf(p)}`)}${tile(pesos.length ? num(pesos[pesos.length - 1]) + " kg" : "—", "peso atual")}${tile(person.days ? person.days.length + "x" : "—", "treinos por semana")}</div>
+    <div class="tiles">${tile(total, total === 1 ? "treino registrado" : "treinos registrados")}${tile(bestStreak(p), "maior ofensiva", `atual: ${streakOf(p)}`)}${tile(pesos.length ? num(pesos[pesos.length - 1].toFixed(1)) + " kg" : "—", "peso atual")}${tile(person.days ? person.days.length + "x" : "—", "treinos por semana")}</div>
     <article class="panel"><h3>Metas diárias</h3><ul class="pf-list">
       ${linha("Água em dia de treino", ml(g.aguaTreino) + " ml")}${linha("Água em dia de descanso", ml(g.aguaDescanso) + " ml")}
-      ${linha("Sono", g.sono + " h (mínimo " + g.sonoMin + " h)")}${PROT[p] ? linha("Proteína", PROT[p]) : ""}${META_PESO[p] ? linha("Peso", META_PESO[p].txt) : ""}
-    </ul><p class="hint">Metas definidas pelo agente de nutrição do seu personal.</p></article>
+      ${linha("Calorias", KCAL[p] || "a definir após a avaliação")}${linha("Proteína", PROT[p] || "a definir após a avaliação")}
+      ${linha("Sono", g.sono + " h (mínimo " + g.sonoMin + " h)")}${META_PESO[p] ? linha("Peso", META_PESO[p].txt) : ""}
+    </ul><p class="hint">Metas do agente de nutrição do seu personal. São um ponto de partida: ajuste pela média do peso em 2–3 semanas (±100–150 kcal).</p></article>
     <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}"><span>${t.name}</span><span aria-hidden="true">›</span></button>`).join("")}</div>
   </section>`;
 }
