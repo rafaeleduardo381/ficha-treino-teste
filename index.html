@@ -9,7 +9,7 @@
    Cores dos dias = anilhas (25 vermelha, 20 azul, 15 amarela, 10 verde, 5 roxa). */
 :root{
   --bg:#0D0E10; --surface:#17181B; --surface2:#222428; --ink:#F3F4EF; --soft:#D5D7D0; --muted:#8E929A; --line:#2A2D32;
-  --lime:#C6F24E; --lime-ink:#151708; --violet:#A68BFF; --coral:#FF6A4D; --blue:#4DB2FF;
+  --lime:#C6F24E; --lime-ink:#151708; --violet:#A68BFF; --coral:#FF6A4D; --blue:#4DB2FF; --sono:#F4C542;
   --accent:var(--lime); --accent-ink:var(--lime-ink);
   --p25:#FF6A4D; --p20:#6E9BFF; --p15:#F4C542; --p10:#C6F24E; --p5:#A68BFF;
   --ok:#C6F24E; --warn:#FFB547;
@@ -238,6 +238,23 @@ footer{color:var(--muted);font-size:.78rem;text-align:center}
 /* Progresso */
 .prog .sub{margin:0;font-size:.8rem;color:var(--muted)}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 12px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:44px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,transparent),transparent);pointer-events:none}
+.st-h{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;color:var(--soft)}
+.st-ico{width:28px;height:28px;border-radius:50%;background:color-mix(in srgb,var(--c) 16%,var(--surface2));color:var(--c);display:grid;place-items:center;flex:none}
+.st-ico svg{width:16px;height:16px}
+.st-ico .flame-ico{width:16px;height:18px}
+.st-v{display:flex;align-items:baseline;gap:5px;min-width:0}
+.st-v b{font-size:1.7rem;font-weight:800;line-height:1;letter-spacing:-.01em}
+.st-v span{font-size:.8rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.stat small{font-size:.72rem;color:var(--muted);line-height:1.3}
+.st-week{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.st-week i{height:6px;border-radius:3px;background:var(--surface2)}
+.st-week i.on{background:var(--c)}
+.st-week i.hoje{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 70%,transparent)}
+.st-bar{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}
+.st-bar i{display:block;height:100%;border-radius:3px;background:var(--c)}
 .mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .mini.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .tile{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -300,7 +317,7 @@ body[data-tela="treino"] .top,body[data-tela="perfil"] .top{display:none}
 .sq{display:flex;gap:4px;justify-content:center}
 .sqb{width:26px;height:26px;padding:0;border:0;border-radius:50%;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center}
 .sqb svg{width:22px;height:22px}
-.sqb[aria-pressed="true"]{color:var(--bg);background:var(--lime)}
+.sqb[aria-pressed="true"]{color:var(--bg);background:var(--sono)}
 .mini-ck{gap:10px;align-items:stretch;text-align:left;font:inherit;color:var(--ink)}
 .mini-ck .ck-note{text-align:left}
 .dietbtn{cursor:pointer}
@@ -1034,7 +1051,7 @@ function renderToday(){
       <article class="ck" id="card-agua" style="--c:var(--blue)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<button type="button" class="badge" data-cheer="agua" aria-label="Meta de água batida: ver a comemoração">Meta ✓</button></div>${ring("agua", "var(--blue)")}
         <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Menos 250 ml">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais 250 ml">+</button></div>
         <p class="ck-note" id="ck-agua-note">250 ml</p></article>
-      <article class="ck" id="card-sono" style="--c:var(--lime)"><div class="ck-h"><span class="ico">${ICON.sono}</span>Sono<button type="button" class="badge" data-cheer="sono" aria-label="Meta de sono batida: ver a comemoração">Meta ✓</button></div>${ring("sono", "var(--lime)")}
+      <article class="ck" id="card-sono" style="--c:var(--sono)"><div class="ck-h"><span class="ico">${ICON.sono}</span>Sono<button type="button" class="badge" data-cheer="sono" aria-label="Meta de sono batida: ver a comemoração">Meta ✓</button></div>${ring("sono", "var(--sono)")}
         <div class="step"><button type="button" data-ck="sono" data-d="-1" aria-label="Menos meia hora">−</button><button type="button" data-ck="sono" data-d="1" aria-label="Mais meia hora">+</button></div>
         <div class="sq" role="group" aria-label="Como você dormiu">${SONO_Q.map((t, i) => `<button type="button" class="sqb" data-sq="${i + 1}" aria-pressed="false" aria-label="${t}" title="${t}">${SQ_ICO[i]}</button>`).join("")}</div>
         <p class="ck-note" id="ck-sono-note">Como dormiu? Toque numa carinha</p></article>
@@ -1086,7 +1103,7 @@ function celebrate(field){
   card.classList.remove("win"); void card.offsetWidth; card.classList.add("win");
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setTimeout(() => card.classList.remove("win"), 1800); return; }
   setTimeout(() => card.classList.remove("win"), 1800);
-  const colors = field === "agua" ? ["var(--blue)", "#BFE3FF", "var(--ink)"] : ["var(--lime)", "#E9FFB0", "var(--ink)"];
+  const colors = field === "agua" ? ["var(--blue)", "#BFE3FF", "var(--ink)"] : ["var(--sono)", "#FFEBA8", "var(--ink)"];
   for (let i = 0; i < 22; i++) {
     const bit = document.createElement("i");
     bit.className = "bit";
@@ -1324,6 +1341,10 @@ function lineChart({pts, avgPts, color, band}){
   return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img">${grid}${line}${dots}${lbl}</svg><div class="tip" hidden></div></div>`;
 }
 const dd = s => `${s.slice(8, 10)}/${s.slice(5, 7)}`;
+const ICON_HALTER = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg>`;
+const ICON_PILHA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20h16M6 20V10M10 20V6M14 20v-8M18 20V4"/></svg>`;
+// Cartão de número: ícone + rótulo, valor grande com unidade, e um rodapé (visual + texto)
+const stat = ({ico, c, l, v, u = "", foot = "", vis = ""}) => `<div class="stat" style="--c:${c}"><div class="st-h"><span class="st-ico">${ico}</span>${l}</div><div class="st-v"><b class="num">${v}</b>${u ? `<span>${u}</span>` : ""}</div>${vis}${foot ? `<small>${foot}</small>` : ""}</div>`;
 const tile = (v, l, s = "") => `<div class="tile"><b class="num">${v}</b><span>${l}</span>${s ? `<small>${s}</small>` : ""}</div>`;
 function renderProgress(){
   const p = person.id, today = logDate, from28 = addDays(today, -27);
@@ -1351,11 +1372,27 @@ function renderProgress(){
   const dietaDe = days => { const reg = days.map(s => chkOf(p, s)).filter(c => c.dieta != null); return reg.length ? {ader: Math.round(avg(reg.map(c => +c.dieta)) * 100), prot: Math.round(reg.filter(c => c.proteina).length / reg.length * 100), n: reg.length} : null; };
   const dNow = dietaDe(lastDays(7, today)), dPrev = dietaDe(lastDays(7, addDays(today, -7)));
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
+  // Cartões do topo: ofensiva (dias úteis da semana), treinos feitos x previstos, volume e calorias
+  const ofen = streakOf(p), semDias = weekOf(today).slice(0, 5);
+  const previstos = person.days ? lastDays(28, today).filter(s => (s >= BLOCO.start && dayIdFor(s)) || trained(p, s)).length : 0;
+  const n = sess.length, fl = flameOf(ofen);
+  const statCards = [
+    stat({ico: flameSvg(ofen), c: fl.a, l: "Ofensiva", v: ofen, u: ofen === 1 ? "dia" : "dias",
+      vis: `<div class="st-week" aria-label="Treinos desta semana">${semDias.map(s => `<i class="${trained(p, s) ? "on" : s === trainDay() ? "hoje" : ""}" title="${WD[parseDate(s).getDay()]}"></i>`).join("")}</div>`,
+      foot: `recorde: ${bestStreak(p)} ${bestStreak(p) === 1 ? "dia" : "dias"}`}),
+    stat({ico: ICON_HALTER, c: "var(--lime)", l: "Treinos", v: n, u: previstos ? `de ${previstos}` : "",
+      vis: previstos ? `<div class="st-bar"><i style="width:${Math.min(100, Math.round(n / previstos * 100))}%"></i></div>` : "",
+      foot: previstos ? (n >= previstos ? "nenhum treino perdido" : `${previstos - n} ${previstos - n === 1 ? "ficou" : "ficaram"} para trás`) : "nas últimas 4 semanas"}),
+    stat({ico: ICON_PILHA, c: "var(--coral)", l: "Volume", v: vol ? (vol / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) : "—", u: vol ? "t" : "",
+      foot: vol ? (n > 1 ? `~${(vol / n / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1})} t por treino` : "kg × reps somados") : "kg × reps somados"}),
+    stat({ico: ICONF, c: "#FF9F43", l: "Calorias", v: kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", u: kcal ? "kcal" : "",
+      foot: semPeso ? "registre o peso no Hoje para calcular" : kcal && n > 1 ? `~${Math.round(kcal / n)} por treino` : "gastas nos treinos"})
+  ].join("");
   return `<section class="list prog" aria-label="Progresso">
     <h2>Progresso</h2>
     ${renderPainel(p)}
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
-    <div class="tiles">${tile(streakOf(p), "dias de ofensiva", `maior: ${bestStreak(p)}`)}${tile(sess.length, "treinos")}${tile(vol ? (vol / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "—", "volume levantado")}${tile(kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", "kcal gastas no treino", semPeso ? "registre o peso" : "")}</div>
+    <div class="stats">${statCards}</div>
 
     <article class="panel"><div class="ph"><h3>Desempenho</h3>${wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : ""}</div>
       <p class="sub">Volume por semana (kg × reps)</p>
@@ -1370,7 +1407,7 @@ function renderProgress(){
 
     <article class="panel"><div class="ph"><h3>Sono</h3></div>
       <div class="mini">${tile(sonoAvg ? num(sonoAvg.toFixed(1)) + " h" : "—", "média")}${tile(qAvg ? SONO_Q[Math.round(qAvg) - 1] : "—", "qualidade")}${tile(curtas, "noites com menos de 7 h")}</div>
-      ${bars({data: sono, color: "var(--lime)", max: 10, ref: 7, refLabel: "7 h", fmtY: v => v + "h"})}
+      ${bars({data: sono, color: "var(--sono)", max: 10, ref: 7, refLabel: "7 h", fmtY: v => v + "h"})}
       ${sonoAvg && (sonoAvg < 7 || (qAvg && qAvg <= 2)) ? `<p class="alert">Sono abaixo do ideal nas últimas 2 semanas: é o que mais trava o ganho de músculo.</p>` : ""}
     </article>
 
@@ -1426,12 +1463,12 @@ function renderPainel(p){
     <div class="pr-grid">
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#FF9F43">${ICONF}</span><b>Calorias</b></div><div class="pr-v"><div><b class="num">${tst?.kcal ? "~" + tst.kcal : "—"}</b><span>${tst ? "kcal no treino" : tprog ? "sem treino registrado" : "dia de descanso"}</span></div>${ringMini(tprog && tprog.total ? tprog.done / tprog.total : 0, "#FF9F43")}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--blue)">${ICON.agua}</span><b>Água</b></div><div class="pr-v"><div><b class="num">${ml(+c.agua || 0)}</b><span>ml ${quando === "hoje" ? "hoje" : "em " + quando}</span></div>${ringMini((+c.agua || 0) / gAgua, "var(--blue)")}</div></article>
-      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:#F4C542">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h · noite ${quando === "hoje" ? "passada" : "p/ " + quando}</span></div>${sonoBars}</div></article>
+      <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--sono)">${ICON.sono}</span><b>Sono</b></div><div class="pr-v"><div><b class="num">${ontem ? num(ontem) : "—"}</b><span>h · noite ${quando === "hoje" ? "passada" : "p/ " + quando}</span></div>${sonoBars}</div></article>
       <article class="pr-card"><div class="pr-h"><span class="pr-ico" style="--c:var(--lime)">${ICON.balanca}</span><b>Peso</b></div><div class="pr-v"><div><b class="num">${pAtual ? num(pAtual.toFixed(1)) : "—"}</b><span>kg</span></div>${spark}</div></article>
     </div>
   </div>`;
 }
-const ICONF = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-7 0 2 1 3 2 3-1-3 0-6 1-8z"/></svg>`;
+const ICONF = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 2 4.5 13.5h6l-1.5 8.5 9.5-12h-6.2z"/></svg>`;
 // ───────────── Mapa dos músculos (frente e costas) ─────────────
 const MUSCLE_PT = {chest: "peito", shoulders: "ombros", triceps: "tríceps", biceps: "bíceps", forearms: "antebraço", abdominals: "abdômen", quadriceps: "quadríceps", hamstrings: "posteriores", glutes: "glúteos", calves: "panturrilhas", lats: "dorsais", "middle back": "meio das costas", "lower back": "lombar", traps: "trapézio", abductors: "abdutores", adductors: "adutores", neck: "pescoço"};
 // Metade esquerda de cada vista (centro em x=30); a outra metade é espelhada. [músculo, caminho SVG]
@@ -1655,7 +1692,7 @@ function renderPerfil(){
     ${person.days ? `<div class="tiles">${tile(`${semana}<small>/${dias}</small>`, "treinos nesta semana", semana >= dias ? "semana completa" : `faltam ${dias - semana}`)}${tile(atual, atual === 1 ? "dia de ofensiva" : "dias de ofensiva", `recorde: ${recorde}`)}${tile(pesoV, "peso", pesoS)}${tile(total, total === 1 ? "treino no total" : "treinos no total", "desde " + dm(BLOCO.start))}</div>` : ""}
     <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
       ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
-      ${meta(ICON.sono, "var(--lime)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
+      ${meta(ICON.sono, "var(--sono)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
       ${meta(ICONF, "#FF9F43", "Calorias", KCAL[p] || "a definir", KCAL[p] ? "por dia" : "depois da avaliação")}
       ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", PROT[p] ? "por dia · mais creatina 3–5 g" : "depois da avaliação")}
       ${mp ? meta(ICON.balanca, "var(--ink)", "Peso", mp[0], mp[1]) : ""}
@@ -1672,7 +1709,8 @@ let shownStats = "";
 function refreshStats(){
   if (screen !== "perfil" && screen !== "progresso") return;
   const h = screen === "perfil" ? renderPerfil() : renderProgress();
-  if (h === shownStats) return;
+  const sem = x => x.replace(/fld+/g, "");   // ids dos gradientes da chama mudam a cada render
+  if (sem(h) === sem(shownStats)) return;
   const y = scrollY; view.innerHTML = shownStats = h; window.scrollTo(0, y);
 }
 function draw(){
