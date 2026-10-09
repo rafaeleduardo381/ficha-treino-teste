@@ -1305,9 +1305,38 @@ function toast(html){
 // ───────────── Check-in extra: qualidade do sono, alimentação, peso (campos do agente de nutrição) ─────────────
 const SONO_Q = ["Péssimo", "Ruim", "Ok", "Bom", "Ótimo"];
 const DIETA_OP = [[1, "Segui o plano"], [0.5, "Saí um pouco"], [0, "Saí do plano"]];
-// Metas do agente de nutrição (revistas em 2026-10-09 com as sessões novas)
-const PROT = {rafael: "125–140 g", laura: "130–145 g", laysa: "100–120 g"};
-const KCAL = {rafael: "2.900–3.000 kcal", laura: "1.950–2.050 kcal", laysa: "2.150–2.250 kcal"};
+// Metas calculadas pelo peso e pelo objetivo — regra do agente de nutrição (2026-10-09).
+// Proteína = g/kg × peso; calorias = base + 16,5 × peso (a base já embute altura/idade, que não vão para o site).
+// Peso = média das pesagens em jejum dos 7 dias até a segunda-feira da semana (mín. 3; senão 14 dias; senão o da avaliação), recalculado toda segunda.
+const METAS_REGRA = {
+  ref: {rafael: 63, laura: 64, laysa: 55, a3: null},
+  rafael: {gkg: 2.2, faixa: [2.0, 2.2], base: [1860, 1960], fator: 16.5, peso: [59.2, 66.8], protMax: 150, kcal: [2800, 3100]},
+  laura:  {gkg: 2.2, faixa: [2.0, 2.3], base: [890, 990],   fator: 16.5, peso: [60.2, 67.8], protMax: 160, kcal: [1900, 2150]},
+  laysa:  {gkg: 2.0, faixa: [1.8, 2.2], base: [1240, 1340], fator: 16.5, peso: [51.7, 58.3], protMax: 130, kcal: [2050, 2350]},
+  a3:     {gkg: 1.8, faixa: [1.6, 2.2], base: null,         fator: null, peso: [40, 100],     protMax: 160, kcal: null}
+};
+const r5 = v => Math.round(v / 5) * 5, r50 = v => Math.round(v / 50) * 50, clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+function pesoMeta(p, s = logDate){
+  const R = METAS_REGRA[p] || METAS_REGRA.a3, ref = METAS_REGRA.ref[p] ?? null, seg = weekOf(s)[0];
+  const ok = v => v >= 35 && v <= 150 && (ref == null || Math.abs(v - ref) / ref <= 0.15);
+  const janela = n => Array.from({length: n + 1}, (_, i) => pesoAt(p, addDays(seg, -i))).filter(v => v && ok(v));
+  let w = janela(7), fonte = "7";
+  if (w.length < 3) { w = janela(14); fonte = "14"; }
+  if (w.length < 3) { if (ref == null && !w.length) return null; w = ref != null ? [ref] : w; fonte = ref != null ? "ref" : "14"; }
+  const bruto = avg(w), peso = clamp(bruto, R.peso[0], R.peso[1]);
+  return {peso: Math.round(peso * 10) / 10, n: fonte === "ref" ? 0 : w.length, fonte, revisao: Math.abs(peso - bruto) > 0.05};
+}
+function metas(p, s = logDate){
+  const R = METAS_REGRA[p] || METAS_REGRA.a3, pm = pesoMeta(p, s);
+  if (!pm) return {bolinha: 25};
+  const total = Math.min(R.protMax, Math.round(R.gkg * pm.peso)), bolinha = clamp(Math.round(total / 4), 20, 40);
+  const faixa = [r5(R.faixa[0] * pm.peso), Math.min(R.protMax, r5(R.faixa[1] * pm.peso))];
+  const kcal = R.base ? [clamp(r50(R.base[0] + R.fator * pm.peso), R.kcal[0], R.kcal[1]), clamp(r50(R.base[1] + R.fator * pm.peso), R.kcal[0], R.kcal[1])] : null;
+  return {...pm, gkg: R.gkg, total, bolinha, faixa, kcal};
+}
+// PROT[p] e KCAL[p] continuam funcionando como antes, agora calculados
+const PROT = new Proxy({}, {get: (_, p) => { const m = metas(p); return m.faixa ? `${m.faixa[0]}–${m.faixa[1]} g` : undefined; }});
+const KCAL = new Proxy({}, {get: (_, p) => { const m = metas(p); return m.kcal ? `${m.kcal[0].toLocaleString("pt-BR")}–${m.kcal[1].toLocaleString("pt-BR")} kcal` : undefined; }});
 const META_PESO = {rafael: {txt: "+0,16 a +0,32 kg por semana", lo: 0.16, hi: 0.32}, laura: {txt: "−0,15 a −0,3 kg por semana", lo: -0.3, hi: -0.15}, laysa: {txt: "estável (reagir só se a média andar 2–3 semanas)", lo: -0.15, hi: 0.15}};
 function setChk(patch){
   const id = docId(person.id, logDate);
@@ -1342,6 +1371,7 @@ const NUTRI = {
     pessoa: {rafael: "1 bolinha (~35 g) + carboidrato à vontade (2 pães ou 1 prato de arroz).", laura: "1 bolinha (~35 g) + carboidrato pequeno (1 fruta ou 1 pão).", laysa: "1 bolinha (~28 g) + carboidrato médio (1 pão ou 1 banana com aveia).", a3: "1 bolinha (~25 g) + 1 fruta ou 1 pão."}},
   creatina: "Creatina 3–5 g por dia, em qualquer horário, inclusive no fim de semana."
 };
+for (const k in PROT_REF) Object.defineProperty(PROT_REF[k], "g", {get: () => metas(k).bolinha});   // gramas da bolinha vêm do peso
 let nowFn = () => new Date();   // trocável nos testes
 const refsOf = (p, s) => { const c = chkOf(p, s), r = c.prot_refs; return Array.isArray(r) ? r : c.proteina ? [0, 1, 2, 3] : []; };   // registro antigo com "bati a proteína" = 4 bolinhas
 function protCard(){
@@ -1368,7 +1398,7 @@ function nutriCard(){
   const d = nowFn(), m = d.getHours() * 60 + d.getMinutes();
   const k = m >= 17 * 60 && m < 21 * 60 ? "antes" : m >= 21 * 60 && m < 23 * 60 + 30 ? "durante" : (m >= 23 * 60 + 30 || m < 5 * 60) ? "depois" : null;
   if (!k) return "";
-  const n = NUTRI[k], pp = n.pessoa ? (n.pessoa[person.id] || n.pessoa.a3) : "";
+  const n = NUTRI[k], pp = n.pessoa ? (n.pessoa[person.id] || n.pessoa.a3).replace(/~\d+ g/, "~" + metas(person.id).bolinha + " g") : "";
   return `<article class="panel tinted nut" style="--c:var(--kcal)">${phd(ICON.prato, n.titulo, `<span class="delta">${n.tag}</span>`)}
     <ul class="rel-l">${n.itens.map(x => `<li class="nx">${x}</li>`).join("")}</ul>
     ${pp ? `<p class="nut-p"><b>${person.name}:</b> ${pp}</p>` : ""}
@@ -1898,7 +1928,7 @@ function renderPerfil(){
     else pesoS = ult.d === hoje ? "registrado hoje" : "em " + dm(ult.d);
   }
   const meta = (ico, c, l, v, sub = "") => `<li style="--c:${c}"><span class="ico">${ico}</span><span class="mt-l">${l}${sub ? `<small>${sub}</small>` : ""}</span><b>${v}</b></li>`;
-  const mp = metaPeso(p), treinoHoje = !!dayIdFor(hoje);
+  const mp = metaPeso(p), treinoHoje = !!dayIdFor(hoje), mt = metas(p, hoje);
   const segs = Array.from({length: BLOCO.weeks}, (_, i) => `<i class="${i < bl.sem - 1 || bl.acabou ? "ok" : i === bl.sem - 1 ? "now" : ""}"></i>`).join("");
   return `<section class="list perfil" style="--pc:${cor}">
     <div class="pf-top"><button type="button" class="ghost back" data-screen="hoje" aria-label="Voltar para o Hoje">‹</button><p class="eyebrow">Meu perfil</p></div>
@@ -1911,10 +1941,10 @@ function renderPerfil(){
     <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
       ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
       ${meta(ICON.sono, "var(--sono)", "Sono", g.sono + " h", "mínimo " + g.sonoMin + " h")}
-      ${meta(ICONF, "var(--kcal)", "Calorias", KCAL[p] || "a definir", KCAL[p] ? "por dia" : "depois da avaliação")}
-      ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", PROT[p] ? "por dia · mais creatina 3–5 g" : "depois da avaliação")}
+      ${meta(ICONF, "var(--kcal)", "Calorias", KCAL[p] || "a definir", mt.kcal ? `calculado para ${num(mt.peso)} kg${mt.n ? ` (média de ${mt.n} pesagens)` : " (peso da avaliação)"}` : "depois da avaliação")}
+      ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", mt.faixa ? `${num(mt.gkg)} g por kg × ${num(mt.peso)} kg ≈ ${mt.total} g → 4 bolinhas de ${mt.bolinha} g` : "depois da avaliação")}
       ${mp ? meta(ICON.balanca, "var(--peso)", "Peso", mp[0], mp[1]) : ""}
-    </ul><p class="hint">Metas do agente de nutrição do seu personal. São um ponto de partida: ajuste pela média do peso em 2–3 semanas (±100–150 kcal).</p></article>
+    </ul>${mt.revisao ? `<p class="alert">Seu peso saiu da faixa prevista: as metas precisam de revisão do personal.</p>` : ""}<p class="hint">Calculadas pelo seu peso e objetivo (regra do agente de nutrição) e recalculadas toda segunda com a média das pesagens em jejum. Pese-se pelo menos 3 vezes na semana.</p></article>
     <article class="panel"><h3>Animações</h3><div class="chips three" role="group" aria-label="Animações">${[["on", "Completas"], ["off", "Suaves"], ["auto", "Do celular"]].map(([k, t]) => `<button type="button" class="chip" data-anim="${k}" aria-pressed="${motion === k}">${t}</button>`).join("")}</div><p class="hint">${motion === "on" ? "Cartões entrando, números subindo, barras crescendo e efeitos ao tocar." : motion === "off" ? "Só aparece e some suave, sem movimento na tela." : "Segue o ajuste do celular: se ele estiver com animações reduzidas, fica suave."}</p></article>
     <h3 class="pf-sec">Guias</h3>
     <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}" style="--c:${GUIA_COR[t.id] || "var(--muted)"}"><span class="mi"><span class="st-ico">${GUIA_ICO[t.id] || ""}</span><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span></span><span aria-hidden="true">›</span></button>`).join("")}</div>
