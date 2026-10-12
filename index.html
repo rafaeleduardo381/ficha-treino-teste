@@ -296,6 +296,105 @@ body.mov .al-r[aria-pressed="true"] .al-c{animation:check .4s cubic-bezier(.3,1.
 .sw-c{display:grid;grid-template-columns:1fr;gap:6px}
 .sw-c .chip{text-align:left;border-radius:12px}
 .sw-c .chip b{display:inline-block;min-width:2.4em;color:var(--muted)}
+.calbar{display:flex;align-items:center;gap:8px}
+.cal-nav{width:38px;height:38px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:1.3rem;line-height:1;cursor:pointer}
+.cal-mes{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;height:38px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.cal-mes svg{width:17px;height:17px;color:var(--lime);flex:none}
+.cal-mes b{font-size:.92rem}
+.cal-mes span{font-size:.74rem;color:var(--muted);white-space:nowrap}
+.week{touch-action:pan-y}
+@keyframes week-l{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes week-r{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+body.mov .week.slide-l{animation:week-l .3s cubic-bezier(.2,.8,.2,1)}
+body.mov .week.slide-r{animation:week-r .3s cubic-bezier(.2,.8,.2,1)}
+.cal-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cal-h h2{font-size:1.15rem}
+.cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-wd span{text-align:center;font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.cal-d{position:relative;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:12px;border:1px solid transparent;background:var(--surface2);color:var(--ink);font:inherit;cursor:pointer;padding:0}
+.cal-d b{font-size:.9rem;font-variant-numeric:tabular-nums}
+.cal-d i{width:6px;height:6px;border-radius:50%;background:transparent}
+.cal-d i.tr,.cal-leg i.tr{background:var(--lime)}
+.cal-d.ck{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--blue) 55%,transparent)}
+.cal-d.fora{opacity:.35}
+.cal-d.fut b{color:var(--muted)}
+.cal-d.hoje{border-color:var(--ink)}
+.cal-d.on{background:var(--lime);color:var(--lime-ink)}
+.cal-d.on i.tr{background:var(--lime-ink)}
+.cal-leg{display:flex;align-items:center;gap:6px;justify-content:center}
+.cal-leg i{display:inline-block;width:8px;height:8px;border-radius:50%}
+.cal-leg i.ckl{box-shadow:inset 0 0 0 1.5px var(--blue)}
+.streak.risco{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
+.streak.urgente{border-color:var(--coral)}
+.streak.urgente .st-t{color:var(--coral)}
+@keyframes of-pulso{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--coral) 45%,transparent)}50%{box-shadow:0 0 0 8px transparent}}
+body.mov .streak.urgente{animation:of-pulso 1.6s ease-in-out infinite}
+.ofmodal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;background:rgba(5,6,7,.86);opacity:0;transition:opacity .25s}
+.ofmodal.open{opacity:1}
+.ofmodal.perdeu{background:rgba(24,4,2,.92)}
+.of-box{width:min(380px,100%);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:26px 22px 20px}
+.ofmodal.ganhou .of-box{border-color:color-mix(in srgb,var(--fa) 55%,var(--line));background:radial-gradient(circle at 50% 0,color-mix(in srgb,var(--fa) 22%,var(--surface)),var(--surface) 62%)}
+.ofmodal.perdeu .of-box{border-color:color-mix(in srgb,var(--coral) 60%,var(--line))}
+.of-fl .flame-ico{width:92px;height:108px}
+.of-fl.apagada .flame-ico{filter:grayscale(1) brightness(.7)}
+.of-n{margin:0;font-size:3.4rem;font-weight:800;line-height:1}
+.ofmodal.perdeu .of-n{font-size:2rem;color:var(--coral)}
+.ofmodal.perdeu .of-n s{color:var(--muted)}
+.of-box h2{font-size:1.25rem}
+.of-f{margin:6px 0 0;font-size:1.08rem;font-weight:800;line-height:1.35;text-wrap:balance}
+.ofmodal.perdeu .of-f{color:var(--coral)}
+.of-s{margin:0 0 8px;font-size:.84rem;color:var(--muted)}
+.of-box .done-btn{align-self:stretch}
+.ofmodal.perdeu .done-btn{background:var(--coral);color:#1A0B06}
+@keyframes of-entra{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:none}}
+@keyframes of-treme{0%,100%{transform:none}15%{transform:translateX(-9px) rotate(-1deg)}30%{transform:translateX(8px) rotate(1deg)}45%{transform:translateX(-6px)}60%{transform:translateX(5px)}80%{transform:translateX(-2px)}}
+@keyframes of-apaga{0%{filter:none;transform:scale(1)}60%{filter:grayscale(.4);transform:scale(1.08)}100%{filter:grayscale(1) brightness(.7);transform:scale(.92)}}
+body.mov .ofmodal.ganhou.open .of-box{animation:of-entra .55s cubic-bezier(.3,1.4,.5,1)}
+body.mov .ofmodal.ganhou.open .of-fl .flame-ico{transform-origin:50% 92%;animation:flicker 2.2s ease-in-out infinite}
+body.mov .ofmodal.perdeu.open .of-box{animation:of-treme .6s ease .15s}
+body.mov .ofmodal.perdeu.open .of-fl .flame-ico{animation:of-apaga 1.1s ease both}
+.ex .meta{display:flex;align-items:center;gap:10px;margin:0;padding:10px 12px;border-radius:14px;background:var(--surface2);border:1px solid var(--line)}
+.ex .meta .mt-ico,.daymetas .mt-ico{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--muted) 18%,var(--surface2));color:var(--soft)}
+.ex .meta .mt-ico svg,.daymetas .mt-ico svg{width:17px;height:17px}
+.ex .meta small{display:block;font-size:.68rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.ex .meta p{margin:1px 0 0;font-size:.86rem;color:var(--soft);line-height:1.35}
+.ex .meta p b{font-size:1.15rem;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.ex .meta.up{background:color-mix(in srgb,var(--lime) 11%,var(--surface2));border-color:color-mix(in srgb,var(--lime) 45%,var(--line))}
+.ex .meta.up .mt-ico{background:var(--lime);color:var(--lime-ink)}
+.ex .meta.up small{color:var(--lime)}
+.ex .meta.up p b{color:var(--lime)}
+.daymetas{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid color-mix(in srgb,var(--lime) 35%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--lime) 9%,var(--surface)) 0,var(--surface) 78px)}
+.daymetas .mt-ico{background:var(--lime);color:var(--lime-ink)}
+.daymetas b{font-size:.95rem}
+.daymetas p{margin:1px 0;font-size:.86rem;color:var(--soft)}
+.daymetas p b.up{color:var(--lime)}
+.daymetas small{font-size:.72rem;color:var(--muted)}
+button.todaycard{gap:10px;padding:16px}
+.tc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tc-day{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--pc)}
+.tc-st{font-size:.72rem;font-weight:800;border-radius:999px;padding:3px 10px;background:var(--surface2);color:var(--soft);white-space:nowrap}
+.todaycard.andando .tc-st{background:color-mix(in srgb,var(--warn) 22%,var(--surface2));color:var(--warn)}
+.todaycard.feito .tc-st{background:var(--lime);color:var(--lime-ink)}
+.todaycard h3{font-size:1.45rem;font-weight:800;line-height:1.15}
+.todaycard .tc-sub{margin:-6px 0 0;font-size:.85rem;color:var(--muted);line-height:1.35}
+.tc-nums{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+.tc-nums span{display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--surface2);border-radius:12px;padding:8px 10px;font-size:.7rem;font-weight:700;color:var(--muted)}
+.tc-nums b{font-size:1.05rem;font-weight:800;color:var(--ink);line-height:1.1}
+.tc-prog{display:flex;align-items:center;gap:10px}
+.tc-prog .pbar{flex:1}
+.tc-prog span{font-size:.78rem;font-weight:800;color:var(--soft)}
+.tc-cta{display:flex;align-items:center;justify-content:center;gap:8px;height:46px;border-radius:14px;background:var(--lime);color:var(--lime-ink);font-weight:800;font-size:.98rem}
+.tc-cta svg{width:18px;height:18px}
+.todaycard.feito .tc-cta{background:var(--surface2);color:var(--ink)}
+.ck.alc .ck-h .pt-v{color:var(--warn)}
+.alc-q{margin:0;font-size:.9rem;color:var(--soft)}
+.alc-q small{display:block;font-size:.74rem;color:var(--muted)}
+.alc-row{display:grid;grid-template-columns:1.9fr repeat(6,minmax(0,1fr));gap:5px}
+.alc-row .chip{padding:10px 0;text-align:center;font-size:.86rem;border-radius:12px}
+.alc-row .chip[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#1A1205}
+.alc-mais{grid-column:1/-1;font:inherit;font-size:.82rem;font-weight:700;color:var(--muted);background:none;border:1px dashed var(--line);border-radius:14px;padding:10px;cursor:pointer}
+.alc-m{margin:0;font-size:.92rem;color:var(--soft)}
+.alc-linha{margin:0;font-size:.78rem;color:var(--warn)}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -877,7 +976,7 @@ function renderDayCore(d){
           ${flag?`<span class="tag drop">${flag}</span>`:""}
         </div>
       </div>
-      ${log ? `<p class="last" data-name="${esc(name)}"></p><p class="meta" hidden></p>` : ""}
+      ${log ? `<div class="meta" hidden></div><p class="last" data-name="${esc(name)}"></p>` : ""}
       ${boxes}
       <details><summary>Execução</summary><ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul></details>
     </article>`;
@@ -888,6 +987,7 @@ function renderDayCore(d){
     <div class="dayhead"><div><div class="eyebrow">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}${logDate === trainDay() ? " · hoje" : ""}</div><h2>${d.name}</h2><p class="dsub">${d.sub}</p></div></div>
     ${swapBox(d)}
     <div class="dstats"><div class="dstat" style="--c:var(--pc)"><span class="st-ico">${ICO2.series}</span><div><b class="num">${total}</b><span>séries</span></div></div><div class="dstat" style="--c:var(--blue)"><span class="st-ico">${ICO2.tempo}</span><div><b class="num">~${Math.round(d.ex.reduce((a, e) => a + (e[4] ? e[1] * (40 + e[4]) : 0), 0) / 60)}</b><span>min</span></div></div><div class="dstat" style="--c:var(--kcal)"><span class="st-ico">${ICONF}</span><div><b class="num" id="daykcal">—</b><span>kcal</span></div></div></div>
+    <div class="daymetas" id="daymetas" hidden></div>
     <p class="daylog"><span id="logstate" aria-live="polite">${modeText()}</span></p>
     ${cards}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
@@ -918,9 +1018,12 @@ function refreshSend(){
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
 // Data do treino: até as 5h ainda conta como o dia anterior (treinam das 21h às 00h), e a data
 // escolhida vale por 8 h, para um recarregamento no meio da sessão não trocar o dia.
-const trainDay = () => { const d = new Date(Date.now() - 5*3600*1000); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+let nowFn = () => new Date();   // trocável nos testes
+// O dia vira à meia-noite (como a ofensiva do Duolingo). Quem ainda está anotando o treino depois da meia-noite continua na data do treino (ver logDate).
+const trainDay = () => { const d = nowFn(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
 const keepDate = date => store.set("logdate", {date, at: Date.now()});
-let logDate = (() => { const s = store.get("logdate"); return s && s.date && Date.now() - s.at < 8*3600*1000 ? s.date : trainDay(); })();
+const DATA_FICA = 3 * 3600 * 1000;   // a data escolhida/usada vale 3 h; depois volta para hoje (evita anotar no dia errado)
+let logDate = (() => { const s = store.get("logdate"); return s && s.date && Date.now() - s.at < DATA_FICA ? s.date : trainDay(); })();
 let dbRef = null, logMode = "carregando";
 const LOGS = {}, pending = {}, timers = {}, chains = {};
 const docId = (p, date) => `${p}_${date}`;
@@ -994,7 +1097,16 @@ function metaFor(last, reps, sets, leg, name){
   const next = Math.max(0, help ? ref - step : ref + step);
   return `<b>${num(next)} kg</b> × ${lo}–${hi} (${help ? "menos ajuda" : "subiu"}: bateu ${hi} em todas)`;
 }
+const ICON_ALVO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>`;
+// Resumo das metas do dia (quantas cargas sobem, quantas buscam o topo das reps)
+function refreshMetasDia(){
+  const el = document.getElementById("daymetas"); if (!el) return;
+  const ms = [...document.querySelectorAll(".ex .meta:not([hidden])")], up = ms.filter(m => m.classList.contains("up")).length, topo = ms.length - up;
+  el.hidden = !ms.length;
+  el.innerHTML = ms.length ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><b>Metas ${logDate === trainDay() ? "de hoje" : "do dia"}</b><p>${[up ? `<b class="up">${up}</b> ${up === 1 ? "carga para subir" : "cargas para subir"}` : "", topo ? `<b>${topo}</b> ${topo === 1 ? "exercício" : "exercícios"} buscando o topo das reps` : ""].filter(Boolean).join(" · ")}</p><small>Calculadas pelo que você fez da última vez em cada exercício.</small></div>` : "";
+}
 function refreshCarga(){
+  queueMicrotask(refreshMetasDia);
   if (!Object.keys(pending).length) setStatus(modeText());
   refreshSend();
   const doc = LOGS[docId(person.id, logDate)];
@@ -1004,7 +1116,8 @@ function refreshCarga(){
     const p = box.closest(".ex").querySelector(".last");
     if (p) p.innerHTML = last ? `Última vez (${brDate(last.date)}): <b>${fmtSets(last.sets)}</b>` : "Primeira vez: anote kg e reps de cada série.";
     const mt = box.closest(".ex").querySelector(".meta");
-    if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name); mt.innerHTML = t ? `Meta${logDate === trainDay() ? " de hoje" : ""}: ${t}` : ""; mt.hidden = !t; }
+    if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name), sobe = /subiu|menos ajuda/.test(t), i = t.indexOf("</b>") + 4;
+      mt.className = "meta" + (sobe ? " up" : ""); mt.innerHTML = t ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><small>${sobe ? "Meta: subir a carga" : "Meta"}${logDate === trainDay() ? " hoje" : ""}</small><p>${t.slice(0, i)}<span>${t.slice(i).replace(/^,\s*/, " · ")}</span></p></div>` : ""; mt.hidden = !t; }
     box.querySelectorAll("input").forEach(inp => {
       const s = +inp.dataset.set, f = inp.dataset.field, lv = last?.sets?.[s]?.[f];
       const ph = lv === "" || lv == null ? (f === "kg" ? box.dataset.kg : "reps") : (f === "kg" ? num(lv) : String(lv));
@@ -1029,6 +1142,7 @@ function onLogInput(inp){
 }
 // Grava um pedaço de uma série (kg, reps ou feita) no treino da pessoa nesta data
 function writeSet(name, n, s, patch){
+  if (futuro()) return avisaFuturo();
   const id = docId(person.id, logDate), antes = trained(person.id, logDate);
   const doc = LOGS[id] ? JSON.parse(JSON.stringify(LOGS[id])) : {person:person.id, date:logDate, day:current, ex:{}};
   const e = doc.ex[name] || (doc.ex[name] = {sets:[]});
@@ -1104,7 +1218,7 @@ function supaDb(){
   let db = null;
   if (SUPA) db = supaDb();
   else try { db = await window.claude?.use?.("db"); } catch(e) {}
-  if (!db) { logMode = "local"; refreshCarga(); return; }
+  if (!db) { logMode = "local"; refreshCarga(); dadosDoServidor = true; checkOfensiva(); return; }
   dbRef = db; logMode = "online"; refreshCarga(); loadRel(); document.addEventListener("visibilitychange", () => { if (!document.hidden) loadRel(); });
   db.collection("treinos").orderBy("date", "desc").limit(500).onSnapshot(snap => {
     const server = {};
@@ -1114,6 +1228,7 @@ function supaDb(){
     }
     if (!snap.metadata.fromCache) syncLocal(server);
     refreshCarga(); refreshToday(); refreshStats();
+    if (!snap.metadata.fromCache && !dadosDoServidor) { dadosDoServidor = true; if (screen === "hoje") { const y = scrollY; view.innerHTML = renderToday(); refreshToday(); scrollTo(0, y); } checkOfensiva(); }
   }, () => { logMode = "local"; refreshCarga(); });
   db.collection("checkins").orderBy("date", "desc").limit(500).onSnapshot(snap => {
     const server = {};
@@ -1144,7 +1259,25 @@ const dayIdFor = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5
 const dayOf = (p, s) => LOGS[docId(p, s)]?.day || dayIdFor(s);   // treino trocado no dia (ex.: fez o de quarta na quinta) vale mais que o calendário
 // Data da semana em que um treino foi feito (ou a data prevista no calendário)
 const dateOfDay = (p, dId, ref = logDate) => { const wk = weekOf(ref), tem = x => LOGS[docId(p, x)]?.day === dId; return wk.find(x => tem(x) && trained(p, x)) || wk.find(tem) || wk[+dId.slice(1) - 1]; };
-const goalsFor = (p, s) => { const g = GOALS[p] || GOALS.a3; return {agua: dayIdFor(s) ? g.aguaTreino : g.aguaDescanso, sono: g.sono, sonoMin: g.sonoMin}; };
+// Bebida alcoólica — regra do agente de nutrição (2026-10-12): 1 dose ≈ 14 g de álcool ≈ 1 lata de cerveja ≈ 150 kcal.
+// Pergunta de sexta a domingo; sem resposta não é zero. No dia seguinte: água extra e um recado conforme a faixa.
+const ALC = {
+  kcal: 150, aviso: 7,
+  cima: {rafael: 5, laura: 4, laysa: 4, a3: 4},   // a partir de quantas doses a recuperação cai de verdade
+  exemplos: ["Lata de cerveja 350 ml = 1", "Long neck = 1", "Chope 300 ml = 1", "Latão 473 ml = 1,5", "Garrafa 600 ml = 2", "Litrão 1 L = 3", "Taça de vinho ou espumante = 1", "Dose de destilado 50 ml = 1", "Gim-tônica ou drink simples = 1", "Caipirinha ou drink doce = 2"],
+  faixas: [
+    {titulo: "Sem álcool", msg: "Sem álcool ontem. Nada muda: água, proteína e sono na meta.", agua: 0},
+    {titulo: "Pouco", msg: "Efeito no músculo: desprezível. São ~150–300 kcal a mais. Água e proteína na meta normal.", agua: 0},
+    {titulo: "Moderado", msg: "Calorias a mais e sono mais picado. Hoje: +500 ml de água, proteína em todas as refeições e cama no horário.", agua: 500},
+    {titulo: "Bastante", msg: "Aqui a recuperação cai de verdade. Hoje: +1 L de água ao longo do dia, comida de verdade com proteína e cama cedo.", agua: 1000}
+  ],
+  pessoa: {rafael: "Seu gargalo é o sono: álcool em noite curta pesa mais. Coma o cardápio inteiro, bebida não substitui refeição.", laura: "2 doses = 1 dia do seu déficit. Não corte comida para compensar: o piso de calorias continua.", laysa: "Coma o cardápio inteiro: bebida não substitui refeição."},
+  seguranca: "Bebeu, não dirige. Com ressaca (tontura, enjoo, urina escura): água e comida primeiro, sem séries até a falha. Remédio de uso contínuo: pergunte ao médico antes de beber."
+};
+const alcDe = (p, s) => { const v = CHK[docId(p, s)]?.alcool; return v == null ? null : +v; };
+const faixaAlc = (p, n) => !n ? 0 : n <= 2 ? 1 : n >= (ALC.cima[p] || 4) ? 3 : 2;
+const aguaExtra = (p, s) => { const n = alcDe(p, addDays(s, -1)); return n ? ALC.faixas[faixaAlc(p, n)].agua : 0; };   // água a mais no dia seguinte
+const goalsFor = (p, s) => { const g = GOALS[p] || GOALS.a3; return {agua: (dayIdFor(s) ? g.aguaTreino : g.aguaDescanso) + aguaExtra(p, s), sono: g.sono, sonoMin: g.sonoMin}; };
 const chkOf = (p, s) => CHK[docId(p, s)] || {agua: 0, sono: 0};
 const ml = n => Math.round(+n || 0).toLocaleString("pt-BR");
 function weekOf(s){ const d = parseDate(s), back = (d.getDay() + 6) % 7; d.setDate(d.getDate() - back); return Array.from({length: 7}, (_, i) => { const x = new Date(d); x.setDate(d.getDate() + i); return fmtDate(x); }); }
@@ -1196,13 +1329,46 @@ function animateRing(k, frac, v = 0, goal = 1){
   ringRaf[k] = requestAnimationFrame(tick);
   ringRaf[k + "t"] = setTimeout(() => { cancelAnimationFrame(ringRaf[k]); b.textContent = txt(v); }, dur + 80);   // garante o número final mesmo se a animação parar
 }
+const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+let weekDir = "", calMes = null;   // direção da última troca de semana (para a animação) e mês aberto no calendário
+const semanasAtras = (seg, hoje) => { const n = Math.round((parseDate(weekOf(hoje)[0]) - parseDate(seg)) / 864e5 / 7); return n === 1 ? "semana passada" : `há ${n} semanas`; };
+const futuro = () => logDate > trainDay();
+function avisaFuturo(){ toast(`<span><b>Esse dia ainda não chegou.</b><br>Volte para hoje para registrar.</span>`); }
+function goDate(d, dir = ""){ logDate = d; keepDate(d); weekDir = dir; current = dayOf(person.id, logDate) || current; draw(); weekDir = ""; }
+// Calendário do mês (folha de baixo): ponto verde = treinou, anel = check-in feito
+function renderCal(){
+  const el = document.getElementById("cal"), hoje = trainDay(), [y, m] = calMes.split("-").map(Number);
+  const first = new Date(y, m - 1, 1), start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7));
+  const cells = Array.from({length: 42}, (_, i) => { const d = new Date(start); d.setDate(start.getDate() + i); return fmtDate(d); }).filter((d, i, a) => i < 35 || a[35].slice(0, 7) === calMes);
+  el.innerHTML = `<div class="sheet-bg" data-calclose></div><div class="sheet-panel" role="dialog" aria-modal="true" aria-label="Calendário">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="cal-h"><button type="button" class="cal-nav" data-calmes="-1" aria-label="Mês anterior">‹</button><h2>${MESES[m - 1]} ${y}</h2><button type="button" class="cal-nav" data-calmes="1" aria-label="Próximo mês">›</button></div>
+    <div class="cal-g cal-wd">${["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map(x => `<span>${x}</span>`).join("")}</div>
+    <div class="cal-g">${cells.map(d => { const fora = d.slice(0, 7) !== calMes, tr = trained(person.id, d), c = chkOf(person.id, d), ck = +c.agua > 0 || +c.sono > 0 || Array.isArray(c.refeicoes);
+      return `<button type="button" class="cal-d${fora ? " fora" : ""}${d === hoje ? " hoje" : ""}${d === logDate ? " on" : ""}${d > hoje ? " fut" : ""}${ck ? " ck" : ""}" data-caldate="${d}" aria-label="${brDate(d)}${tr ? ", treinou" : ""}"><b>${+d.slice(8, 10)}</b><i class="${tr ? "tr" : ""}"></i></button>`; }).join("")}</div>
+    <p class="hint cal-leg"><i class="tr"></i> treinou &nbsp; <i class="ckl"></i> check-in feito</p>
+    <div class="chips two-c"><button type="button" class="chip" data-caldate="${hoje}">Ir para hoje</button><button type="button" class="chip" data-calclose>Fechar</button></div></div>`;
+}
+function openCal(){
+  let el = document.getElementById("cal");
+  if (!el) { el = document.createElement("div"); el.id = "cal"; el.className = "sheet"; document.body.appendChild(el);
+    el.addEventListener("click", e => {
+      if (e.target.closest("[data-calclose]")) return closeCal();
+      const mm = e.target.closest("[data-calmes]"); if (mm) { const [y, m] = calMes.split("-").map(Number), d = new Date(y, m - 1 + +mm.dataset.calmes, 1); calMes = fmtDate(d).slice(0, 7); return renderCal(); }
+      const dd = e.target.closest("[data-caldate]"); if (dd) { closeCal(); const antes = logDate; goDate(dd.dataset.caldate, dd.dataset.caldate < antes ? "l" : dd.dataset.caldate > antes ? "r" : ""); window.scrollTo({top: 0}); }
+    }); }
+  calMes = logDate.slice(0, 7); renderCal(); el.hidden = false; const abre = () => el.classList.add("open"); requestAnimationFrame(abre); setTimeout(abre, 60);
+}
+function closeCal(){ const el = document.getElementById("cal"); if (!el) return; el.classList.remove("open"); setTimeout(() => { el.hidden = true; }, 220); }
 function renderToday(){
   for (const k in ringState) delete ringState[k];   // ao abrir a tela, os anéis enchem de novo a partir do zero
   const hoje = trainDay();
   const week = weekOf(logDate).map(s => `<button type="button" class="wday${s === logDate ? " on" : ""}${s === hoje ? " today" : ""}" data-date="${s}" aria-pressed="${s === logDate}" aria-label="${WD[parseDate(s).getDay()]} ${brDate(s)}"><span>${WD[parseDate(s).getDay()]}</span><b>${s.slice(8,10)}</b><i class="dot" data-dot="${s}"></i></button>`).join("");
+  const wk = weekOf(logDate), mes = (a, b) => { const m = d => MESES[+d.slice(5, 7) - 1]; return m(a) === m(b) ? `${m(a)} ${a.slice(0, 4)}` : `${m(a).slice(0, 3)} / ${m(b).slice(0, 3)} ${b.slice(0, 4)}`; };
   return `<section class="list" aria-label="Hoje">
-    <div class="week">${week}</div>
-    ${logDate === hoje ? `<p class="week-cap">O anel de cada dia mostra quanto você completou: água, sono e treino.</p>` : `<button type="button" class="backtoday" data-date="${hoje}">Vendo ${WD[parseDate(logDate).getDay()]}, ${brDate(logDate)} · Voltar para hoje</button>`}
+    <div class="calbar"><button type="button" class="cal-nav" data-week="-1" aria-label="Semana anterior">‹</button><button type="button" class="cal-mes" data-cal aria-label="Abrir o calendário">${ICON_CAL}<b>${mes(wk[0], wk[6])}</b><span>${wk.includes(hoje) ? "esta semana" : wk[0] > hoje ? "semana futura" : semanasAtras(wk[0], hoje)}</span></button><button type="button" class="cal-nav" data-week="1" aria-label="Próxima semana">›</button></div>
+    <div class="week${weekDir ? " slide-" + weekDir : ""}" id="weekstrip">${week}</div>
+    ${logDate === hoje ? `<p class="week-cap">O anel de cada dia mostra quanto você completou: água, sono e treino.</p>` : `<button type="button" class="backtoday" data-date="${hoje}">${logDate > hoje ? "Dia futuro (só para ver)" : "Vendo " + WD[parseDate(logDate).getDay()] + ", " + brDate(logDate)} · Voltar para hoje</button>`}
     ${renderStreak()}
     <h2 class="sec">Treino ${logDate === trainDay() ? "de hoje" : "de " + brDate(logDate)}</h2>
     <div id="todaytrain"></div>
@@ -1229,22 +1395,27 @@ function refreshToday(){
     animateRing(k, v / goal, v, goal);
   };
   setRing("agua", +c.agua || 0, g.agua, `de ${ml(g.agua)} ml`);
-  document.getElementById("ck-agua-note").textContent = `+ / − 250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}`;
+  document.getElementById("ck-agua-note").textContent = `+ / − 250 ml · ${dayIdFor(logDate) ? "treino" : "descanso"}${aguaExtra(person.id, logDate) ? " · +" + ml(aguaExtra(person.id, logDate)) + " ml pelo álcool" : ""}`;
   setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
   document.getElementById("ck-count").textContent = `${[+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0, !!c.peso, c.dieta != null].filter(Boolean).length}/5`;
-  refreshExtras(); refreshProt();
+  refreshExtras(); refreshProt(); refreshAlc();
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
   const t = treinoProg(person.id, logDate), box = document.getElementById("todaytrain");
   box.innerHTML = !person.days ? `<div class="panel"><p>A ficha ${person.art} ${person.name} ainda está sendo montada.</p></div>`
     : !t ? `<div class="panel"><h3>Dia de descanso</h3><p>Sábado e domingo não têm treino. Capriche na água e no sono.</p></div>`
-    : `<button type="button" class="todaycard" data-screen="treino" style="--pc:var(${t.d.plate})">
-        <div class="row"><div><div class="eyebrow">${t.d.wd} · ${t.d.sub}</div><h3>${t.d.name}</h3></div><span class="go">${ICON.seta}</span></div>
-        <div class="pbar" aria-hidden="true"><i style="width:${t.total ? Math.round(t.done / t.total * 100) : 0}%"></i></div>
-        <p class="num">${t.done}/${t.total} séries feitas</p></button>` + nutriCard();
+    : (() => { const exs = t.d.ex.filter(e => e[4]), min = Math.round(exs.reduce((a, e) => a + e[1] * (40 + e[4]), 0) / 60), feito = t.total && t.done >= t.total, st = feito ? "feito" : t.done ? "andando" : "afazer", hj = logDate === trainDay();
+      const doc = LOGS[docId(person.id, logDate)], kc = doc && trained(person.id, logDate) ? sessionStats(person.id, doc).kcal : null;
+      return `<button type="button" class="todaycard ${st}" data-screen="treino" style="--pc:var(${t.d.plate})">
+        <div class="tc-top"><span class="tc-day">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}</span><span class="tc-st">${feito ? "Feito ✓" : t.done ? "Em andamento" : logDate > trainDay() ? "Previsto" : hj ? "A fazer" : "Não feito"}</span></div>
+        <h3>${t.d.name}</h3><p class="tc-sub">${t.d.sub}</p>
+        <div class="tc-nums"><span><b class="num">${exs.length}</b>exercícios</span><span><b class="num">${t.total}</b>séries</span><span><b class="num">~${min}</b>min</span>${kc ? `<span><b class="num">~${kc}</b>kcal</span>` : ""}</div>
+        <div class="tc-prog"><div class="pbar" aria-hidden="true"><i style="width:${t.total ? Math.round(t.done / t.total * 100) : 0}%"></i></div><span class="num">${t.done}/${t.total}</span></div>
+        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>`; })() + nutriCard();
 }
 function writeChk(field, dir){
+  if (futuro()) return avisaFuturo();
   const id = docId(person.id, logDate);
   const c = CHK[id] ? {...CHK[id]} : {person: person.id, date: logDate, agua: 0, sono: 0};
   const before = +c[field] || 0, goal = goalsFor(person.id, logDate)[field];
@@ -1342,14 +1513,78 @@ function renderStreak(){
     const st = trained(p, s) ? "done" : s === today ? "today" : s < today ? "miss" : "future";
     return `<span class="sd ${st}" aria-label="${WD[parseDate(s).getDay()]}: ${{done: "treinou", today: "hoje", miss: "faltou", future: "ainda não chegou"}[st]}"><i>${st === "done" ? "✓" : st === "miss" ? "×" : ""}</i><em>${WD[parseDate(s).getDay()]}</em></span>`;
   }).join("");
+  const h = nowFn().getHours(), falta = 24 - h, risco = isWeekday(today) && !trained(p, today) && n > 0;
   const msg = trained(p, today) ? "Treino de hoje feito. Ofensiva garantida!"
-    : isWeekday(today) ? (n ? "Treine hoje para não perder a ofensiva." : "Comece hoje uma ofensiva nova.")
-    : "Fim de semana: a ofensiva fica guardada até segunda.";
-  return `<section class="streak" style="--fa:${flameOf(n).a};--fb:${flameOf(n).b}" aria-label="Ofensiva">
+    : !isWeekday(today) ? "Fim de semana: a ofensiva fica guardada até segunda."
+    : !n ? "Zerada. Comece hoje uma ofensiva nova."
+    : h >= 21 ? `Faltam ${falta} h para a meia-noite. Sem treino, seus ${n} ${n === 1 ? "dia" : "dias"} viram zero.`
+    : h >= 17 ? `Hoje ainda não treinou: ${n} ${n === 1 ? "dia" : "dias"} em jogo.`
+    : `Treine hoje para manter os ${n} ${n === 1 ? "dia" : "dias"}.`;
+  return `<section class="streak${risco && h >= 17 ? " risco" : ""}${risco && h >= 21 ? " urgente" : ""}" style="--fa:${flameOf(n).a};--fb:${flameOf(n).b}" aria-label="Ofensiva">
     <div class="fl${n ? " lit" : ""}">${flameSvg(n)}<b class="num">${n}</b><span>${n === 1 ? "dia" : "dias"} de ofensiva</span></div>
     <div class="st-r"><p class="st-t">${msg}</p><div class="st-week">${week}</div><p class="st-best">Maior ofensiva: <b class="num">${best}</b> ${best === 1 ? "dia" : "dias"}</p></div>
   </section>`;
 }
+// ── Virada do dia: ganhou mais um dia (mensagem que anima) ou perdeu a ofensiva (tem que doer) ──
+const FRASES_GANHOU = [
+  "Mais um dia em que você não negociou com a preguiça.",
+  "É assim que se constrói: um dia chato de cada vez.",
+  "Você apareceu. É aqui que a maioria desiste.",
+  "Ontem está pago. Hoje a cobrança é outra.",
+  "Constância ganha de motivação. Você está provando.",
+  "Ninguém fez por você. Foi você, de novo.",
+  "O corpo que você quer está sendo construído nesses dias sem graça.",
+  "Quem treina quando não está a fim é quem muda."
+];
+const FRASES_MARCO = {5: "Uma semana inteira sem falhar. Isso já é rotina.", 10: "Duas semanas seguidas. Você virou a pessoa que treina.", 15: "Três semanas. Agora parar custa mais que continuar.", 20: "Um mês de dias úteis sem faltar. Pouca gente chega aqui.", 30: "Seis semanas. Isso não é fase: é quem você é."};
+const FRASES_PERDEU = [
+  "Tudo isso jogado fora por um treino que durava uma hora.",
+  "O sofá ganhou. Era isso que você queria?",
+  "Ninguém viu você faltar. O espelho vai mostrar.",
+  "A desculpa de ontem não levantou nenhum peso.",
+  "Disciplina não tira folga. Você tirou.",
+  "Você prometeu para você mesmo. E quebrou.",
+  "Zerou. Dói? Ótimo. Guarda essa dor e leva para o treino de hoje.",
+  "Quem falta um dia aprende a faltar dois. Vai deixar?"
+];
+const fraseDoDia = (lista, chave) => { let hsh = 0; for (const ch of chave) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0; return lista[hsh % lista.length]; };
+const diaUtilAntes = d => { let x = addDays(d, -1); while (!isWeekday(x)) x = addDays(x, -1); return x; };
+let dadosDoServidor = false;   // só avalia a ofensiva depois que os treinos chegaram (senão acusaria perda sem ter os dados)
+function checkOfensiva(){
+  if (!dadosDoServidor || !person.days) return;
+  const p = person.id, hoje = trainDay(), ult = diaUtilAntes(hoje), k = "ofensiva:" + p, st = store.get(k), n = streakOf(p);
+  if (st && st.dia === ult) { if (n > (st.n || 0)) store.set(k, {dia: ult, n}); return; }   // este dia já foi avisado
+  store.set(k, {dia: ult, n});
+  if (!st) return;                                                // primeira vez neste aparelho: só começa a acompanhar
+  if (trained(p, ult)) showOfensiva("ganhou", n, ult);
+  else if (st.n > 0) showOfensiva("perdeu", st.n, ult);
+}
+function showOfensiva(tipo, n, dia){
+  let el = document.getElementById("ofmodal");
+  if (!el) { el = document.createElement("div"); el.id = "ofmodal"; el.className = "ofmodal"; document.body.appendChild(el); el.addEventListener("click", e => { if (e.target.closest("[data-ofclose]")) { el.classList.remove("open"); setTimeout(() => { el.hidden = true; }, 250); } }); }
+  const dias = n === 1 ? "dia" : "dias", best = Math.max(n, bestStreak(person.id)), quando = dia === addDays(trainDay(), -1) ? "ontem" : WD[parseDate(dia).getDay()].toLowerCase() + ", " + brDate(dia);
+  const ganhou = tipo === "ganhou", f = flameOf(ganhou ? n : 0);
+  el.className = "ofmodal " + tipo; el.style.setProperty("--fa", f.a); el.style.setProperty("--fb", f.b);
+  el.innerHTML = ganhou
+    ? `<div class="of-box" role="dialog" aria-modal="true" aria-label="Ofensiva"><div class="of-fl">${flameSvg(n)}</div><p class="of-n num">${n}</p><h2>${dias} de ofensiva</h2>
+       <p class="of-f">${FRASES_MARCO[n] || fraseDoDia(FRASES_GANHOU, person.id + dia)}</p><p class="of-s">Você treinou ${quando}.${n >= best && n > 1 ? " É o seu recorde." : ` Recorde: ${best} ${best === 1 ? "dia" : "dias"}.`}</p>
+       <button type="button" class="done-btn" data-ofclose>Bora para hoje</button></div>`
+    : `<div class="of-box" role="alertdialog" aria-modal="true" aria-label="Ofensiva perdida"><div class="of-fl apagada">${flameSvg(0)}</div><p class="of-n num"><s>${n}</s> → 0</p><h2>Você perdeu ${n === 1 ? "sua ofensiva" : `${n} ${dias} de ofensiva`}</h2>
+       <p class="of-f">${fraseDoDia(FRASES_PERDEU, person.id + dia)}</p><p class="of-s">Sem treino ${quando}. Recorde que continua de pé: ${best} ${best === 1 ? "dia" : "dias"}.</p>
+       <button type="button" class="done-btn" data-ofclose>Recomeçar hoje</button></div>`;
+  el.hidden = false; const abre = () => el.classList.add("open"); requestAnimationFrame(abre); setTimeout(abre, 60);   // o timeout garante a abertura com a aba em segundo plano
+  try { navigator.vibrate && navigator.vibrate(ganhou ? [30, 40, 30] : [120, 60, 120, 60, 200]); } catch(e) {}
+}
+// Dia virou com o site aberto: atualiza a tela sozinho (sem tirar quem ainda está anotando o treino de ontem)
+let diaVisto = trainDay();
+function viraDia(){
+  const hoje = trainDay(); if (hoje === diaVisto) return;
+  const k = store.get("logdate"), anotando = k && k.date === diaVisto && Date.now() - k.at < DATA_FICA && trained(person.id, diaVisto);
+  if (logDate === diaVisto && !anotando) logDate = hoje;
+  diaVisto = hoje; current = dayOf(person.id, logDate) || current; draw(); checkOfensiva();
+}
+setInterval(viraDia, 30e3);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) { viraDia(); checkOfensiva(); } });
 function toast(html){
   let t = document.getElementById("toast");
   if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
@@ -1397,6 +1632,7 @@ const PROT = new Proxy({}, {get: (_, p) => { const m = metas(p); return m.faixa 
 const KCAL = new Proxy({}, {get: (_, p) => { const m = metas(p); return m.kcal ? `${m.kcal[0].toLocaleString("pt-BR")}–${m.kcal[1].toLocaleString("pt-BR")} kcal` : undefined; }});
 const META_PESO = {rafael: {txt: "+0,16 a +0,32 kg por semana", lo: 0.16, hi: 0.32}, laura: {txt: "−0,15 a −0,3 kg por semana", lo: -0.3, hi: -0.15}, laysa: {txt: "estável (reagir só se a média andar 2–3 semanas)", lo: -0.15, hi: 0.15}};
 function setChk(patch){
+  if (futuro()) return avisaFuturo();
   const id = docId(person.id, logDate);
   const c = CHK[id] ? {...CHK[id]} : {person: person.id, date: logDate, agua: 0, sono: 0};
   Object.assign(c, patch); c.updated = new Date().toISOString();
@@ -1422,7 +1658,6 @@ const NUTRI = {
     pessoa: {rafael: "1 bolinha (~35 g) + carboidrato à vontade (2 pães ou 1 prato de arroz).", laura: "1 bolinha (~35 g) + carboidrato pequeno (1 fruta ou 1 pão).", laysa: "1 bolinha (~28 g) + carboidrato médio (1 pão ou 1 banana com aveia).", a3: "1 bolinha (~25 g) + 1 fruta ou 1 pão."}},
   creatina: "Creatina 3–5 g por dia, em qualquer horário, inclusive no fim de semana."
 };
-let nowFn = () => new Date();   // trocável nos testes
 // Refeições do dia = cardápio do agente de nutrição ajustado à meta calculada pelo peso
 // (soma das kcal = meio da faixa de calorias; soma da proteína = proteína alvo). Marcar todas = bater a meta.
 function refeicoesDe(p, s = logDate, tipo = dayIdFor(s) ? "treino" : "descanso"){
@@ -1454,6 +1689,7 @@ function protCard(){
       <div class="al-l"><div class="al-v"><b class="num" id="al-k">0</b><span id="al-km"></span></div><div class="st-bar" style="--c:var(--kcal)"><i id="al-kb"></i></div></div>
       <div class="al-l"><div class="al-v"><b class="num" id="al-p">0</b><span id="al-pm"></span></div><div class="st-bar" style="--c:var(--coral)"><i id="al-pb"></i></div></div>
     </div>
+    <p class="alc-linha" id="al-alc" hidden></p>
     <ul class="al-list">${rs.map((r, i) => `<li><button type="button" class="al-r" data-ref="${i}" aria-pressed="false"><span class="al-c" aria-hidden="true">✓</span><span class="al-n"><b>${esc(r.nome)}</b><small>${esc(r.hora)} · ${r.itens.map(esc).join(" · ")}</small></span><span class="al-k num">${r.kcal.toLocaleString("pt-BR")} kcal<small>${r.prot} g proteína</small></span></button></li>`).join("")}</ul>
     <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio.</p></article>`;
 }
@@ -1466,6 +1702,8 @@ function refreshProt(){
   document.getElementById("al-kb").style.width = Math.min(100, c.kcal / mk * 100) + "%";
   document.getElementById("al-pb").style.width = Math.min(100, c.prot / m.total * 100) + "%";
   card.classList.toggle("met", metaBatida(person.id, logDate));
+  const an = alcDe(person.id, logDate), ae = document.getElementById("al-alc");
+  if (ae) { ae.hidden = !an; ae.textContent = an ? `Álcool: +${(an * ALC.kcal).toLocaleString("pt-BR")} kcal (total do dia ${(c.kcal + an * ALC.kcal).toLocaleString("pt-BR")} kcal). A meta se bate só com comida.` : ""; }
 }
 function toggleRef(i){
   const f = feitasDe(person.id, logDate), on = f.includes(i), nf = on ? f.filter(x => x !== i) : [...f, i].sort((a, b) => a - b);
@@ -1476,8 +1714,8 @@ function toggleRef(i){
 }
 // Cartão da comida em volta do treino: antes (17h–21h), durante (21h–23h30), depois (23h30 em diante); só no dia de treino de hoje
 function nutriCard(){
-  if (!person.days || logDate !== trainDay() || !dayIdFor(logDate)) return "";
-  const d = nowFn(), m = d.getHours() * 60 + d.getMinutes();
+  const d = nowFn(), m = d.getHours() * 60 + d.getMinutes(), diaTreino = m < 5 * 60 ? addDays(trainDay(), -1) : trainDay();
+  if (!person.days || logDate !== diaTreino || !dayIdFor(logDate)) return "";
   const k = m >= 17 * 60 && m < 21 * 60 ? "antes" : m >= 21 * 60 && m < 23 * 60 + 30 ? "durante" : (m >= 23 * 60 + 30 || m < 5 * 60) ? "depois" : null;
   if (!k) return "";
   const n = NUTRI[k], pp = n.pessoa ? (n.pessoa[person.id] || n.pessoa.a3).replace(/1 bolinha \(~\d+ g\)/, () => { const pt = refeicoesDe(person.id, logDate).find(r => /Pós/.test(r.nome)); return pt ? `~${pt.kcal} kcal e ${pt.prot} g de proteína` : "proteína"; }) : "";
@@ -1487,8 +1725,33 @@ function nutriCard(){
     ${n.evitar ? `<p class="nut-e">${n.evitar}</p>` : ""}
     <p class="hint">${n.porque ? n.porque + " " : ""}${k === "depois" ? NUTRI.creatina + " " : ""}Do agente de nutrição do seu personal.</p></article>`;
 }
+const ICON_COPO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l-1.5 9a4.5 4.5 0 0 1-9 0z"/><path d="M12 16.5V21M8.5 21h7M7 8h10"/></svg>`;
+let alcAberto = false;   // nos dias de semana o cartão só aparece se a pessoa abrir
+function alcCard(){
+  const wd = parseDate(logDate).getDay(), fds = wd === 5 || wd === 6 || wd === 0, n = alcDe(person.id, logDate);
+  if (!fds && n == null && !alcAberto) return `<button type="button" class="alc-mais" data-alcabre>+ bebida alcoólica</button>`;
+  return `<article class="ck prot alc" id="card-alc" style="--c:var(--warn)"><div class="ck-h"><span class="ico">${ICON_COPO}</span>Bebida alcoólica<span class="pt-v num" id="alc-v"></span></div>
+    <p class="alc-q">Quantas doses ${logDate === trainDay() ? "hoje" : "em " + brDate(logDate)}? <small>Marque no dia em que a noite começou.</small></p>
+    <div class="alc-row" role="group" aria-label="Doses de bebida alcoólica">${[[0, "Não bebi"], [1, "1"], [2, "2"], [3, "3"], [4, "4"], [5, "5"], [6, "6+"]].map(([v, t]) => `<button type="button" class="chip" data-alc="${v}" aria-pressed="false">${t}</button>`).join("")}</div>
+    <p class="ck-note" id="alc-note"></p>
+    <details class="pt-ex"><summary>O que é 1 dose</summary><ul>${ALC.exemplos.map(x => `<li>${x}</li>`).join("")}</ul><p class="hint">${ALC.seguranca} Informação geral, não substitui médico ou nutricionista.</p></details></article>`;
+}
+// Recado do dia seguinte (em cima do check-in)
+function alcOntem(){
+  const n = alcDe(person.id, addDays(logDate, -1)); if (!n) return "";
+  const f = ALC.faixas[faixaAlc(person.id, n)], pp = ALC.pessoa[person.id];
+  return `<article class="panel tinted" style="--c:var(--warn)">${phd(ICON_COPO, `${logDate === trainDay() ? "Ontem" : "Na véspera"}: ${n >= 6 ? "6 ou mais" : n} ${n === 1 ? "dose" : "doses"}`, `<span class="delta">${f.titulo}</span>`)}
+    <p class="alc-m">${f.msg}</p>${f.agua ? `<p class="nut-p">A meta de água de hoje já subiu <b>+${ml(f.agua)} ml</b>.</p>` : ""}${pp && faixaAlc(person.id, n) >= 2 ? `<p class="hint">${pp}</p>` : ""}</article>`;
+}
+function refreshAlc(){
+  const card = document.getElementById("card-alc"); if (!card) return;
+  const n = alcDe(person.id, logDate);
+  card.querySelectorAll("[data-alc]").forEach(b => b.setAttribute("aria-pressed", String(n != null && +b.dataset.alc === n)));
+  document.getElementById("alc-v").textContent = n ? `+${(n * ALC.kcal).toLocaleString("pt-BR")} kcal` : "";
+  document.getElementById("alc-note").textContent = n == null ? "Sem resposta não conta como zero." : n === 0 ? "Sem álcool: nada muda." : `${ALC.faixas[faixaAlc(person.id, n)].titulo}. Amanhã o site ajusta a água e te lembra do que fazer.`;
+}
 function renderExtras(){
-  return `<div class="cards">${protCard()}
+  return `${alcOntem()}<div class="cards">${protCard()}${alcCard()}
       <article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
         <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>
@@ -1661,6 +1924,7 @@ function renderProgress(){
   const porRef = Object.entries(refStat).map(([n, [h, t]]) => [n, h, t]);
   const kMedia = alDias.length ? Math.round(avg(alDias.map(s => comidoDe(p, s).kcal))) : 0, pMedia = alDias.length ? Math.round(avg(alDias.map(s => comidoDe(p, s).prot))) : 0;
   const creat = lastDays(7, today).filter(s => chkOf(p, s).creatina).length;
+  const alcDias = lastDays(7, today).map(s => alcDe(p, s)).filter(v => v != null), alcSem = alcDias.reduce((a, v) => a + v, 0), alcCima = alcDias.filter(v => v >= (ALC.cima[p] || 4)).length;
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
   // Cartões do topo: ofensiva (dias úteis da semana), treinos feitos x previstos, volume e calorias
   const ofen = streakOf(p), semDias = weekOf(today).slice(0, 5);
@@ -1714,7 +1978,7 @@ function renderProgress(){
     </article>
 
     <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Alimentação")}
-      ${dNow ? `<div class="mini two">${tile(dNow.ader + "%", "na dieta (7 dias)", dPrev ? `semana anterior: ${dPrev.ader}%` : "")}${tile(creat + "/7", "dias com creatina")}</div>` : `<p class="hint">Marque a alimentação na tela Hoje para ver a aderência da semana.</p>`}
+      ${dNow ? `<div class="mini two">${tile(dNow.ader + "%", "na dieta (7 dias)", dPrev ? `semana anterior: ${dPrev.ader}%` : "")}${tile(creat + "/7", "dias com creatina")}</div>${alcDias.length ? `<div class="mini two">${tile(alcSem + (alcSem === 1 ? " dose" : " doses"), "álcool (7 dias)", `~${(alcSem * ALC.kcal).toLocaleString("pt-BR")} kcal`)}${tile(alcDias.filter(v => v > 0).length, "dias com bebida", alcCima ? `${alcCima} acima do limite` : "")}</div>${alcSem >= ALC.aviso || alcCima ? `<p class="alert">${alcSem >= ALC.aviso ? `${alcSem} doses na semana: a partir de ${ALC.aviso} já pesa no sono e na recuperação.` : "Teve dia acima do seu limite: a recuperação daquela noite caiu."}</p>` : ""}` : ""}` : `<p class="hint">Marque a alimentação na tela Hoje para ver a aderência da semana.</p>`}
     </article>
 
     <article class="panel tinted" style="--c:var(--kcal)">${phd(ICONF, "Calorias gastas no treino")}
@@ -2091,6 +2355,13 @@ view.addEventListener("pointerout", e => { const t = e.target.closest("[data-tip
 const goScreen = s => { animNext = true; if (s === "treino") { treinoView = "dia"; current = dayOf(person.id, logDate) || current; } screen = s; store.set("screen", s); draw(); window.scrollTo({top:0}); };
 dock.addEventListener("click", e => { const b = e.target.closest("[data-screen]"); if (b) goScreen(b.dataset.screen); });
 document.getElementById("perfilbtn").addEventListener("click", () => goScreen("perfil"));
+// Arrastar a faixa da semana: para a direita = semana anterior, para a esquerda = próxima
+let swipe = null;
+view.addEventListener("touchstart", e => { const w = e.target.closest("#weekstrip"); swipe = w ? {x: e.touches[0].clientX, y: e.touches[0].clientY} : null; }, {passive: true});
+view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y; swipe = null;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); goDate(addDays(logDate, dx > 0 ? -7 : 7), dx > 0 ? "l" : "r"); } });
+// Dia futuro: dá para ver o treino previsto, mas não registrar
+view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("input", e => { if (e.target.closest(".lg")) onLogInput(e.target); });
 view.addEventListener("change", e => { if (e.target.id === "peso") { const v = Number(e.target.value.trim().replace(",", ".")); setChk({peso: v > 20 && v < 300 ? Math.round(v * 10) / 10 : null}); return; } if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); } });
 who.addEventListener("click", e=>{
@@ -2124,8 +2395,11 @@ view.addEventListener("click", e=>{
   if (sd){ setDayOf(sd.dataset.setday); return; }
   const sv = e.target.closest("[data-setday-ver]");
   if (sv){ current = sv.dataset.setdayVer; draw(); window.scrollTo({top: 0}); return; }
+  const wkb = e.target.closest("[data-week]");
+  if (wkb){ goDate(addDays(logDate, 7 * +wkb.dataset.week), +wkb.dataset.week < 0 ? "l" : "r"); return; }
+  if (e.target.closest("[data-cal]")){ openCal(); return; }
   const pick = e.target.closest("[data-person]");
-  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); return; }
+  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); return; }
   const sc = e.target.closest("[data-setctl]");
   if (sc){ changeSets(+sc.dataset.ex, +sc.dataset.setctl); return; }
   const sheetBtn = e.target.closest("[data-sheet]");
@@ -2134,6 +2408,9 @@ view.addEventListener("click", e=>{
   if (sq){ const v = +sq.dataset.sq; setChk({sono_q: chkOf(person.id, logDate).sono_q === v ? null : v}); return; }
   const di = e.target.closest("[data-dieta]");
   if (di){ const v = +di.dataset.dieta, c = chkOf(person.id, logDate); setChk({dieta: c.dieta != null && +c.dieta === v ? null : v}); return; }
+  if (e.target.closest("[data-alcabre]")){ alcAberto = true; const y = scrollY; view.innerHTML = renderToday(); refreshToday(); scrollTo(0, y); return; }
+  const al = e.target.closest("[data-alc]");
+  if (al){ const v = +al.dataset.alc; setChk({alcool: alcDe(person.id, logDate) === v ? null : v}); return; }
   const rf = e.target.closest("[data-ref]");
   if (rf){ toggleRef(+rf.dataset.ref); return; }
   const fl = e.target.closest("[data-flag]");
@@ -2141,7 +2418,7 @@ view.addEventListener("click", e=>{
   const nav = e.target.closest("[data-screen]");
   if (nav){ goScreen(nav.dataset.screen); return; }
   const dayBtn = e.target.closest("[data-date]");
-  if (dayBtn){ logDate = dayBtn.dataset.date; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); return; }
+  if (dayBtn){ goDate(dayBtn.dataset.date); return; }
   const cheer = e.target.closest("[data-cheer]");
   if (cheer){ celebrate(cheer.dataset.cheer); return; }
   const ck = e.target.closest("[data-ck]");
