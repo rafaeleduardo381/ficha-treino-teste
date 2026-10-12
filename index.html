@@ -395,6 +395,12 @@ button.todaycard{gap:10px;padding:16px}
 .alc-mais{grid-column:1/-1;font:inherit;font-size:.82rem;font-weight:700;color:var(--muted);background:none;border:1px dashed var(--line);border-radius:14px;padding:10px;cursor:pointer}
 .alc-m{margin:0;font-size:.92rem;color:var(--soft)}
 .alc-linha{margin:0;font-size:.78rem;color:var(--warn)}
+.avatar.tem-foto{background-size:cover;background-position:center;color:transparent}
+.foto-btn{position:relative;cursor:pointer}
+.foto-btn i{position:absolute;right:-4px;bottom:-4px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--ink);border:2px solid var(--surface)}
+.foto-btn i svg{width:13px;height:13px}
+.pf-foto{margin:6px 0 0;font-size:.8rem;color:var(--muted)}
+.linkbtn{font:inherit;font-size:.8rem;font-weight:700;color:var(--lime);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -1097,6 +1103,7 @@ function metaFor(last, reps, sets, leg, name){
   const next = Math.max(0, help ? ref - step : ref + step);
   return `<b>${num(next)} kg</b> × ${lo}–${hi} (${help ? "menos ajuda" : "subiu"}: bateu ${hi} em todas)`;
 }
+const ICON_CAM = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
 const ICON_ALVO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>`;
 // Resumo das metas do dia (quantas cargas sobem, quantas buscam o topo das reps)
 function refreshMetasDia(){
@@ -2202,7 +2209,7 @@ const PENDING = p => `<section class="list pending" style="--pc:var(--p5)">
 
 function drawWho(){
   who.hidden = true; who.innerHTML = "";
-  const pf = document.getElementById("perfilbtn"); if (pf) { pf.textContent = person.name.slice(0, 1); pf.style.setProperty("--av", `var(${person.cor || "--lime"})`); pf.setAttribute("aria-label", `Perfil ${person.art} ${person.name}`); }
+  const pf = document.getElementById("perfilbtn"); if (pf) { pf.textContent = person.name.slice(0, 1); pf.style.setProperty("--av", `var(${person.cor || "--lime"})`); pf.style.backgroundImage = fotoDe(person.id) ? `url(${fotoDe(person.id)})` : ""; pf.classList.toggle("tem-foto", !!fotoDe(person.id)); pf.setAttribute("aria-label", `Perfil ${person.art} ${person.name}`); }
 }
 function drawHead(){
   head.innerHTML = `<h1>Olá, ${person.name}!</h1>`;
@@ -2257,6 +2264,21 @@ function renderCardapio(){
     <p class="hint">${esc(CARDAPIO.aviso || "")}</p>
   </section>`;
 }
+const fotoDe = id => store.get("foto:" + id) || "";
+const fotoCss = id => { const f = fotoDe(id); return f ? `;background-image:url(${f})` : ""; };
+// Abre o seletor de fotos do celular; a foto é recortada em quadrado, reduzida para 256 px e guardada no aparelho
+function escolherFoto(){
+  let inp = document.getElementById("fotoin");
+  if (!inp) { inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.id = "fotoin"; inp.hidden = true; document.body.appendChild(inp);
+    inp.addEventListener("change", () => { const f = inp.files && inp.files[0]; inp.value = ""; if (!f) return;
+      const img = new Image(), url = URL.createObjectURL(f);
+      img.onload = () => { const c = document.createElement("canvas"), n = 256, lado = Math.min(img.width, img.height); c.width = c.height = n;
+        c.getContext("2d").drawImage(img, (img.width - lado) / 2, (img.height - lado) / 2, lado, lado, 0, 0, n, n); URL.revokeObjectURL(url);
+        store.set("foto:" + person.id, c.toDataURL("image/jpeg", .82)); const y = scrollY; draw(); scrollTo(0, y); toast("<span><b>Foto de perfil atualizada.</b><br>Ela fica só neste celular.</span>"); };
+      img.onerror = () => { URL.revokeObjectURL(url); toast("<span><b>Não consegui abrir essa foto.</b><br>Tente outra imagem.</span>"); };
+      img.src = url; }); }
+  inp.click();
+}
 function renderPerfil(){
   const p = person.id, g = GOALS[p] || GOALS.a3, hoje = trainDay(), cor = `var(${person.cor || "--lime"})`;
   const pesos = lastDays(30).map(d => ({d, v: pesoAt(p, d)})).filter(x => x.v);
@@ -2277,10 +2299,10 @@ function renderPerfil(){
   return `<section class="list perfil" style="--pc:${cor}">
     <div class="pf-top"><button type="button" class="ghost back" data-screen="hoje" aria-label="Voltar para o Hoje">‹</button><p class="eyebrow">Meu perfil</p></div>
     <article class="panel pf-hero">
-      <div class="pf-id"><span class="avatar big" style="--av:${cor}" aria-hidden="true">${person.name.slice(0, 1)}</span><div><h2>${person.name}</h2><p class="pf-goal">${person.goal || "Ficha em construção: falta a avaliação"}</p></div></div>
+      <div class="pf-id"><button type="button" class="avatar big foto-btn${fotoDe(p) ? " tem-foto" : ""}" data-foto style="--av:${cor}${fotoCss(p)}" aria-label="Escolher foto de perfil na galeria">${person.name.slice(0, 1)}<i aria-hidden="true">${ICON_CAM}</i></button><div><h2>${person.name}</h2><p class="pf-goal">${person.goal || "Ficha em construção: falta a avaliação"}</p><p class="pf-foto"><button type="button" class="linkbtn" data-foto>${fotoDe(p) ? "Trocar foto" : "Escolher foto da galeria"}</button>${fotoDe(p) ? ` · <button type="button" class="linkbtn" data-fototira>remover</button>` : ""}</p></div></div>
       ${person.days ? `<div class="pf-bloco"><div class="pf-bl-h"><b>Bloco 1 · ${person.bloco}</b><span>${bl.acabou ? "terminou" : `semana ${bl.sem} de ${BLOCO.weeks}`}</span></div><div class="pf-segs" aria-hidden="true">${segs}</div><small>${bl.acabou ? "Hora da reavaliação: medidas, peso e cargas" : `Reavaliação a partir de ${dm(bl.reav)} · treino de seg a sex`}</small></div>` : ""}
     </article>
-    <article class="panel"><h3>Trocar de perfil</h3><div class="pf-swap">${PEOPLE.map(x => `<button type="button" class="pf-p" data-person="${x.id}" aria-pressed="${x.id === p}" aria-label="${x.id === p ? "Você está no perfil " + x.art + " " + x.name : "Trocar para " + x.name}"><span class="avatar sm" style="--av:var(${x.cor || "--lime"})" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span></button>`).join("")}</div></article>
+    <article class="panel"><h3>Trocar de perfil</h3><div class="pf-swap">${PEOPLE.map(x => `<button type="button" class="pf-p" data-person="${x.id}" aria-pressed="${x.id === p}" aria-label="${x.id === p ? "Você está no perfil " + x.art + " " + x.name : "Trocar para " + x.name}"><span class="avatar sm${fotoDe(x.id) ? " tem-foto" : ""}" style="--av:var(${x.cor || "--lime"})${fotoCss(x.id)}" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span></button>`).join("")}</div></article>
     ${person.days ? `<div class="stats">${stat({ico: ICON_HALTER, c: "var(--lime)", l: "Esta semana", v: semana, u: `de ${dias}`, vis: `<div class="sx-week" aria-hidden="true">${weekOf(hoje).slice(0, 5).map(d => `<i class="${trained(p, d) ? "on" : d === hoje ? "hoje" : ""}"></i>`).join("")}</div>`, foot: semana >= dias ? "semana completa" : `${dias - semana === 1 ? "falta 1 treino" : `faltam ${dias - semana} treinos`}`})}${stat({ico: flameSvg(atual), c: flameOf(atual).a, l: "Ofensiva", v: atual, u: atual === 1 ? "dia" : "dias", foot: `recorde: ${recorde} ${recorde === 1 ? "dia" : "dias"}`})}${stat({ico: ICON.balanca, c: "var(--peso)", l: "Peso", v: pesoV.replace(" kg", ""), u: pesoV === "—" ? "" : "kg", foot: pesoS})}${stat({ico: ICON_CAL, c: "var(--blue)", l: "Total", v: total, u: total === 1 ? "treino" : "treinos", foot: "desde " + dm(BLOCO.start)})}</div>` : ""}
     <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
       ${meta(ICON.agua, "var(--blue)", "Água", ml(treinoHoje ? g.aguaTreino : g.aguaDescanso) + " ml", treinoHoje ? `em dia de treino, como hoje<br>descanso: ${ml(g.aguaDescanso)} ml` : `em dia de descanso, como hoje<br>treino: ${ml(g.aguaTreino)} ml`)}
@@ -2398,6 +2420,8 @@ view.addEventListener("click", e=>{
   const wkb = e.target.closest("[data-week]");
   if (wkb){ goDate(addDays(logDate, 7 * +wkb.dataset.week), +wkb.dataset.week < 0 ? "l" : "r"); return; }
   if (e.target.closest("[data-cal]")){ openCal(); return; }
+  if (e.target.closest("[data-fototira]")){ store.set("foto:" + person.id, ""); const y = scrollY; draw(); scrollTo(0, y); return; }
+  if (e.target.closest("[data-foto]")){ escolherFoto(); return; }
   const pick = e.target.closest("[data-person]");
   if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); return; }
   const sc = e.target.closest("[data-setctl]");
