@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#14181D"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0D0E10"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Treino teste"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
 <title>TESTE · Ficha do Rafael · Bloco 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -401,6 +401,14 @@ button.todaycard{gap:10px;padding:16px}
 .foto-btn i svg{width:13px;height:13px}
 .pf-foto{margin:6px 0 0;font-size:.8rem;color:var(--muted)}
 .linkbtn{font:inherit;font-size:.8rem;font-weight:700;color:var(--lime);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.ap-ok{margin:0;font-weight:800;color:var(--lime)}
+.ap-passos{list-style:none;margin:0;padding:0!important;display:flex;flex-direction:column;gap:8px}
+.ap-passos li{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;color:var(--soft);line-height:1.4}
+.ap-n{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--lime);color:var(--lime-ink);font-weight:800;font-size:.8rem}
+.ap-share{width:18px;height:18px;vertical-align:-4px;color:var(--blue)}
+.ap-msg{margin:0;font-size:.85rem;font-weight:700;color:var(--soft);background:var(--surface2);border-radius:12px;padding:8px 12px}
+.app-p .ap-lista{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;font-size:.84rem;color:var(--soft)}
+.ap-lista b{display:inline-block;min-width:2.6em;color:var(--ink)}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -683,7 +691,7 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
   <button type="button" data-screen="progresso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Progresso</span></button>
 </nav>
 
-<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste","relatorios":"relatorios"};</script>
+<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste","relatorios":"relatorios","env":"teste","push":"https://hixyzxzhhacneilvumcb.supabase.co/functions/v1/push"};</script>
 <script>
 const IG = id => `https://www.instagram.com/breno.aceti/reel/${id}/`;
 const b = (id, txt) => `<span class="breno">Breno</span>${txt} <a href="${IG(id)}" target="_blank" rel="noopener">ver vídeo</a>`;
@@ -1104,6 +1112,8 @@ function metaFor(last, reps, sets, leg, name){
   return `<b>${num(next)} kg</b> × ${lo}–${hi} (${help ? "menos ajuda" : "subiu"}: bateu ${hi} em todas)`;
 }
 const ICON_CAM = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>`;
+const ICON_SINO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>`;
+const ICON_SHARE = `<svg class="ap-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="quadrado com seta para cima"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>`;
 const ICON_ALVO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>`;
 // Resumo das metas do dia (quantas cargas sobem, quantas buscam o topo das reps)
 function refreshMetasDia(){
@@ -2279,6 +2289,73 @@ function escolherFoto(){
       img.src = url; }); }
   inp.click();
 }
+// ── App instalável e notificações ──
+const ehIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent || "") || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const instalado = () => !!navigator.standalone || (typeof matchMedia === "function" && matchMedia("(display-mode: standalone)").matches);
+const temPush = () => !!SUPA && !!SUPA.push && typeof Notification !== "undefined" && "serviceWorker" in navigator && typeof PushManager !== "undefined";
+let swReg = null, pushSub = null, pushMsg = "", instalaEv = null;   // registro do service worker, assinatura deste aparelho, aviso e convite de instalação (Android)
+async function pushApi(body){ const r = await fetch(SUPA.push, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)}); return r.json(); }
+const b64Bytes = t => Uint8Array.from(atob(t.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((t.length + 3) % 4)), c => c.charCodeAt(0));
+function redesenhaPerfil(){ if (screen === "perfil") { const y = scrollY; view.innerHTML = shownStats = renderPerfil(); scrollTo(0, y); } }
+async function iniciaApp(){
+  if (!SUPA || !("serviceWorker" in navigator)) return;
+  try { swReg = await navigator.serviceWorker.register("sw.js"); if (temPush()) pushSub = await swReg.pushManager.getSubscription(); } catch(e) {}
+  redesenhaPerfil();
+}
+// Ativar: o pedido de permissão tem que ser a primeira coisa do toque (regra do iPhone)
+async function ativarPush(){
+  if (!temPush()) return;
+  let perm; try { perm = await Notification.requestPermission(); } catch(e) { perm = "denied"; }
+  if (perm !== "granted") { pushMsg = perm === "denied" ? "Você bloqueou as notificações. Para liberar: Ajustes do celular → Notificações → Treino." : "Sem permissão, não dá para avisar."; return redesenhaPerfil(); }
+  pushMsg = "Ativando…"; redesenhaPerfil();
+  try {
+    if (!swReg) swReg = await navigator.serviceWorker.register("sw.js");
+    await navigator.serviceWorker.ready;
+    const {key} = await pushApi({action: "key"});
+    pushSub = await swReg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: b64Bytes(key)});
+    const r = await pushApi({action: "subscribe", person: person.id, env: SUPA.env, sub: pushSub.toJSON(), ua: navigator.userAgent});
+    if (!r.ok) throw new Error(r.erro || "falhou");
+    pushMsg = ""; redesenhaPerfil(); testarPush();
+  } catch(e) { pushMsg = "Não consegui ativar agora: " + (e.message || e); redesenhaPerfil(); }
+}
+async function testarPush(){
+  if (!pushSub) return;
+  pushMsg = "Enviando o teste…"; redesenhaPerfil();
+  try { const r = await pushApi({action: "test", endpoint: pushSub.endpoint}); pushMsg = r.status >= 200 && r.status < 300 ? "Teste enviado: deve chegar em alguns segundos." : "O envio falhou (código " + (r.status || r.erro) + "). Desative e ative de novo."; }
+  catch(e) { pushMsg = "Sem internet para enviar o teste."; }
+  redesenhaPerfil();
+}
+async function desativarPush(){
+  if (!pushSub) return;
+  try { await pushApi({action: "unsubscribe", endpoint: pushSub.endpoint}); await pushSub.unsubscribe(); } catch(e) {}
+  pushSub = null; pushMsg = "Notificações desligadas neste aparelho."; redesenhaPerfil();
+}
+// Trocou de perfil neste aparelho: as notificações passam a seguir a pessoa escolhida
+function pushSegue(){ if (pushSub) pushApi({action: "subscribe", person: person.id, env: SUPA.env, sub: pushSub.toJSON(), ua: navigator.userAgent}).catch(() => {}); }
+function appPanel(){
+  if (!SUPA) return "";
+  const ios = ehIOS(), inst = instalado();
+  const passo = (n, t) => `<li><span class="ap-n">${n}</span><span>${t}</span></li>`;
+  const instalar = inst ? `<p class="ap-ok">App instalado neste celular ✓</p>`
+    : ios ? `<p class="hint">No iPhone, as notificações só funcionam com o app na tela de início. Leva 20 segundos:</p><ol class="ap-passos">${passo(1, "Abra este site no <b>Safari</b> (no Chrome do iPhone não funciona).")}${passo(2, `Toque em <b>Compartilhar</b> ${ICON_SHARE} na barra de baixo.`)}${passo(3, "Role e toque em <b>Adicionar à Tela de Início</b>, depois em <b>Adicionar</b>.")}${passo(4, "Abra o app pelo ícone novo e volte aqui para ativar as notificações.")}</ol>`
+    : instalaEv ? `<button type="button" class="done-btn" data-instalar>Instalar o app</button><p class="hint">Fica com ícone na tela inicial e abre em tela cheia.</p>`
+    : `<p class="hint">Para instalar: no menu do navegador (⋮), toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</p>`;
+  const perm = typeof Notification !== "undefined" ? Notification.permission : "";
+  const notif = !temPush() ? (ios && !inst ? "" : `<p class="hint">Este navegador não tem notificações de site.</p>`)
+    : pushSub ? `<p class="ap-ok">Notificações ligadas neste aparelho ✓</p><div class="chips two-c"><button type="button" class="chip" data-pushtest>Enviar teste</button><button type="button" class="chip" data-pushoff>Desativar</button></div>`
+    : perm === "denied" ? `<p class="alert">As notificações estão bloqueadas. Para liberar: Ajustes do celular → Notificações → Treino.</p>`
+    : `<button type="button" class="done-btn" data-pushon>Ativar notificações</button>`;
+  return `<article class="panel tinted app-p" style="--c:var(--lime)">${phd(ICON_SINO, "App e notificações")}
+    ${instalar}${notif}${pushMsg ? `<p class="ap-msg" role="status">${esc(pushMsg)}</p>` : ""}
+    ${temPush() || (ios && !inst) ? `<ul class="ap-lista"><li><b>17h</b> o treino do dia e quantos dias de ofensiva estão em jogo</li><li><b>22h</b> se ainda não treinou: a ofensiva morre à meia-noite</li><li><b>8h</b> ganhou mais um dia ou perdeu a ofensiva</li></ul><p class="hint">Só em dia útil e só quando faz sentido (quem já treinou não recebe cobrança).</p>` : ""}</article>`;
+}
+// Tela ligada durante o treino (o celular não apaga com o timer de descanso rodando)
+let telaLigada = null;
+async function cuidaDaTela(){
+  const quer = screen === "treino" && treinoView === "dia" && !document.hidden;
+  try { if (quer && !telaLigada && navigator.wakeLock) { telaLigada = await navigator.wakeLock.request("screen"); telaLigada.addEventListener("release", () => { telaLigada = null; }); }
+        else if (!quer && telaLigada) { await telaLigada.release(); telaLigada = null; } } catch(e) { telaLigada = null; }
+}
 function renderPerfil(){
   const p = person.id, g = GOALS[p] || GOALS.a3, hoje = trainDay(), cor = `var(${person.cor || "--lime"})`;
   const pesos = lastDays(30).map(d => ({d, v: pesoAt(p, d)})).filter(x => x.v);
@@ -2311,6 +2388,7 @@ function renderPerfil(){
       ${meta(ICON.prato, "var(--coral)", "Proteína", PROT[p] || "a definir", mt.faixa ? `${num(mt.gkg)} g por kg × ${num(mt.peso)} kg ≈ ${mt.total} g, dividida nas refeições` : "depois da avaliação")}
       ${mp ? meta(ICON.balanca, "var(--peso)", "Peso", mp[0], mp[1]) : ""}
     </ul>${mt.revisao ? `<p class="alert">Seu peso saiu da faixa prevista: as metas precisam de revisão do personal.</p>` : ""}<p class="hint">Calculadas pelo seu peso e objetivo (regra do agente de nutrição), recalculadas toda segunda. Pese-se na balança da academia ao chegar (~21h), antes do treino, depois do banheiro e sem tênis, sempre na mesma balança, seg/qua/sex. O site desconta 1,5 kg (roupa + comida do dia) para ficar no padrão de jejum: vale a tendência da semana, não o número do dia.</p></article>
+    ${appPanel()}
     <article class="panel"><h3>Animações</h3><div class="chips three" role="group" aria-label="Animações">${[["on", "Completas"], ["off", "Suaves"], ["auto", "Do celular"]].map(([k, t]) => `<button type="button" class="chip" data-anim="${k}" aria-pressed="${motion === k}">${t}</button>`).join("")}</div><p class="hint">${motion === "on" ? "Cartões entrando, números subindo, barras crescendo e efeitos ao tocar." : motion === "off" ? "Só aparece e some suave, sem movimento na tela." : "Segue o ajuste do celular: se ele estiver com animações reduzidas, fica suave."}</p></article>
     <h3 class="pf-sec">Guias</h3>
     <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}" style="--c:${GUIA_COR[t.id] || "var(--muted)"}"><span class="mi"><span class="st-ico">${GUIA_ICO[t.id] || ""}</span><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span></span><span aria-hidden="true">›</span></button>`).join("")}</div>
@@ -2355,7 +2433,13 @@ function enterAnim(){
 }
 setInterval(() => { if (screen === "hoje" && !document.hidden) refreshToday(); }, 5 * 60e3);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && screen === "hoje") refreshToday(); });
-function draw(){ drawCore(); if (animNext) { animNext = false; enterAnim(); } }
+if (typeof window.addEventListener === "function") {
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); instalaEv = e; redesenhaPerfil(); });
+  window.addEventListener("appinstalled", () => { instalaEv = null; redesenhaPerfil(); });
+}
+document.addEventListener("visibilitychange", cuidaDaTela);
+iniciaApp();
+function draw(){ drawCore(); cuidaDaTela(); if (animNext) { animNext = false; enterAnim(); } }
 function drawCore(){
   drawWho(); drawHead(); drawTabs(); drawDock();
   if (screen === "hoje") { view.innerHTML = renderToday(); refreshToday(); return; }
@@ -2422,8 +2506,12 @@ view.addEventListener("click", e=>{
   if (e.target.closest("[data-cal]")){ openCal(); return; }
   if (e.target.closest("[data-fototira]")){ store.set("foto:" + person.id, ""); const y = scrollY; draw(); scrollTo(0, y); return; }
   if (e.target.closest("[data-foto]")){ escolherFoto(); return; }
+  if (e.target.closest("[data-pushon]")){ ativarPush(); return; }
+  if (e.target.closest("[data-pushtest]")){ testarPush(); return; }
+  if (e.target.closest("[data-pushoff]")){ desativarPush(); return; }
+  if (e.target.closest("[data-instalar]")){ if (instalaEv) { instalaEv.prompt(); instalaEv = null; } return; }
   const pick = e.target.closest("[data-person]");
-  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); return; }
+  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); pushSegue(); return; }
   const sc = e.target.closest("[data-setctl]");
   if (sc){ changeSets(+sc.dataset.ex, +sc.dataset.setctl); return; }
   const sheetBtn = e.target.closest("[data-sheet]");
