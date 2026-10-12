@@ -412,6 +412,30 @@ button.todaycard{gap:10px;padding:16px}
 .ap-msg{margin:0;font-size:.85rem;font-weight:700;color:var(--soft);background:var(--surface2);border-radius:12px;padding:8px 12px}
 .app-p .ap-lista{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;font-size:.84rem;color:var(--soft)}
 .ap-lista b{display:inline-block;min-width:2.6em;color:var(--ink)}
+.ex-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ex-acts .ghost,.ghost.shr{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;font-size:.84rem}
+.ex-acts svg,.ghost.shr svg{width:17px;height:17px;flex:none}
+.ex-acts .ghost[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
+body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-out infinite}
+.ghost.shr{width:100%;min-height:48px;border:1px solid var(--line);background:var(--surface)}
+.pm li{padding:12px 0}
+.pm .pm-b{flex:none}
+.pm .chip{padding:8px 14px}
+.fg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.fg-i{position:relative;aspect-ratio:3/4;padding:0;border:0;border-radius:12px;overflow:hidden;background:var(--surface2);cursor:pointer}
+.fg-i img{width:100%;height:100%;object-fit:cover;display:block}
+.fg-i span{position:absolute;left:6px;bottom:6px;font-size:.7rem;font-weight:800;color:#fff;background:rgba(0,0,0,.6);border-radius:8px;padding:1px 6px}
+.camv{position:fixed;inset:0;z-index:70;background:#000;display:flex;align-items:center;justify-content:center}
+.camv video,.camv img{width:100%;height:100%;object-fit:contain;background:#000}
+.cam-top,.cam-bar{position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;color:#fff}
+.cam-top{top:env(safe-area-inset-top,0px);background:linear-gradient(180deg,rgba(0,0,0,.7),transparent)}
+.cam-bar{bottom:env(safe-area-inset-bottom,0px);padding-bottom:22px;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent)}
+.cam-top b{font-size:1rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cam-bar .ghost,.cam-bar .done-btn{min-height:46px;padding:0 16px}
+.cam-bar .done-btn{flex:1}
+.cam-shot{width:70px;height:70px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.25);cursor:pointer;flex:none}
+.cam-shot.rec{background:var(--coral);border-color:var(--coral);border-radius:22px;transform:scale(.8)}
+.cam-t{min-width:6.5em;text-align:right;font-size:.82rem;font-weight:800;font-variant-numeric:tabular-nums}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -995,6 +1019,7 @@ function renderDayCore(d){
       </div>
       ${log ? `<div class="meta" hidden></div><p class="last" data-name="${esc(name)}"></p>` : ""}
       ${boxes}
+      ${log && SUPA ? `<div class="ex-acts"><button type="button" class="ghost" data-ditar="${i}" aria-pressed="false">${ICON_MIC}Ditar série</button><button type="button" class="ghost" data-filmar="${i}">${ICON_CAM}Filmar execução</button></div>` : ""}
       <details><summary>Execução</summary><ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul></details>
     </article>`;
   }).join("");
@@ -1007,6 +1032,7 @@ function renderDayCore(d){
     <div class="daymetas" id="daymetas" hidden></div>
     <p class="daylog"><span id="logstate" aria-live="polite">${modeText()}</span></p>
     ${cards}
+    ${SUPA ? `<button type="button" class="ghost shr" data-share="treino">${ICON_ENVIA}Compartilhar o treino de hoje</button>` : ""}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
       <p id="sendsum" class="sendsum"></p>
       <div class="sendrow"><a class="btn-wa" id="sendwa" href="https://wa.me/" target="_blank" rel="noopener">Enviar no WhatsApp</a><button type="button" class="ghost" id="copytxt">Copiar texto</button></div>
@@ -1423,7 +1449,7 @@ function refreshToday(){
   refreshExtras(); refreshProt(); refreshAlc();
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
   const t = treinoProg(person.id, logDate), box = document.getElementById("todaytrain");
-  box.innerHTML = !person.days ? `<div class="panel"><p>A ficha ${person.art} ${person.name} ainda está sendo montada.</p></div>`
+  box.innerHTML = gymBanner() + (!person.days ? `<div class="panel"><p>A ficha ${person.art} ${person.name} ainda está sendo montada.</p></div>`
     : !t ? `<div class="panel"><h3>Dia de descanso</h3><p>Sábado e domingo não têm treino. Capriche na água e no sono.</p></div>`
     : (() => { const exs = t.d.ex.filter(e => e[4]), min = Math.round(exs.reduce((a, e) => a + e[1] * (40 + e[4]), 0) / 60), feito = t.total && t.done >= t.total, st = feito ? "feito" : t.done ? "andando" : "afazer", hj = logDate === trainDay();
       const doc = LOGS[docId(person.id, logDate)], kc = doc && trained(person.id, logDate) ? sessionStats(person.id, doc).kcal : null;
@@ -1432,7 +1458,7 @@ function refreshToday(){
         <h3>${t.d.name}</h3><p class="tc-sub">${t.d.sub}</p>
         <div class="tc-nums"><span><b class="num">${exs.length}</b>exercícios</span><span><b class="num">${t.total}</b>séries</span><span><b class="num">~${min}</b>min</span>${kc ? `<span><b class="num">~${kc}</b>kcal</span>` : ""}</div>
         <div class="tc-prog"><div class="pbar" aria-hidden="true"><i style="width:${t.total ? Math.round(t.done / t.total * 100) : 0}%"></i></div><span class="num">${t.done}/${t.total}</span></div>
-        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>`; })() + nutriCard();
+        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>`; })() + nutriCard());
 }
 function writeChk(field, dir){
   if (futuro()) return avisaFuturo();
@@ -1581,14 +1607,14 @@ function checkOfensiva(){
 }
 function showOfensiva(tipo, n, dia){
   let el = document.getElementById("ofmodal");
-  if (!el) { el = document.createElement("div"); el.id = "ofmodal"; el.className = "ofmodal"; document.body.appendChild(el); el.addEventListener("click", e => { if (e.target.closest("[data-ofclose]")) { el.classList.remove("open"); setTimeout(() => { el.hidden = true; }, 250); } }); }
+  if (!el) { el = document.createElement("div"); el.id = "ofmodal"; el.className = "ofmodal"; document.body.appendChild(el); el.addEventListener("click", e => { const os = e.target.closest("[data-ofshare]"); if (os) { compartilhar({title: "Ofensiva", text: `🔥 ${os.dataset.ofshare} ${+os.dataset.ofshare === 1 ? "dia" : "dias"} de ofensiva no treino. Sem faltar um dia útil.`}); return; } if (e.target.closest("[data-ofclose]")) { el.classList.remove("open"); setTimeout(() => { el.hidden = true; }, 250); } }); }
   const dias = n === 1 ? "dia" : "dias", best = Math.max(n, bestStreak(person.id)), quando = dia === addDays(trainDay(), -1) ? "ontem" : WD[parseDate(dia).getDay()].toLowerCase() + ", " + brDate(dia);
   const ganhou = tipo === "ganhou", f = flameOf(ganhou ? n : 0);
   el.className = "ofmodal " + tipo; el.style.setProperty("--fa", f.a); el.style.setProperty("--fb", f.b);
   el.innerHTML = ganhou
     ? `<div class="of-box" role="dialog" aria-modal="true" aria-label="Ofensiva"><div class="of-fl">${flameSvg(n)}</div><p class="of-n num">${n}</p><h2>${dias} de ofensiva</h2>
        <p class="of-f">${FRASES_MARCO[n] || fraseDoDia(FRASES_GANHOU, person.id + dia)}</p><p class="of-s">Você treinou ${quando}.${n >= best && n > 1 ? " É o seu recorde." : ` Recorde: ${best} ${best === 1 ? "dia" : "dias"}.`}</p>
-       <button type="button" class="done-btn" data-ofclose>Bora para hoje</button></div>`
+       <button type="button" class="done-btn" data-ofclose>Bora para hoje</button><button type="button" class="linkbtn" data-ofshare="${n}">Compartilhar a ofensiva</button></div>`
     : `<div class="of-box" role="alertdialog" aria-modal="true" aria-label="Ofensiva perdida"><div class="of-fl apagada">${flameSvg(0)}</div><p class="of-n num"><s>${n}</s> → 0</p><h2>Você perdeu ${n === 1 ? "sua ofensiva" : `${n} ${dias} de ofensiva`}</h2>
        <p class="of-f">${fraseDoDia(FRASES_PERDEU, person.id + dia)}</p><p class="of-s">Sem treino ${quando}. Recorde que continua de pé: ${best} ${best === 1 ? "dia" : "dias"}.</p>
        <button type="button" class="done-btn" data-ofclose>Recomeçar hoje</button></div>`;
@@ -2292,6 +2318,173 @@ function escolherFoto(){
       img.src = url; }); }
   inp.click();
 }
+// ══════════ Compartilhar, microfone (ditado), câmera/galeria e localização ══════════
+const ICON_MIC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>`;
+const ICON_PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>`;
+const ICON_ENVIA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg>`;
+const aviso = (t, sub = "") => toast(`<span><b>${t}</b>${sub ? "<br>" + sub : ""}</span>`);
+
+// ── Compartilhar: folha do celular (WhatsApp etc.); sem ela, copia o texto ou baixa o arquivo ──
+async function compartilhar({title = "Treino", text = "", files = []}){
+  try {
+    if (navigator.share && (!files.length || (navigator.canShare && navigator.canShare({files})))) { await navigator.share(files.length ? {title, text, files} : {title, text}); return; }
+  } catch(e) { if (e && e.name === "AbortError") return; }
+  if (files.length) { const a = document.createElement("a"); a.href = URL.createObjectURL(files[0]); a.download = files[0].name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); return aviso("Arquivo salvo no aparelho.", "Agora é só mandar pelo WhatsApp."); }
+  try { await navigator.clipboard.writeText(text); aviso("Texto copiado.", "Cole no WhatsApp."); } catch(e) { aviso("Não consegui compartilhar neste navegador."); }
+}
+
+// ── Microfone: ditar carga e repetições ("60 por 12", "sessenta e dois e meio por dez") ──
+const N_PT = {zero: 0, um: 1, uma: 1, dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9, dez: 10, onze: 11, doze: 12, treze: 13, quatorze: 14, catorze: 14, quinze: 15, dezesseis: 16, dezessete: 17, dezoito: 18, dezenove: 19,
+  vinte: 20, trinta: 30, quarenta: 40, cinquenta: 50, sessenta: 60, setenta: 70, oitenta: 80, noventa: 90, cem: 100, cento: 100, duzentos: 200};
+function numerosDe(fala){
+  const tk = fala.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/(\d),(\d)/g, "$1.$2").split(/[^a-z0-9.]+/).filter(Boolean), out = [];
+  let cur = null, tipo = "";
+  const flush = () => { if (cur != null) out.push(cur); cur = null; tipo = ""; };
+  for (let i = 0; i < tk.length; i++) {
+    const t = tk[i];
+    if (/^\d+(\.\d+)?$/.test(t)) { flush(); out.push(+t); continue; }
+    if (t === "e") continue;
+    if ((t === "meio" || t === "meia") && cur != null) { cur += .5; flush(); continue; }
+    if (t in N_PT) { const v = N_PT[t], tp = v >= 100 ? "c" : v >= 20 ? "d" : "u";
+      if (cur != null && ((tipo === "c" && tp !== "c") || (tipo === "d" && tp === "u" && v < 10))) { cur += v; tipo = tp; } else { flush(); cur = v; tipo = tp; }
+      continue; }
+    flush();
+  }
+  flush(); return out;
+}
+let ditando = null;
+function ditar(aoOuvir, botao){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return aviso("O ditado não funciona neste navegador.", "Use o microfone do teclado do celular.");
+  if (ditando) { try { ditando.stop(); } catch(e) {} return; }
+  const r = new SR(); r.lang = "pt-BR"; r.interimResults = false; r.maxAlternatives = 1; ditando = r;
+  if (botao) botao.setAttribute("aria-pressed", "true");
+  const fim = () => { ditando = null; if (botao) botao.setAttribute("aria-pressed", "false"); };
+  r.onresult = e => aoOuvir(e.results[0][0].transcript);
+  r.onerror = e => { fim(); aviso(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Microfone bloqueado." : "Não entendi.", e.error === "not-allowed" || e.error === "service-not-allowed" ? "Libere em Ajustes → Treino → Microfone e Reconhecimento de Fala." : "Fale de novo: \"60 por 12\"."); };
+  r.onend = fim;
+  try { r.start(); aviso("Ouvindo…", "Fale a carga e as repetições: \"60 por 12\"."); } catch(e) { fim(); }
+}
+function ditarSerie(i, botao){
+  const d = person.days.find(x => x.id === current), box = document.querySelector(`#ex-${d.id}-${i} .lg`); if (!box) return;
+  ditar(fala => {
+    const n = numerosDe(fala); if (!n.length) return aviso("Não ouvi números.", `Entendi: "${esc(fala)}"`);
+    const pares = n.length === 1 ? [[null, n[0]]] : Array.from({length: Math.floor(n.length / 2)}, (_, k) => [n[2 * k], n[2 * k + 1]]), feitas = [];
+    for (const [kg, reps] of pares) {
+      const linhas = [...box.querySelectorAll('input[data-field="reps"]')], alvo = linhas.find(x => x.value.trim() === ""); if (!alvo) break;
+      const st = alvo.dataset.set, kgIn = box.querySelector(`input[data-field="kg"][data-set="${st}"]`);
+      if (kg != null && kgIn) { kgIn.value = num(kg); onLogInput(kgIn); } else if (kgIn && kgIn.value.trim() === "" && kgIn.dataset.last) { kgIn.value = num(kgIn.dataset.last); onLogInput(kgIn); }
+      alvo.value = String(Math.round(reps)); onLogInput(alvo);
+      const b = box.querySelector(`.set[data-s="${st}"]`); if (b && b.getAttribute("aria-pressed") !== "true") b.click();
+      feitas.push(`Série ${+st + 1}: ${kgIn && kgIn.value ? kgIn.value + " kg × " : ""}${Math.round(reps)}`);
+    }
+    feitas.length ? aviso(feitas.join(" · "), `Entendi: "${esc(fala)}"`) : aviso("Todas as séries já estão preenchidas.");
+  }, botao);
+}
+
+// ── Fotos de evolução: ficam só neste aparelho (IndexedDB) ──
+const fotosDb = () => new Promise((ok, no) => { const r = indexedDB.open("treino-fotos" + NS.replace("/", "-"), 1); r.onupgradeneeded = () => r.result.createObjectStore("fotos", {keyPath: "id", autoIncrement: true}); r.onsuccess = () => ok(r.result); r.onerror = () => no(r.error); });
+async function fotosTx(modo, fn){ const db = await fotosDb(); return new Promise((ok, no) => { const tx = db.transaction("fotos", modo), rq = fn(tx.objectStore("fotos")); tx.oncomplete = () => ok(rq && rq.result); tx.onerror = () => no(tx.error); }); }
+let FOTOS = [];
+async function carregaFotos(){
+  try { const all = (await fotosTx("readonly", st => st.getAll())) || []; FOTOS.forEach(f => URL.revokeObjectURL(f.url));
+    FOTOS = all.filter(f => f.person === person.id).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : b.id - a.id).map(f => ({...f, url: URL.createObjectURL(f.blob)})); } catch(e) { FOTOS = []; }
+  redesenhaPerfil();
+}
+// Reduz a imagem para no máximo 1280 px no lado maior
+const reduz = (fonte, w, h) => new Promise(ok => { const k = Math.min(1, 1280 / Math.max(w, h)), c = document.createElement("canvas"); c.width = Math.round(w * k); c.height = Math.round(h * k); c.getContext("2d").drawImage(fonte, 0, 0, c.width, c.height); c.toBlob(ok, "image/jpeg", .85); });
+async function guardaFoto(blob, date = trainDay()){ await fotosTx("readwrite", st => st.add({person: person.id, date, blob})); }
+function fotosDaGaleria(){
+  let inp = document.getElementById("fotosin");
+  if (!inp) { inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.id = "fotosin"; inp.hidden = true; document.body.appendChild(inp);
+    inp.addEventListener("change", async () => { const fs = [...(inp.files || [])]; inp.value = ""; let n = 0;
+      for (const f of fs.slice(0, 12)) { try { const img = await new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = URL.createObjectURL(f); });
+        await guardaFoto(await reduz(img, img.width, img.height), fmtDate(new Date(f.lastModified || Date.now()))); URL.revokeObjectURL(img.src); n++; } catch(e) {} }
+      await carregaFotos(); aviso(n ? `${n} ${n === 1 ? "foto guardada" : "fotos guardadas"}.` : "Não consegui abrir as fotos.", n ? "Elas ficam só neste celular." : ""); }); }
+  inp.click();
+}
+function verFoto(id){
+  const f = FOTOS.find(x => x.id === id); if (!f) return;
+  let el = document.getElementById("fotov"); if (!el) { el = document.createElement("div"); el.id = "fotov"; el.className = "camv"; document.body.appendChild(el); }
+  el.innerHTML = `<img src="${f.url}" alt="Foto de evolução de ${brDate(f.date)}"><div class="cam-top"><b>${brDate(f.date)}</b><button type="button" class="ghost" data-x>Fechar</button></div><div class="cam-bar"><button type="button" class="ghost" data-apaga>Apagar</button><button type="button" class="done-btn" data-env>Compartilhar</button></div>`;
+  el.hidden = false;
+  el.onclick = async e => {
+    if (e.target.closest("[data-x]")) el.hidden = true;
+    else if (e.target.closest("[data-env]")) compartilhar({title: "Evolução", text: `Evolução ${person.name} · ${brDate(f.date)}`, files: [new File([f.blob], `evolucao-${f.date}.jpg`, {type: "image/jpeg"})]});
+    else if (e.target.closest("[data-apaga]") && confirm("Apagar esta foto deste celular?")) { await fotosTx("readwrite", st => st.delete(id)); el.hidden = true; carregaFotos(); }
+  };
+}
+
+// ── Câmera: foto de evolução ou vídeo da execução (até 30 s; o vídeo não fica guardado, só é compartilhado) ──
+let cam = null;
+function paraCamera(){ if (cam && cam.stream) cam.stream.getTracks().forEach(t => t.stop()); if (cam) { clearInterval(cam.tic); cam.stream = null; } }
+function fechaCamera(){ paraCamera(); cam = null; const el = document.getElementById("cam"); if (el) { el.hidden = true; el.innerHTML = ""; } }
+async function ligaCamera(){
+  const el = document.getElementById("cam"); paraCamera();
+  try { cam.stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: cam.lado, width: {ideal: 1280}, height: {ideal: 720}}, audio: false}); const v = el.querySelector("video"); v.srcObject = cam.stream; await v.play().catch(() => {}); }
+  catch(e) { fechaCamera(); aviso(e && e.name === "NotAllowedError" ? "Câmera bloqueada." : "Não consegui abrir a câmera.", e && e.name === "NotAllowedError" ? "Libere em Ajustes → Treino (ou Safari) → Câmera." : ""); }
+}
+async function abrirCamera(modo, nome = ""){
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return aviso("Este navegador não abre a câmera pelo site.");
+  let el = document.getElementById("cam");
+  if (!el) { el = document.createElement("div"); el.id = "cam"; el.className = "camv"; document.body.appendChild(el);
+    el.addEventListener("click", async e => {
+      if (!cam) return;
+      if (e.target.closest("[data-x]")) return fechaCamera();
+      if (e.target.closest("[data-vira]")) { cam.lado = cam.lado === "user" ? "environment" : "user"; return ligaCamera(); }
+      if (e.target.closest("[data-refaz]")) return abrirCamera(cam.modo, cam.nome);
+      if (e.target.closest("[data-env]") && cam.arquivo) return compartilhar({title: "Execução", text: `Execução: ${cam.nome} · ${person.name} · ${brDate(logDate)}`, files: [cam.arquivo]});
+      if (!e.target.closest("[data-vai]")) return;
+      const v = el.querySelector("video");
+      if (cam.modo === "foto") { const b = await reduz(v, v.videoWidth, v.videoHeight); await guardaFoto(b); fechaCamera(); await carregaFotos(); return aviso("Foto de evolução guardada.", "Ela fica só neste celular."); }
+      if (cam.rec) return cam.rec.stop();
+      if (typeof MediaRecorder === "undefined") return aviso("Este navegador não grava vídeo pelo site.");
+      const tipo = ["video/mp4", "video/webm"].find(t => MediaRecorder.isTypeSupported(t)) || "", partes = [];
+      cam.rec = new MediaRecorder(cam.stream, tipo ? {mimeType: tipo} : undefined);
+      cam.rec.ondataavailable = ev => { if (ev.data && ev.data.size) partes.push(ev.data); };
+      cam.rec.onstop = () => { const mt = (cam.rec.mimeType || tipo || "video/mp4").split(";")[0], blob = new Blob(partes, {type: mt}); paraCamera();
+        cam.arquivo = new File([blob], `execucao-${cam.nome.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").slice(0, 40) || "treino"}.${mt.includes("mp4") ? "mp4" : "webm"}`, {type: mt}); cam.rec = null;
+        el.innerHTML = `<video playsinline controls src="${URL.createObjectURL(blob)}"></video><div class="cam-top"><b>${esc(cam.nome)}</b><button type="button" class="ghost" data-x>Fechar</button></div><div class="cam-bar"><button type="button" class="ghost" data-refaz>Refazer</button><button type="button" class="done-btn" data-env>Compartilhar ou salvar</button></div>`; };
+      cam.rec.start(); let seg = 0; const b = el.querySelector("[data-vai]"), t = el.querySelector(".cam-t"); b.classList.add("rec"); b.setAttribute("aria-label", "Parar a gravação");
+      cam.tic = setInterval(() => { seg++; t.textContent = `0:${String(seg).padStart(2, "0")} / 0:30`; if (seg >= 30 && cam && cam.rec) cam.rec.stop(); }, 1000);
+    }); }
+  cam = {modo, nome, lado: modo === "foto" ? "user" : "environment"};
+  el.innerHTML = `<video playsinline autoplay muted></video><div class="cam-top"><b>${modo === "foto" ? "Foto de evolução" : esc(nome)}</b><button type="button" class="ghost" data-x>Fechar</button></div><div class="cam-bar"><button type="button" class="ghost" data-vira>Virar câmera</button><button type="button" class="cam-shot" data-vai aria-label="${modo === "foto" ? "Tirar a foto" : "Começar a gravar"}"></button><span class="cam-t">${modo === "foto" ? "" : "até 30 s"}</span></div>`;
+  el.hidden = false; ligaCamera();
+}
+
+// ── Localização: marcar a academia e avisar ao chegar (só com o app aberto; a posição fica no aparelho) ──
+const distM = (a, b) => { const R = 6371000, r = x => x * Math.PI / 180, dl = r(b.lat - a.lat), dn = r(b.lon - a.lon), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+let naAcademia = false, gymVisto = 0, gymMsg = "";
+function marcarAcademia(){
+  if (!navigator.geolocation) return aviso("Este navegador não informa a localização.");
+  gymMsg = "Pegando a sua posição…"; redesenhaPerfil();
+  navigator.geolocation.getCurrentPosition(p => { store.set("gym", {lat: p.coords.latitude, lon: p.coords.longitude, acc: Math.round(p.coords.accuracy || 0), at: Date.now()}); gymMsg = ""; naAcademia = true; redesenhaPerfil(); aviso("Academia marcada.", "Ao abrir o app lá, ele lembra de pesar."); },
+    e => { gymMsg = e.code === 1 ? "Localização bloqueada. Libere em Ajustes → Treino (ou Safari) → Localização." : "Não consegui pegar a posição. Tente perto de uma janela."; redesenhaPerfil(); }, {enableHighAccuracy: true, timeout: 15000});
+}
+function checaAcademia(){
+  const g = store.get("gym"); if (!g || !navigator.geolocation || Date.now() - gymVisto < 5 * 60e3) return; gymVisto = Date.now();
+  navigator.geolocation.getCurrentPosition(p => { const perto = distM(g, {lat: p.coords.latitude, lon: p.coords.longitude}) <= Math.max(150, (p.coords.accuracy || 0) + (g.acc || 0)); if (perto !== naAcademia) { naAcademia = perto; refreshToday(); } }, () => {}, {maximumAge: 120000, timeout: 10000});
+}
+function gymBanner(){
+  if (!naAcademia || !store.get("gym") || logDate !== trainDay()) return "";
+  const temPeso = !!chkOf(person.id, logDate).peso;
+  return `<article class="panel tinted" style="--c:var(--blue)">${phd(ICON_PIN, "Você chegou na academia")}<p class="alc-m">${temPeso ? "Peso de hoje já anotado ✓. Bom treino!" : "Antes de treinar: suba na balança (depois do banheiro, sem tênis) e anote o peso."}</p>${temPeso ? "" : `<button type="button" class="done-btn" data-irpeso>Anotar o peso agora</button>`}</article>`;
+}
+function permPanel(){
+  if (!SUPA) return "";
+  const g = store.get("gym"), lin = (ico, c, t, sub, botoes) => `<li style="--c:${c}"><span class="ico">${ico}</span><span class="mt-l">${t}<small>${sub}</small></span><span class="pm-b">${botoes}</span></li>`;
+  return `<article class="panel"><h3>Permissões do aparelho</h3><ul class="pf-metas pm">
+    ${lin(ICON_CAM, "var(--coral)", "Câmera", "Foto de evolução e vídeo da execução", `<button type="button" class="chip" data-fotocam>Testar</button>`)}
+    ${lin(ICON_MIC, "var(--lime)", "Microfone", "Ditar carga e repetições no treino", `<button type="button" class="chip" data-mictest>Testar</button>`)}
+    ${lin(ICON_PIN, "var(--blue)", "Localização", g ? `Academia marcada ✓ (precisão ~${g.acc} m)` : "Avisa de pesar ao chegar na academia", g ? `<button type="button" class="chip" data-gymdel>Remover</button>` : `<button type="button" class="chip" data-gymset>Marcar aqui</button>`)}
+    ${lin(ICON_ENVIA, "var(--peso)", "Compartilhar", "Mandar treino, foto ou vídeo pelo WhatsApp", `<button type="button" class="chip" data-shareapp>Testar</button>`)}
+  </ul>${gymMsg ? `<p class="ap-msg" role="status">${esc(gymMsg)}</p>` : ""}<p class="hint">O celular só pergunta na hora de usar. Foto, vídeo e posição ficam neste aparelho: nada disso vai para o servidor.</p></article>
+  <article class="panel"><div class="ph"><h3>Fotos de evolução</h3><span class="delta">só neste celular</span></div>
+    <div class="chips two-c"><button type="button" class="chip" data-fotocam>Tirar foto</button><button type="button" class="chip" data-fotogal>Escolher da galeria</button></div>
+    ${FOTOS.length ? `<div class="fg">${FOTOS.slice(0, 12).map(f => `<button type="button" class="fg-i" data-fotover="${f.id}" aria-label="Foto de ${brDate(f.date)}"><img src="${f.url}" alt="" loading="lazy"><span class="num">${dd(f.date)}</span></button>`).join("")}</div>` : `<p class="hint">Tire uma foto no mesmo lugar e na mesma luz a cada reavaliação (a próxima é a partir de 16/11) para comparar.</p>`}</article>`;
+}
+
 // ── App instalável e notificações ──
 const ehIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent || "") || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const instalado = () => !!navigator.standalone || (typeof matchMedia === "function" && matchMedia("(display-mode: standalone)").matches);
@@ -2303,7 +2496,7 @@ function redesenhaPerfil(){ if (screen === "perfil") { const y = scrollY; view.i
 async function iniciaApp(){
   if (!SUPA || !("serviceWorker" in navigator)) return;
   try { swReg = await navigator.serviceWorker.register("sw.js"); if (temPush()) pushSub = await swReg.pushManager.getSubscription(); } catch(e) {}
-  redesenhaPerfil();
+  redesenhaPerfil(); if (screen === "perfil") carregaFotos();
 }
 // Ativar: o pedido de permissão tem que ser a primeira coisa do toque (regra do iPhone)
 async function ativarPush(){
@@ -2392,6 +2585,7 @@ function renderPerfil(){
       ${mp ? meta(ICON.balanca, "var(--peso)", "Peso", mp[0], mp[1]) : ""}
     </ul>${mt.revisao ? `<p class="alert">Seu peso saiu da faixa prevista: as metas precisam de revisão do personal.</p>` : ""}<p class="hint">Calculadas pelo seu peso e objetivo (regra do agente de nutrição), recalculadas toda segunda. Pese-se na balança da academia ao chegar (~21h), antes do treino, depois do banheiro e sem tênis, sempre na mesma balança, seg/qua/sex. O site desconta 1,5 kg (roupa + comida do dia) para ficar no padrão de jejum: vale a tendência da semana, não o número do dia.</p></article>
     ${appPanel()}
+    ${permPanel()}
     <article class="panel"><h3>Animações</h3><div class="chips three" role="group" aria-label="Animações">${[["on", "Completas"], ["off", "Suaves"], ["auto", "Do celular"]].map(([k, t]) => `<button type="button" class="chip" data-anim="${k}" aria-pressed="${motion === k}">${t}</button>`).join("")}</div><p class="hint">${motion === "on" ? "Cartões entrando, números subindo, barras crescendo e efeitos ao tocar." : motion === "off" ? "Só aparece e some suave, sem movimento na tela." : "Segue o ajuste do celular: se ele estiver com animações reduzidas, fica suave."}</p></article>
     <h3 class="pf-sec">Guias</h3>
     <div class="menu">${EXTRA.map(t => `<button type="button" data-screen="${t.id}" style="--c:${GUIA_COR[t.id] || "var(--muted)"}"><span class="mi"><span class="st-ico">${GUIA_ICO[t.id] || ""}</span><span>${t.name}<small>${GUIA_DESC[t.id] || ""}</small></span></span><span aria-hidden="true">›</span></button>`).join("")}</div>
@@ -2441,7 +2635,8 @@ if (typeof window.addEventListener === "function") {
   window.addEventListener("appinstalled", () => { instalaEv = null; redesenhaPerfil(); });
 }
 document.addEventListener("visibilitychange", cuidaDaTela);
-iniciaApp();
+document.addEventListener("visibilitychange", () => { if (!document.hidden) checaAcademia(); });
+iniciaApp(); if (SUPA) setTimeout(checaAcademia, 1500);
 function draw(){ drawCore(); cuidaDaTela(); if (animNext) { animNext = false; enterAnim(); } }
 function drawCore(){
   drawWho(); drawHead(); drawTabs(); drawDock();
@@ -2461,7 +2656,7 @@ function drawCore(){
 function showTip(t){ const c = t.closest(".chart"), tip = c.querySelector(".tip"), r = t.getBoundingClientRect(), cr = c.getBoundingClientRect(); tip.textContent = t.dataset.tip; tip.hidden = false; tip.style.left = Math.min(Math.max(0, r.left - cr.left + r.width / 2 - tip.offsetWidth / 2), cr.width - tip.offsetWidth) + "px"; }
 view.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (t) showTip(t); });
 view.addEventListener("pointerout", e => { const t = e.target.closest("[data-tip]"); if (t && e.pointerType === "mouse") t.closest(".chart").querySelector(".tip").hidden = true; });
-const goScreen = s => { animNext = true; if (s === "treino") { treinoView = "dia"; current = dayOf(person.id, logDate) || current; } screen = s; store.set("screen", s); draw(); window.scrollTo({top:0}); };
+const goScreen = s => { animNext = true; if (s === "perfil") carregaFotos(); if (s === "hoje") checaAcademia(); if (s === "treino") { treinoView = "dia"; current = dayOf(person.id, logDate) || current; } screen = s; store.set("screen", s); draw(); window.scrollTo({top:0}); };
 dock.addEventListener("click", e => { const b = e.target.closest("[data-screen]"); if (b) goScreen(b.dataset.screen); });
 document.getElementById("perfilbtn").addEventListener("click", () => goScreen("perfil"));
 // Arrastar a faixa da semana: para a direita = semana anterior, para a esquerda = próxima
@@ -2470,7 +2665,7 @@ view.addEventListener("touchstart", e => { const w = e.target.closest("#weekstri
 view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y; swipe = null;
   if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); goDate(addDays(logDate, dx > 0 ? -7 : 7), dx > 0 ? "l" : "r"); } });
 // Dia futuro: dá para ver o treino previsto, mas não registrar
-view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
+view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("input", e => { if (e.target.closest(".lg")) onLogInput(e.target); });
 view.addEventListener("change", e => { if (e.target.id === "peso") { const v = Number(e.target.value.trim().replace(",", ".")); setChk({peso: v > 20 && v < 300 ? Math.round(v * 10) / 10 : null}); return; } if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); } });
 who.addEventListener("click", e=>{
@@ -2509,12 +2704,24 @@ view.addEventListener("click", e=>{
   if (e.target.closest("[data-cal]")){ openCal(); return; }
   if (e.target.closest("[data-fototira]")){ store.set("foto:" + person.id, ""); const y = scrollY; draw(); scrollTo(0, y); return; }
   if (e.target.closest("[data-foto]")){ escolherFoto(); return; }
+  const sh = e.target.closest("[data-share]");
+  if (sh){ const t = treinoText(); t ? compartilhar({title: "Treino", text: t}) : aviso("Nada anotado ainda.", "Anote alguma série antes de compartilhar."); return; }
+  const dt = e.target.closest("[data-ditar]"); if (dt){ ditarSerie(+dt.dataset.ditar, dt); return; }
+  const fm = e.target.closest("[data-filmar]"); if (fm){ const d0 = person.days.find(x => x.id === current); abrirCamera("video", d0.ex[+fm.dataset.filmar][0]); return; }
+  if (e.target.closest("[data-fotocam]")){ abrirCamera("foto"); return; }
+  if (e.target.closest("[data-fotogal]")){ fotosDaGaleria(); return; }
+  const fv = e.target.closest("[data-fotover]"); if (fv){ verFoto(+fv.dataset.fotover); return; }
+  const mt0 = e.target.closest("[data-mictest]"); if (mt0){ ditar(fala => aviso("Microfone funcionando.", `Entendi: "${esc(fala)}"${numerosDe(fala).length ? " → " + numerosDe(fala).map(num).join(" e ") : ""}`), mt0); return; }
+  if (e.target.closest("[data-gymset]")){ marcarAcademia(); return; }
+  if (e.target.closest("[data-gymdel]")){ store.set("gym", null); naAcademia = false; gymMsg = ""; redesenhaPerfil(); return; }
+  if (e.target.closest("[data-shareapp]")){ compartilhar({title: "Ficha de Treino", text: "Nosso app de treino: " + location.href.split("?")[0]}); return; }
+  if (e.target.closest("[data-irpeso]")){ const pi = document.getElementById("peso"); if (pi) { pi.scrollIntoView({block: "center"}); pi.focus({preventScroll: true}); } return; }
   if (e.target.closest("[data-pushon]")){ ativarPush(); return; }
   if (e.target.closest("[data-pushtest]")){ testarPush(); return; }
   if (e.target.closest("[data-pushoff]")){ desativarPush(); return; }
   if (e.target.closest("[data-instalar]")){ if (instalaEv) { instalaEv.prompt(); instalaEv = null; } return; }
   const pick = e.target.closest("[data-person]");
-  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); pushSegue(); return; }
+  if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); pushSegue(); FOTOS = []; return; }
   const sc = e.target.closest("[data-setctl]");
   if (sc){ changeSets(+sc.dataset.ex, +sc.dataset.setctl); return; }
   const sheetBtn = e.target.closest("[data-sheet]");
