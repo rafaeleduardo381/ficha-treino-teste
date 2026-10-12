@@ -213,6 +213,9 @@ body.mov .anim .st-bar i,body.mov .anim .pbar i,body.mov .anim .pf-segs i.ok,bod
 /* Estilo de cartão comum: degradê leve da cor do assunto e ícone tingido */
 .ck{background:linear-gradient(180deg,color-mix(in srgb,var(--c,var(--muted)) 10%,var(--surface)) 0,var(--surface) 78px)}
 button.todaycard,button.dcard{background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 10%,var(--surface)) 0,var(--surface) 78px)}
+/* Safari alinha o conteúdo de <button> à esquerda (align-items:flex-start no padrão dele); aqui os filhos ocupam a largura toda */
+button.todaycard,button.dcard,.opt{align-items:stretch}
+button.todaycard > *,button.dcard > *{align-self:stretch;min-width:0}
 .panel.tinted{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0,var(--surface) 78px)}
 .ex{background:linear-gradient(180deg,color-mix(in srgb,var(--pc,var(--muted)) 7%,var(--surface)) 0,var(--surface) 78px)}
 .rel-t{margin:0;font-weight:700;font-size:.98rem;line-height:1.4}
