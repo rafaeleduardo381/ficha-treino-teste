@@ -725,13 +725,40 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .resumo-row{border-top:1px solid var(--line);padding:18px 0;overflow-wrap:anywhere}
 .resumo-row dl{margin:12px 0}.resumo-row dt{color:var(--muted);font-size:.8rem}.resumo-row dd{margin:0 0 8px;font-family:var(--f-mono);font-size:.85rem}
 .resumo-row .delta{white-space:normal}
-.meta .mt-copy{min-width:0}.meta .mt-copy .hint{white-space:normal;font-size:.78rem;line-height:1.5;margin-top:8px}
-.day-excuse{border:1px dashed var(--line);border-radius:16px;padding:12px;margin-top:12px}.day-excuse p{font-size:.85rem;margin:0}
 .volume-muscular table{width:100%;border-collapse:collapse;font-size:.85rem}.volume-muscular caption{text-align:left;font-size:.78rem;color:var(--muted);padding-bottom:12px}
 .volume-muscular th,.volume-muscular td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
 .volume-muscular th:first-child{text-align:left;font-weight:500}.volume-muscular th[scope=col]{color:var(--muted)}
 .cal-d.excused i,.cal-leg .excused{background:var(--violet)}.sd.excused i{border-color:var(--violet);color:var(--violet)}
 .ex{position:relative}.ex.win{outline:2px solid var(--lime)}
+
+/* Limpeza de interface exclusiva do teste. */
+.treino-plus .ex .compact-meta{display:block;padding:0;border:0;border-radius:0;background:none;color:var(--soft)}
+.treino-plus .ex .compact-meta p{margin:0;font-size:.84rem;font-weight:400;color:var(--soft);line-height:1.5}
+.treino-plus .ex .compact-meta p b{font-size:inherit;font-weight:700;color:var(--ink)}
+.treino-plus .ex .compact-meta.up p b{color:var(--lime)}
+.treino-plus .ex .compact-meta .hint{margin-top:4px;font-size:.78rem;color:var(--muted)}
+.treino-plus .link-action{font:inherit;font-size:.82rem;font-weight:600;color:var(--soft);background:transparent;border:0;padding:8px 4px;min-height:44px;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:3px}
+.treino-plus .link-action:focus-visible,.treino-plus summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:4px}
+.treino-plus .rows .setctl .sbtn{min-height:44px;flex:none}
+.treino-plus .rows .setctl .dictate-action{flex:none;margin-left:8px;padding-inline:8px;min-width:52px}
+.treino-plus .film-action{display:inline-flex;align-items:center;gap:8px}
+.treino-plus .film-action svg{width:18px;height:18px;flex:none}
+.treino-plus .today-training{margin-bottom:12px}
+.treino-plus .justify-action{display:block;margin-left:12px}
+.treino-plus .excuse-active{display:flex;align-items:center;flex-wrap:wrap;column-gap:8px;font-size:.8rem;color:var(--soft);padding:4px 12px}
+.treino-plus .excuse-active small{flex-basis:100%;color:var(--muted)}
+.treino-plus .volume-muscular>summary{display:block;min-height:44px;align-content:center;color:var(--ink)}
+.treino-plus .volume-muscular[open]>.hint{margin:8px 0}
+.treino-plus .ex>details>summary,.treino-plus .resumo-row>details>summary{min-height:44px;align-content:center}
+.treino-plus .resumo-row>h3{margin:0 0 8px;font-size:1rem}
+.treino-plus .resumo-row p{margin:6px 0;font-size:.85rem}
+.treino-plus .resumo-row .resumo-sets{color:var(--soft);font-variant-numeric:tabular-nums}
+.treino-plus .resumo-row .resumo-change{color:var(--soft)}
+.treino-plus .resumo-row .hint{font-size:.78rem}
+.treino-plus .resumo-row details{margin-top:10px}
+.treino-plus .treino-dialog>.done-btn{width:100%}
+
+.treino-plus .dictate-action[aria-pressed="true"]{color:var(--lime);font-weight:800}
 
 /* FIM TREINO CSS */
 .navrow.info{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -804,7 +831,9 @@ const TreinoCore = (() => {
     const step=assisted(p)?2.5:/Smith/i.test(p.name)?1.25:/halter|búlgaro|martelo/i.test(p.name)?(kg<10?1:2):2.5;
     const next=Math.max(0,Math.round((kg+(assisted(p)?-step:step))*100)/100);
     if(next===kg)return {...held,reason:'Sem assistência. Siga a meta de repetições da ficha.'};
-    return {...base,kind:'up',kg:next,reason:'Topo em todas as séries confirmadas. Só suba se manteve o sobrar '+p.rir+' e a execução; volte a '+lo+' reps.'};
+    const reserve=String(p.rir),singular=reserve==='1';
+    const condition=reserve==='0'?'Se completou todas as repetições com boa execução':reserve==='0–1'||reserve==='0-1'?'Se respeitou a orientação de esforço da ficha e manteve boa execução':'Se ainda conseguia fazer mais '+reserve+' '+(singular?'repetição':'repetições')+' com boa execução';
+    return {...base,kind:'up',kg:next,reason:condition+', tente '+(assisted(p)?'a assistência sugerida':'o peso sugerido')+'. Comece com '+lo+' repetições.'};
   }
   function records(previous,set,p) {
     const prev=work(previous);if(!valid(set)||!prev.length||timed(p)||ambiguous(p))return [];
@@ -1140,8 +1169,8 @@ function renderDayCore(d){
       </div>
       ${log ? `<div class="meta" hidden></div>` : ""}
       ${boxes}
-      ${log && SUPA ? `<div class="ex-acts"><button type="button" class="ghost" data-ditar="${i}" aria-pressed="false">${ICON_MIC}Ditar série</button><button type="button" class="ghost" data-filmar="${i}">${ICON_CAM}Filmar execução</button></div>` : ""}
-      <details><summary>Execução</summary><ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul></details>
+      ${log && SUPA && !treinoPlus() ? `<div class="ex-acts"><button type="button" class="ghost" data-ditar="${i}" aria-pressed="false">${ICON_MIC}Ditar série</button><button type="button" class="ghost" data-filmar="${i}">${ICON_CAM}Filmar execução</button></div>` : ""}
+      <details><summary>Execução</summary><ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul>${log && SUPA && treinoPlus() ? `<button type="button" class="link-action film-action" data-filmar="${i}">${ICON_CAM}Filmar execução</button>` : ""}</details>
     </article>`;
   }).join("");
   const total = d.ex.reduce((a,e)=>a+(e[4] ? e[1] : 0),0);
@@ -1150,11 +1179,11 @@ function renderDayCore(d){
     <div class="dayhead"><div><div class="eyebrow">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}${logDate === trainDay() ? " · hoje" : ""}</div><h2>${d.name}</h2><p class="dsub">${d.sub}</p></div></div>
     ${swapBox(d)}
     <div class="dstats"><div class="dstat" style="--c:var(--pc)"><span class="st-ico">${ICO2.series}</span><div><b class="num">${total}</b><span>séries</span></div></div><div class="dstat" style="--c:var(--blue)"><span class="st-ico">${ICO2.tempo}</span><div><b class="num">~${Math.round(d.ex.reduce((a, e) => a + (e[4] ? e[1] * (40 + e[4]) : 0), 0) / 60)}</b><span>min</span></div></div><div class="dstat" style="--c:var(--kcal)"><span class="st-ico">${ICONF}</span><div><b class="num" id="daykcal">—</b><span>kcal</span></div></div></div>
-    <div class="daymetas" id="daymetas" hidden></div>
+    ${treinoPlus() ? avisoBlocoTreino() : `<div class="daymetas" id="daymetas" hidden></div>`}
     <p class="daylog"><span id="logstate" aria-live="polite">${modeText()}</span></p>
     ${cards}
     ${treinoPlus() ? `<button type="button" class="done-btn" data-resumo>Ver resumo deste treino</button>` : ""}
-    ${SUPA ? `<button type="button" class="ghost shr" data-share="treino">${ICON_ENVIA}Compartilhar o treino desta data</button>` : ""}
+    ${SUPA && !treinoPlus() ? `<button type="button" class="ghost shr" data-share="treino">${ICON_ENVIA}Compartilhar o treino desta data</button>` : ""}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
       <p id="sendsum" class="sendsum"></p>
       <div class="sendrow"><a class="btn-wa" id="sendwa" href="https://wa.me/" target="_blank" rel="noopener">Enviar no WhatsApp</a><button type="button" class="ghost" id="copytxt">Copiar texto</button></div>
@@ -1225,7 +1254,7 @@ function setRows(d, i, name, sets, marks, reps){
   }).join("");
   const leg = d.id === "d2" || d.id === "d4";
   return `<div class="rows" id="rows-${d.id}-${i}"><div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
-    <div class="setctl"><button type="button" class="sbtn" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="sbtn" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button></div></div>`;
+    <div class="setctl"><button type="button" class="sbtn" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="sbtn" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button>${treinoPlus() && SUPA ? `<button type="button" class="link-action dictate-action" data-ditar="${i}" aria-pressed="false" aria-label="Ditar série de ${esc(name)}">Ditar</button>` : ""}</div></div>`;
 }
 function changeSets(i, dir){
   const d = person.days.find(x => x.id === current), [name, sets, reps] = d.ex[i];
@@ -1281,7 +1310,7 @@ function refreshCarga(){
     const name = box.dataset.name, sets = doc?.ex?.[name]?.sets || [];
     const last = lastFor(person.id, name, logDate);
     const mt = box.closest(".ex").querySelector(".meta");
-    if (mt && treinoPlus()) { const e = person.days.find(d => d.id === current)?.ex.find(e => e[0] === name); if (e) { const t = metaTreino(e); mt.className = "meta" + (t.kind === "up" ? " up" : ""); mt.dataset.kind = t.kind; const html = renderMetaTreino(e); if (mt.innerHTML !== html) mt.innerHTML = html; mt.hidden = false; } }
+    if (mt && treinoPlus()) { const e = person.days.find(d => d.id === current)?.ex.find(e => e[0] === name); if (e) { const t = metaTreino(e); mt.className = "meta compact-meta" + (t.kind === "up" ? " up" : ""); mt.dataset.kind = t.kind; const html = renderMetaTreino(e); if (mt.innerHTML !== html) mt.innerHTML = html; mt.hidden = !html; } }
     else if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name), sobe = /subiu|menos ajuda/.test(t), i = t.indexOf("</b>") + 4;
       mt.className = "meta" + (sobe ? " up" : ""); mt.innerHTML = t ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><small>${sobe ? "Meta: subir a carga" : "Meta"}${logDate === trainDay() ? " hoje" : ""}</small><p>${t.slice(0, i)}<span>${t.slice(i).replace(/^,\s*/, " · ")}</span></p></div>` : ""; mt.hidden = !t; }
     box.querySelectorAll("input").forEach(inp => {
@@ -1580,12 +1609,12 @@ function refreshToday(){
     : !t ? `<div class="panel"><h3>Dia de descanso</h3><p>Sábado e domingo não têm treino. Capriche na água e no sono.</p></div>`
     : (() => { const exs = t.d.ex.filter(e => e[4]), min = Math.round(exs.reduce((a, e) => a + e[1] * (40 + e[4]), 0) / 60), feito = t.total && t.done >= t.total, st = feito ? "feito" : t.done ? "andando" : "afazer", hj = logDate === trainDay();
       const doc = LOGS[docId(person.id, logDate)], kc = doc && trained(person.id, logDate) ? sessionStats(person.id, doc).kcal : null;
-      return `<button type="button" class="todaycard ${st}" data-screen="treino" style="--pc:var(${t.d.plate})">
+      return `<div class="today-training"><button type="button" class="todaycard ${st}" data-screen="treino" style="--pc:var(${t.d.plate})">
         <div class="tc-top"><span class="tc-day">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}</span><span class="tc-st">${feito ? "Feito ✓" : t.done ? "Em andamento" : logDate > trainDay() ? "Previsto" : justificado(person.id, logDate) ? "Justificado" : hj ? "A fazer" : "Não feito"}</span></div>
         <h3>${t.d.name}</h3><p class="tc-sub">${t.d.sub}</p>
         <div class="tc-nums"><span><b class="num">${exs.length}</b>exercícios</span><span><b class="num">${t.total}</b>séries</span><span><b class="num">~${min}</b>min</span>${kc ? `<span><b class="num">~${kc}</b>kcal</span>` : ""}</div>
         <div class="tc-prog"><div class="pbar" aria-hidden="true"><i style="width:${t.total ? Math.round(t.done / t.total * 100) : 0}%"></i></div><span class="num">${t.done}/${t.total}</span></div>
-        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>`; })() + nutriCard()) + painelJustificativa();
+        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>${painelJustificativa()}</div>`; })() + nutriCard());
 }
 function writeChk(field, dir){
   if (futuro()) return avisaFuturo();
@@ -2245,14 +2274,14 @@ function renderProgress(){
       foot: vol ? (n > 1 ? `~${(vol / n / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1})} t por treino` : "kg × reps somados") : "kg × reps somados"}),
     stat({ico: ICONF, c: "var(--kcal)", l: "Calorias", v: kcal ? "~" + kcal.toLocaleString("pt-BR") : "—", u: kcal ? "kcal" : "",
       foot: semPeso ? "registre o peso no Hoje para calcular" : kcal && n > 1 ? `~${Math.round(kcal / n)} por treino` : "gastas nos treinos"})
-  ].join("");
+  ].filter((_, i) => !treinoPlus() || i < 2).join("");
   return `<section class="list prog" aria-label="Progresso">
     <h2>Progresso</h2>
-    ${renderPainel(p)}
-    ${relCard(p)}
-    ${renderVolumeMuscular()}
+    ${treinoPlus() ? "" : renderPainel(p)}
+    ${treinoPlus() ? "" : relCard(p)}
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="stats">${statCards}</div>
+    ${treinoPlus() ? relCard(p) : ""}
 
     <article class="panel tinted" style="--c:var(--coral)">${phd(ICON_PILHA, "Desempenho", wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : "")}
       <p class="sub">Volume por semana (kg × reps)</p>
@@ -2260,6 +2289,7 @@ function renderProgress(){
       ${ev.length ? `<p class="sub">Força estimada (1RM) que mais subiu</p><ul class="evo">${ev.map(e => `<li><span>${e.name}</span><b class="num ${e.pct >= 0 ? "up" : "down"}">${e.pct >= 0 ? "+" : ""}${e.pct.toFixed(0)}%</b></li>`).join("")}</ul>` : `<p class="hint">Depois de 2 treinos do mesmo exercício aparece quanto a força estimada subiu.</p>`}
     </article>
 
+    ${renderVolumeMuscular()}
     <article class="panel tinted" style="--c:var(--peso)">${phd(ICON.balanca, "Peso", trend?.delta != null ? `<span class="delta">${trend.delta >= 0 ? "+" : "−"}${num(Math.abs(trend.delta).toFixed(2))} kg na semana</span>` : "")}
       ${ptsP.length ? lineChart({pts: ptsP, avgPts: avgP, color: "var(--peso)"}) + `<p class="sub">Pontos: cada pesagem · linha: média de 7 dias</p>` : `<p class="hint">Registre o peso na tela Hoje, todo dia ao acordar.</p>`}
       ${meta ? `<p class="hint">Meta: ${meta.txt}.</p>` : ""}
@@ -2863,7 +2893,10 @@ function refreshStats(){
   const h = screen === "perfil" ? renderPerfil() : renderProgress();
   const sem = x => x.replace(/fld+/g, "");   // ids dos gradientes da chama mudam a cada render
   if (sem(h) === sem(shownStats)) return;
-  const y = scrollY; view.innerHTML = shownStats = h; window.scrollTo(0, y);
+  const y = scrollY, volumeOpen = view.querySelector(".volume-muscular")?.open;
+  view.innerHTML = shownStats = h;
+  const volume = view.querySelector(".volume-muscular"); if (volume && volumeOpen) volume.open = true;
+  window.scrollTo(0, y);
 }
 // Animação de entrada: cartões sobem em cascata, números contam do zero, barras crescem e linhas se desenham
 let animNext = true, animOff = 0;
@@ -2913,10 +2946,20 @@ function metaTreino(e,before=logDate,day=current,sessionDate=before){
   if(week>BLOCO.weeks)return {...t,kind:'review',reason:'Bloco encerrado: siga o deload/reavaliação combinado; sem aumento automático.',kg:null};
   return t;
 }
-const alvoTexto = (t,e) => (t.kg==null?'':num(t.kg)+' '+(/halter|búlgaro|martelo/i.test(e[0])?'kg/halter':/Smith/i.test(e[0])?'kg/lado':/graviton/i.test(e[0])?'kg de assistência':'kg')+' · ')+t.reps;
+const unidadeCarga = name => /halter|búlgaro|martelo/i.test(name)?'kg/halter':/Smith/i.test(name)?'kg/lado':/graviton/i.test(name)?'kg de assistência':'kg';
+const alvoTexto = (t,e) => (t.kg==null?'':num(t.kg)+' '+unidadeCarga(e[0])+' · ')+t.reps;
 function renderMetaTreino(e){
  const t=metaTreino(e);
- return '<div class="mt-copy"><small>'+(t.kind==='up'?'Sugestão de aumento':'Meta desta sessão')+'</small><p><b>'+esc(alvoTexto(t,e))+'</b></p><p class="hint">'+esc(t.reason)+'</p>'+(t.stalled?'<p class="hint">Três sessões comparáveis sem avanço. Revise execução, sobrar e recuperação com o personal; sem deload automático.</p>':'')+'</div>';
+ if(!['up','hold','changed'].includes(t.kind))return '';
+ if(t.kind==='changed')return '<p class="hint">Ficha atualizada. Registre as cargas deste treino.</p>';
+ const title=t.kind==='up'?'Experimente':'Mantenha',notice=t.kind==='up'?'<p class="hint">'+esc(t.reason)+'</p>':'';
+ return '<p>'+title+' <b>'+esc(alvoTexto(t,e))+' reps</b></p>'+notice+(t.stalled?'<p class="hint">Sem avanço em três treinos. Converse com o personal antes de mudar a ficha.</p>':'');
+}
+function avisoBlocoTreino(){
+ if(!treinoPlus())return '';
+ const e=person.days?.find(d=>d.id===current)?.ex.find(e=>e[3]!=='—');if(!e)return '';
+ const t=metaTreino(e);
+ return t.kind==='baseline'?'<p class="hint bloco-notice">Semana de referência: termine cada série sentindo que faria mais 3 repetições.</p>':t.kind==='review'?'<p class="hint bloco-notice">Bloco encerrado. Siga a semana leve ou a nova ficha combinada com o personal.</p>':'';
 }
 const seriesTexto = ss => (ss||[]).filter(s=>s.done===true).map(s=>TreinoCore.valid(s)?num(s.kg)+' × '+s.reps:'✓ sem kg/reps completos').join(' · ')||'Nenhuma série confirmada';
 function linhasResumo(){
@@ -2926,15 +2969,35 @@ function linhasResumo(){
    return {e,now,last,prev,comparison:TreinoCore.compare(now,last,planoEx(e)),target:metaTreino(e,addDays(logDate,1),day,addDays(logDate,7))};
  });
 }
+function seriesCompactas(ss,e){
+ const rows=(ss||[]).filter(s=>s.done===true),groups=[];
+ for(const s of rows){
+  const text=TreinoCore.valid(s)?num(s.kg)+' '+unidadeCarga(e[0])+' × '+s.reps:'sem kg/reps completos',prev=groups.at(-1);
+  if(prev?.text===text)prev.n++;else groups.push({text,n:1});
+ }
+ return groups.map(g=>g.n+' '+(g.n===1?'série':'séries')+' de '+g.text).join(' · ')||'Nenhuma série confirmada';
+}
+function proximaResumo(r){
+ const t=r.target;
+ if(['first','manual'].includes(t.kind))return 'Siga a ficha';
+ if(t.kind==='baseline')return 'Semana de referência: termine com 3 repetições de reserva';
+ if(t.kind==='review')return 'Semana leve ou nova ficha com o personal';
+ if(t.kind==='changed')return 'Ficha atualizada: registre uma nova referência';
+ if(t.kind==='incomplete')return 'Complete o registro antes de ajustar a carga';
+ if(t.kind==='mixed')return 'Mantenha as cargas de cada série';
+ return alvoTexto(t,r.e)+' reps';
+}
 function resumoTexto(){
  const rows=linhasResumo();if(!rows.length)return '';
- return 'Resumo · '+person.name+' · '+brDate(logDate)+'\n'+rows.map(r=>r.e[0]+'\nAnterior: '+seriesTexto(r.last)+'\nNesta sessão: '+seriesTexto(r.now)+'\n'+r.comparison.label+'\nPróxima: '+alvoTexto(r.target,r.e)+' — '+r.target.reason).join('\n\n');
+ return 'Resumo · '+person.name+' · '+brDate(logDate)+'\n\n'+rows.map(r=>r.e[0]+'\n'+seriesCompactas(r.now,r.e)+'\n'+(['first','empty'].includes(r.comparison.kind)?'':r.comparison.label+'\n')+'Próxima: '+proximaResumo(r)+(r.target.kind==='up'?'\n'+r.target.reason:'')).join('\n\n');
 }
 function renderResumo(){
  const rows=linhasResumo();
- return '<h2>Resumo · '+brDate(logDate)+'</h2><p class="hint">Séries confirmadas com ✓. Rascunhos não valem como recorde nem autorizam aumento.</p>'+(rows.length?rows.map(r=>'<article class="resumo-row"><h3>'+esc(r.e[0])+'</h3><dl><dt>Anterior'+(r.prev?' · '+brDate(r.prev.date):'')+'</dt><dd>'+esc(seriesTexto(r.last))+'</dd><dt>Nesta sessão</dt><dd>'+esc(seriesTexto(r.now))+'</dd></dl><p class="delta">'+({up:'▲ ',down:'▼ ',same:'= '}[r.comparison.kind]||'')+esc(r.comparison.label)+'</p><p><b>Próxima: '+esc(alvoTexto(r.target,r.e))+'</b></p><p class="hint">'+esc(r.target.reason)+'</p></article>').join('')+'<button type="button" class="done-btn" data-share-resumo>Compartilhar resumo</button>':'<p>Nenhuma série anotada nesta data.</p>');
+ return '<h2>Resumo · '+brDate(logDate)+'</h2>'+(rows.length?rows.map(r=>{
+  const change=['first','empty'].includes(r.comparison.kind)?'':'<p class="resumo-change">'+({up:'▲ ',down:'▼ ',same:'= '}[r.comparison.kind]||'')+esc(r.comparison.label)+'</p>';
+  return '<article class="resumo-row"><h3>'+esc(r.e[0])+'</h3><p class="resumo-sets">'+esc(seriesCompactas(r.now,r.e))+'</p>'+change+'<p class="resumo-next">Próxima: <b>'+esc(proximaResumo(r))+'</b></p>'+(r.target.kind==='up'?'<p class="hint">'+esc(r.target.reason)+'</p>':'')+'<details><summary>Ver séries e comparação</summary><dl><dt>Anterior'+(r.prev?' · '+brDate(r.prev.date):'')+'</dt><dd>'+esc(seriesTexto(r.last))+'</dd><dt>Nesta sessão</dt><dd>'+esc(seriesTexto(r.now))+'</dd></dl><p class="hint">Só séries marcadas com ✓ entram no resumo.</p></details></article>';
+ }).join('')+'<button type="button" class="done-btn" data-share-resumo>Compartilhar resumo</button>':'<p>Nenhuma série anotada nesta data.</p>');
 }
-
 function openTreinoDialog(kind){
  let el=document.getElementById('treino-dialog');if(!el){el=document.createElement('dialog');el.id='treino-dialog';el.className='treino-dialog';document.body.appendChild(el);
  el.addEventListener('click',ev=>{if(ev.target===el||ev.target.closest('[data-treino-close]'))el.close();if(ev.target.closest('[data-share-resumo]'))compartilhar({title:'Resumo do treino',text:resumoTexto()});
@@ -2952,14 +3015,15 @@ function salvaJustificativa(reason){
  clearTimeout(timers[id]);saveLog(id);const y=scrollY;draw();scrollTo(0,y);toast(reason?'Dia justificado. Ofensiva preservada, sem contar treino.':'Justificativa removida.');
 }
 function painelJustificativa(){
- if(!treinoPlus()||!person.days||!isWeekday(logDate)||trained(person.id,logDate))return '';
- return '<div class="day-excuse"><p>'+(justificado(person.id,logDate)?'<b>Dia justificado</b> · ofensiva preservada, sem contar treino.':'Não treinou por um imprevisto?')+'</p><button type="button" class="ghost" data-justify '+(futuro()?'disabled':'')+'>'+(justificado(person.id,logDate)?'Ver ou desfazer justificativa':'Justificar este dia')+'</button><p id="logstate" class="hint" role="status">'+esc(modeText())+'</p></div>';
+ if(!treinoPlus()||!person.days||!isWeekday(logDate)||trained(person.id,logDate)||futuro())return '';
+ if(!justificado(person.id,logDate))return '<button type="button" class="link-action justify-action" data-justify>Justificar ausência</button>';
+ return '<div class="excuse-active"><span>Dia justificado · não conta como treino</span><button type="button" class="link-action" data-justify>Ver ou desfazer</button><small id="logstate" role="status">'+esc(modeText())+'</small></div>';
 }
 function renderVolumeMuscular(){
  if(!treinoPlus()||!person.days)return '';
  const week=weekOf(logDate),end=logDate<trainDay()?logDate:trainDay(),docs=Object.values(LOGS).filter(d=>d.person===person.id&&d.date>=week[0]&&d.date<=week[6]&&d.date<=end);
  const data=TreinoCore.volume(person.days,docs,MUS),period=week[0]>trainDay()?'Semana futura: só previsão da ficha.':'Realizadas até '+brDate(end)+'.';
- return '<article class="panel volume-muscular"><h3>Séries por músculo</h3><p class="hint">Semana de '+brDate(week[0])+' · '+period+' Principal = 1; secundário = 0,5. Contagem aproximada pelo mapa muscular, não uma meta universal.</p><table><caption>Realizadas × previstas na ficha semanal</caption><thead><tr><th scope="col">Grupo</th><th scope="col">Feitas</th><th scope="col">Ficha</th></tr></thead><tbody>'+Object.entries(data).sort((a,b)=>b[1].planned-a[1].planned).map(([m,v])=>'<tr><th scope="row">'+esc(MUSCLE_PT[m]||m)+'</th><td>'+num(v.done)+'</td><td>'+num(v.planned)+'</td></tr>').join('')+'</tbody></table><p class="hint">Só ✓ entra como feito. Caminhada não conta. Ombros e costas estão agrupados conforme o mapa; estes totais não substituem a contagem refinada do personal.</p></article>';
+ return '<details class="panel volume-muscular"><summary>Séries por músculo</summary><p class="hint">Semana de '+brDate(week[0])+' · '+period+'</p><table><caption>Realizadas × previstas na ficha semanal</caption><thead><tr><th scope="col">Grupo</th><th scope="col">Feitas</th><th scope="col">Ficha</th></tr></thead><tbody>'+Object.entries(data).sort((a,b)=>b[1].planned-a[1].planned).map(([m,v])=>'<tr><th scope="row">'+esc(MUSCLE_PT[m]||m)+'</th><td>'+num(v.done)+'</td><td>'+num(v.planned)+'</td></tr>').join('')+'</tbody></table><p class="hint">Principal = 1; secundário = 0,5. Só séries marcadas com ✓; caminhada não conta. Estimativa pelo mapa muscular, não uma meta universal.</p></details>';
 }
 function recordeSerie(name,index,previousDoc){
  if(!treinoPlus()||logDate!==trainDay())return;
@@ -2974,6 +3038,7 @@ function recordeSerie(name,index,previousDoc){
 // FIM TREINO UI
 function draw(){ drawCore(); cuidaDaTela(); if (animNext) { animNext = false; enterAnim(); } }
 function drawCore(){
+  document.body.classList.toggle("treino-plus", treinoPlus());
   drawWho(); drawHead(); drawTabs(); drawDock();
   if (screen === "hoje") { view.innerHTML = renderToday(); refreshToday(); return; }
   if (screen === "mais") { screen = "perfil"; }
