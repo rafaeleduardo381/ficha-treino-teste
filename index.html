@@ -757,7 +757,23 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 
 .treino-plus .ex .meta .mt-copy{min-width:0}
 .treino-plus .ex .meta .hint{font-size:.8rem;font-weight:400;color:var(--soft);line-height:1.5;margin-top:8px}
-.treino-plus #card-peso{grid-column:1/-1}
+.treino-plus #card-peso{grid-column:1/-1;background:var(--surface);gap:8px}
+
+/* Peso corporal: formulário direto. Meta: número em primeiro plano. */
+.treino-plus #card-peso .pesorow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,9rem);gap:12px;align-items:center}
+.treino-plus #card-peso .peso-field{position:relative;min-width:0}
+.treino-plus #card-peso .pesoin{display:block;width:100%;min-width:0;height:auto;min-height:52px;padding:8px 40px 8px 12px;font-size:1.5rem;line-height:1.25;text-align:left;border-color:var(--muted)}
+.treino-plus #card-peso .pesoin:focus{outline:2px solid var(--peso);outline-offset:3px;border-color:var(--peso)}
+.treino-plus #card-peso .peso-unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.875rem;color:var(--soft);pointer-events:none}
+.treino-plus #card-peso .ck-note{font-size:.8125rem;line-height:1.4;text-wrap:wrap}
+.treino-plus .ex .meta{align-items:flex-start;gap:10px}
+.treino-plus .ex .meta .mt-ico{width:28px;height:28px}
+.treino-plus .ex .meta .mt-copy{flex:1}
+.treino-plus .ex .meta .mt-value{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:4px}
+.treino-plus .ex .meta .mt-value b{font-size:2rem;line-height:1.15;overflow-wrap:anywhere}
+.treino-plus .ex .meta .mt-value .mt-unit{font-size:1rem;font-weight:600;color:var(--soft)}
+.treino-plus .ex .meta .mt-reps{font-size:.875rem;font-weight:600}
+@media(max-width:360px){.treino-plus #card-peso .pesorow{grid-template-columns:minmax(0,1fr) minmax(0,8rem);gap:8px}}
 
 /* FIM TREINO CSS */
 /* INICIO FOGO CSS */
@@ -864,9 +880,12 @@ const TreinoCore = (() => {
     const held={...base,kind:'hold',kg,stalled,reason:full?'Mesma carga; busque o topo da faixa mantendo o sobrar da ficha.':'Séries faltantes ou não confirmadas: sem aumento de carga.'};
     if(!assisted(p)&&kg===0)return {...held,reason:'Sem carga externa registrada. Siga a ficha; sem peso inventado.'};
     if(!full||!check(last,hi))return held;
+    if(assisted(p)&&kg===0)return {...held,reason:'Sem assistência registrada. Mantenha a variação da ficha.'};
+    const step=assisted(p)?2.5:/halter|búlgaro|martelo/i.test(p.name)?(kg<10?1:2):p.leg&&kg>=20?5:2.5;
+    const next=Math.max(0,Math.round((kg+(assisted(p)?-step:step))*100)/100);
     const reserve=String(p.rir),singular=reserve==='1';
-    const condition=reserve==='0'?'Se completou todas as repetições com boa execução':reserve==='0–1'||reserve==='0-1'?'Se respeitou a orientação de esforço da ficha e manteve boa execução':'Se ainda conseguia fazer mais '+reserve+' '+(singular?'repetição':'repetições')+' com boa execução';
-    return {...base,kind:'up',kg:null,previousKg:kg,reason:condition+', tente '+(assisted(p)?'o próximo nível com menos assistência':'o próximo peso disponível')+'. Comece com '+lo+' repetições.'};
+    const condition=reserve==='0'?'Se completou as repetições com boa execução':reserve==='0–1'||reserve==='0-1'?'Se manteve o esforço da ficha com boa execução':'Se ainda faria mais '+reserve+' '+(singular?'repetição':'repetições')+' com boa execução';
+    return {...base,kind:'up',kg:next,previousKg:kg,reason:condition+'. Ajuste '+(assisted(p)?'à assistência disponível.':'ao peso disponível.')};
   }
   function records(previous,set,p) {
     const prev=work(previous);if(!valid(set)||!prev.length||timed(p)||ambiguous(p))return [];
@@ -2182,9 +2201,11 @@ function refreshAlc(){
 }
 function renderExtras(){
   return `${alcOntem()}<div class="cards">${protCard()}${alcCard()}
-      <article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
+      ${treinoPlus() ? `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)">
+        <div class="pesorow"><label class="ck-h" for="peso">Peso corporal</label><div class="peso-field"><input id="peso" class="pesoin" type="text" inputmode="decimal" autocomplete="off" placeholder="—" aria-label="Peso corporal em quilogramas" aria-describedby="pesohint"><span class="peso-unit" aria-hidden="true">kg</span></div></div>
+        <p class="ck-note" id="pesohint">Ao chegar, antes do treino e sem tênis.</p></article>` : `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
-        <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>
+        <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>`}
       ${treinoPlus() ? "" : `<button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
         <b class="diet-st" id="dietst">Não marcada</b><span class="ck-note" id="dietsub">Toque para marcar no fim do dia</span></button>`}
     </div>`;
@@ -2196,7 +2217,11 @@ function refreshExtras(){
   const pin = document.getElementById("peso");
   if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
   const h = document.getElementById("pesohint");
-  if (h) { const t = pesoTrend(person.id, logDate); h.textContent = treinoPlus() && naAcademia && gymPerson === person.id && academiaSalva() && logDate === trainDay() ? "Perto da academia que você configurou. Registre o peso neste campo." : t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "na academia, ao chegar: antes de treinar, sem tênis"; }
+  if (h) {
+    const t = pesoTrend(person.id, logDate);
+    const near = treinoPlus() && naAcademia && gymPerson === person.id && academiaSalva() && logDate === trainDay();
+    h.textContent = t && t.delta != null ? (treinoPlus() ? 'Média 7 dias: '+num(t.avg.toFixed(1))+' kg · '+(t.delta>=0?'+':'−')+num(Math.abs(t.delta).toFixed(1))+' kg' : 'média 7 dias '+num(t.avg.toFixed(1))+' kg ('+(t.delta>=0?'+':'−')+num(Math.abs(t.delta).toFixed(1))+')') : near ? 'Perto da academia que você configurou. Registre seu peso.' : treinoPlus() ? 'Ao chegar, antes do treino e sem tênis.' : 'na academia, ao chegar: antes de treinar, sem tênis';
+  }
   const st = document.getElementById("dietst"), sub = document.getElementById("dietsub");
   if (st) { const op = DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta); st.textContent = op ? op[1] : "Não marcada"; st.classList.toggle("marcada", !!op);
     sub.textContent = op ? `${comidoDe(person.id, logDate).kcal.toLocaleString("pt-BR")} kcal` : "Toque para marcar no fim do dia"; }
@@ -3066,13 +3091,16 @@ function metaTreino(e,before=logDate,day=current,sessionDate=before){
   return t;
 }
 const unidadeCarga = name => /halter|búlgaro|martelo/i.test(name)?'kg/halter':/graviton/i.test(name)?'kg de assistência':'kg';
-const alvoTexto = (t,e) => t.kind==='up' ? (/graviton/i.test(e[0])?'Próximo nível com menos assistência':'Próximo peso disponível')+' · '+t.reps : (t.kg==null?'':num(t.kg)+' '+unidadeCarga(e[0])+' · ')+t.reps;
+const alvoTexto = (t,e) => (t.kg==null?'':num(t.kg)+' '+unidadeCarga(e[0])+' · ')+t.reps;
 function renderMetaTreino(e){
  const t=metaTreino(e);
  if(!['up','hold','changed'].includes(t.kind))return '';
- const title=t.kind==='up'?'Sugestão de aumento':'Meta desta sessão';
- const content=t.kind==='changed'?'<p>Ficha atualizada. Registre as cargas deste treino.</p>':'<p><b>'+esc(alvoTexto(t,e))+' reps</b></p>'+(t.kind==='up'?'<p class="hint">Último registro: '+esc(num(t.previousKg)+' '+unidadeCarga(e[0]))+'. '+esc(t.reason)+'</p>':'');
- return '<span class="mt-ico" aria-hidden="true">'+ICON_ALVO+'</span><div class="mt-copy"><small>'+title+'</small>'+content+(t.stalled?'<p class="hint">Sem avanço em três treinos. Converse com o personal antes de mudar a ficha.</p>':'')+'</div>';
+ if(t.kind==='changed')return '<div class="mt-copy"><small>Ficha atualizada</small><p class="hint">Registre as cargas deste treino.</p></div>';
+ if(!Number.isFinite(t.kg))return '';
+ const title=t.kind==='up'?'Sugestão de aumento':'Mantenha a carga';
+ const value='<p class="mt-value"><b>'+esc(num(t.kg))+' <span class="mt-unit">'+esc(unidadeCarga(e[0]))+'</span></b><span class="mt-reps">× '+esc(t.reps)+' reps</span></p>';
+ const notice=t.kind==='up'?'<p class="hint">'+esc(t.reason)+'</p>':'';
+ return '<span class="mt-ico" aria-hidden="true">'+ICON_ALVO+'</span><div class="mt-copy"><small>'+title+'</small>'+value+notice+(t.stalled?'<p class="hint">Sem avanço em três treinos. Converse com o personal antes de mudar a ficha.</p>':'')+'</div>';
 }
 function avisoBlocoTreino(){
  if(!treinoPlus())return '';
