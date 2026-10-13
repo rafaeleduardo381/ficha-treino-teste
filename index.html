@@ -1661,9 +1661,9 @@ const DIETA_OP = [[1, "Segui o plano"], [0.5, "Saí um pouco"], [0, "Saí do pla
 const suplementoPerfil = p => store.get("suplementos:" + p) || {};
 const suplementoStatus = valor => valor == null ? "Não informado" : valor === "nao" ? "Não usa" : valor === "parou" ? "Parou de usar" : "Usa";
 const creatinaEstado = g => g == null ? "Sem registro" : g === 0 ? "Não tomou" : g < 3 ? "Abaixo da faixa usual (3–5 g)" : g <= 5 ? "Dentro da faixa usual (3–5 g)" : "Acima da faixa usual (3–5 g); confira o rótulo";
-// Gramas do dia ficam no aparelho: o banco não tem colunas para elas (só "creatina" sim/não)
-const supDia = (p, s) => store.get("supdia:" + docId(p, s)) || {};
-const wheyDia = (p, s) => { const d = supDia(p, s), cfg = suplementoPerfil(p); return d.whey_g == null || !(cfg.whey_porcao > 0) || cfg.whey_prot == null ? null : Math.round(d.whey_g * cfg.whey_prot / cfg.whey_porcao * 10) / 10; };
+const supDia = (p, s) => { const c = chkOf(p, s), d = store.get("supdia:" + docId(p, s)) || {}; return {creatina_g: c.creatina_g ?? d.creatina_g ?? null, whey_g: c.whey_g ?? d.whey_g ?? null}; };
+const wheyProt = (p, g) => { const cfg = suplementoPerfil(p); return g == null || !(cfg.whey_porcao > 0) || cfg.whey_prot == null ? null : Math.round(g * cfg.whey_prot / cfg.whey_porcao * 10) / 10; };
+const wheyDia = (p, s) => { const c = chkOf(p, s), d = supDia(p, s); return c.whey_prot_g ?? wheyProt(p, d.whey_g); };
 function renderSuplementos(){
   const p = person.id, cfg = suplementoPerfil(p), c = supDia(p, logDate), wp = wheyDia(p, logDate), alvoProt = metas(p, logDate).total || 0;
   const status = (tipo, label) => `<div class="chips" role="group" aria-label="${label}">${[["sim", "Uso"], ["nao", "Não uso"], ["parou", "Parei"]].map(([v, t]) => `<button type="button" class="chip" data-sup-status="${tipo}" data-value="${v}" aria-pressed="${cfg[tipo] === v}">${t}</button>`).join("")}</div>`;
@@ -1680,7 +1680,7 @@ function renderSuplementos(){
       ${cfg.whey_status === "sim" ? `${produto("whey_produto", "Produto", cfg.whey_produto)}${campo("whey_porcao", "Gramas de pó por porção (rótulo)", cfg.whey_porcao)}${campo("whey_prot", "Gramas de proteína por porção (rótulo)", cfg.whey_prot)}<button type="button" class="ghost" data-sup-foto="whey_foto">Foto da tabela nutricional</button>${cfg.whey_foto ? `<img class="sup-photo" src="${cfg.whey_foto}" alt="Tabela nutricional do whey"><button type="button" class="linkbtn" data-sup-apaga="whey_foto">Remover foto</button>` : ""}<p class="hint">Confira os números na foto e preencha os campos; a foto fica só neste celular.</p>` : ""}
       <label>Quanto tomou em ${brDate(logDate)} (g de pó)<input type="number" min="0" max="500" step="0.1" inputmode="decimal" data-sup-dia="whey_g" value="${c.whey_g ?? ""}" placeholder="sem registro" ${futuro() ? "disabled" : ""}></label>
       <p class="sup-result"><b>${wp == null ? c.whey_g == null ? "Sem registro" : "Informe a porção e a proteína do rótulo" : `${num(wp)} g de proteína do whey`}</b>${wp != null && alvoProt ? ` · ${Math.round(wp / alvoProt * 100)}% da sua meta de ${alvoProt} g no dia` : ""}</p><p class="hint">Whey não tem dose certa: o que conta é fechar a proteína do dia. Marque a refeição com whey no check-in para ela entrar no total.</p></div></div>
-    <p class="hint">Tem doença nos rins ou no fígado, usa remédio ou está grávida? Fale com médico ou nutricionista antes de começar. Whey concentrado tem lactose. Tudo aqui fica só neste celular; só o "tomou creatina sim/não" vai para o banco.</p></article>`;
+    <p class="hint">Tem doença nos rins ou no fígado, usa remédio ou está grávida? Fale com médico ou nutricionista antes de começar. Whey concentrado tem lactose. Produto e foto ficam neste celular; as gramas do dia ficam salvas no banco.</p></article>`;
 }
 function salvaSuplemento(perfil){ store.set("suplementos:" + person.id, perfil); redesenhaPerfil(); }
 // Foto do rótulo: reduzida e guardada só neste aparelho, para conferir porção e proteína na mão
@@ -1701,9 +1701,10 @@ function fotoRotulo(campo){
 function atualizaSuplemento(campo, valor){ salvaSuplemento({...suplementoPerfil(person.id), [campo]: valor}); }
 function registraSuplemento(campo, valor){
   if (futuro()) return avisaFuturo();
-  const k = "supdia:" + docId(person.id, logDate);
-  store.set(k, {...supDia(person.id, logDate), [campo]: valor});
-  if (campo === "creatina_g") setChk({creatina: valor == null ? null : valor > 0});
+  const patch = {[campo]: valor};
+  if (campo === "creatina_g") patch.creatina = valor == null ? null : valor > 0;
+  if (campo === "whey_g") patch.whey_prot_g = wheyProt(person.id, valor);
+  setChk(patch);
   redesenhaPerfil();
 }
 // Metas calculadas pelo peso e pelo objetivo — regra do agente de nutrição (2026-10-09).
