@@ -717,6 +717,25 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .setctl .ghost:disabled{opacity:.35;cursor:default}
 .setctl span{font-size:.82rem;color:var(--muted);font-weight:700}
 @media (max-width:380px){.fl{min-width:84px}}
+/* INICIO TREINO CSS */
+/* Pacote de treino: sem substituir os estilos das telas existentes. */
+.treino-dialog{width:min(528px,calc(100vw - 24px));max-height:85dvh;overflow:auto;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);padding:20px;font:inherit}
+.treino-dialog::backdrop{background:#000b}
+.treino-dialog h2{margin:16px 0}
+.resumo-row{border-top:1px solid var(--line);padding:18px 0;overflow-wrap:anywhere}
+.resumo-row dl{margin:12px 0}.resumo-row dt{color:var(--muted);font-size:.8rem}.resumo-row dd{margin:0 0 8px;font-family:var(--f-mono);font-size:.85rem}
+.resumo-row .delta{white-space:normal}
+.jump-option{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--soft);margin-top:10px;min-height:44px}
+.jump-option input{flex:none;width:20px;height:20px;accent-color:var(--lime)}
+.meta .mt-copy{min-width:0}.meta .mt-copy .hint{white-space:normal;font-size:.78rem;line-height:1.5;margin-top:8px}
+.day-excuse{border:1px dashed var(--line);border-radius:16px;padding:12px;margin-top:12px}.day-excuse p{font-size:.85rem;margin:0}
+.volume-muscular table{width:100%;border-collapse:collapse;font-size:.85rem}.volume-muscular caption{text-align:left;font-size:.78rem;color:var(--muted);padding-bottom:12px}
+.volume-muscular th,.volume-muscular td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.volume-muscular th:first-child{text-align:left;font-weight:500}.volume-muscular th[scope=col]{color:var(--muted)}
+.cal-d.excused i,.cal-leg .excused{background:var(--violet)}.sd.excused i{border-color:var(--violet);color:var(--violet)}
+.ex{position:relative}.ex.win{outline:2px solid var(--lime)}
+
+/* FIM TREINO CSS */
 .navrow.info{grid-template-columns:repeat(2,minmax(0,1fr))}
 .envbar{background:var(--warn);color:#1A1205;font-family:var(--f-display);font-weight:800;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:5px 12px;border-radius:999px}
 </style>
@@ -752,8 +771,78 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
   <button type="button" data-screen="suplementos" aria-label="Suplementos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8z"/><path d="M5 5.5h14M9.5 3h5"/><path d="M9.5 13.5h5"/></svg><span>Suplementos</span></button>
 </nav>
 
-<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste","relatorios":"relatorios","env":"teste","push":"https://hixyzxzhhacneilvumcb.supabase.co/functions/v1/push"};</script>
+<script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste","relatorios":"relatorios","env":"teste","push":"https://hixyzxzhhacneilvumcb.supabase.co/functions/v1/push-teste"};</script>
 <script>
+// INICIO TREINO CORE
+// Cálculos puros; sem dependências, DOM, banco ou código do openGym.
+const TreinoCore = (() => {
+  const valid = s => s && s.done === true && Number.isFinite(s.kg) && s.kg >= 0 && Number.isInteger(s.reps) && s.reps > 0;
+  const work = ss => (ss || []).filter(valid);
+  const assisted = p => /graviton/i.test(p.name);
+  const ambiguous = p => /\bou\b/i.test(p.name);
+  const timed = p => /\bs\b|seg|min|\//i.test(p.reps);
+  const e1 = s => valid(s) && s.kg > 0 && s.reps <= 12 ? s.kg * (1 + s.reps / 30) : null;
+  const add = (s,n) => { const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10); };
+  const weekday = s => { const n=new Date(s+'T12:00:00Z').getUTCDay();return n>0&&n<6; };
+  function history(logs, person, name, before, day) {
+    return Object.values(logs).filter(d => d && d.person===person && d.date<before && (!day || d.day===day) && d.ex?.[name]?.sets?.some(s=>s.done||s.kg!==''&&s.kg!=null||s.reps!==''&&s.reps!=null)).sort((a,b)=>a.date.localeCompare(b.date));
+  }
+  function target(hist,p) {
+    const range=String(p.reps).match(/^(\d+)\s*[–-]\s*(\d+)/), base={kind:'first',kg:null,reps:p.reps,stalled:false,reason:'Sem sessão anterior deste treino. Registre uma referência.'};
+    if(timed(p)||ambiguous(p)||!range)return {...base,kind:'manual',reason:'Siga a duração ou variação da ficha; sem sugestão automática de carga.'};
+    if(!hist.length)return base;
+    const lo=+range[1],hi=+range[2],last=hist.at(-1),entry=last.ex?.[p.name],old=entry?.plan;
+    if(old&&(old.sets!==p.sets||old.reps!==p.reps||old.rir!=null&&old.rir!==p.rir))return {...base,kind:'changed',reason:'A prescrição mudou. Registre uma nova referência antes de subir.'};
+    const ss=work(entry?.sets).slice(0,p.sets),all=(entry?.sets||[]).slice(0,p.sets);
+    if(!ss.length)return {...base,kind:'incomplete',reason:'Último registro sem séries confirmadas com kg e reps. Complete os dados.'};
+    const kg=ss[0].kg;
+    if(ss.some(s=>s.kg!==kg))return {...base,kind:'mixed',reason:'Cargas diferentes entre séries. Repita as cargas anotadas; sem aumento automático.'};
+    const full=all.length===p.sets&&all.every(valid),check=(d,top)=>{const e=d.ex?.[p.name];return (!e?.plan||e.plan.sets===p.sets&&e.plan.reps===p.reps&&(e.plan.rir==null||e.plan.rir===p.rir))&&e?.sets?.length>=p.sets&&e.sets.slice(0,p.sets).every(s=>valid(s)&&s.kg===kg&&s.reps>=top);};
+    const recent=hist.slice(-3),mins=recent.map(d=>{const e=d.ex?.[p.name];return check(d,lo)?Math.min(...e.sets.slice(0,p.sets).map(s=>s.reps)):null;});
+    const stalled=mins.length===3&&mins.every(n=>n!=null)&&mins[1]<=mins[0]&&mins[2]<=mins[1];
+    const held={...base,kind:'hold',kg,stalled,reason:full?'Mesma carga; busque o topo da faixa mantendo o sobrar da ficha.':'Séries faltantes ou não confirmadas: sem aumento de carga.'};
+    if(!assisted(p)&&kg===0)return {...held,reason:'Sem carga externa registrada. Siga a ficha; sem peso inventado.'};
+    if(!full||!check(last,hi))return held;
+    if(p.largeJump&&!(hist.length>=2&&hist.slice(-2).every(d=>check(d,hi+2))))return {...held,reps:String(hi+2),reason:'Salto grande: alcance topo +2 reps em duas sessões completas nesta carga, mantendo o sobrar.'};
+    const step=assisted(p)?2.5:/Smith/i.test(p.name)?1.25:/halter|búlgaro|martelo/i.test(p.name)?(kg<10?1:2):2.5;
+    const next=Math.max(0,Math.round((kg+(assisted(p)?-step:step))*100)/100);
+    if(next===kg)return {...held,reason:'Sem assistência. Siga a meta de repetições da ficha.'};
+    return {...base,kind:'up',kg:next,reason:'Topo em todas as séries confirmadas. Só suba se manteve o sobrar '+p.rir+' e a execução; volte a '+lo+' reps.'};
+  }
+  function records(previous,set,p) {
+    const prev=work(previous);if(!valid(set)||!prev.length||timed(p)||ambiguous(p))return [];
+    if(assisted(p)){const comparable=prev.filter(s=>s.reps>=set.reps);return comparable.length&&set.kg<Math.min(...comparable.map(s=>s.kg))?[{key:'help',label:'Menor assistência com estas reps',value:set.kg}]:[];}
+    const out=[];const same=prev.filter(s=>s.kg===set.kg);if(set.kg===0&&same.length&&set.reps>Math.max(...same.map(s=>s.reps)))out.push({key:'reps',label:'Recorde de repetições sem carga externa',value:set.reps});if(set.kg>Math.max(...prev.map(s=>s.kg)))out.push({key:'kg',label:'Recorde de carga',value:set.kg});
+    const est=e1(set),old=prev.map(e1).filter(v=>v!=null);if(est&&old.length&&est>Math.max(...old)+.001)out.push({key:'e1',label:'Recorde de força estimada',value:Math.round(est*10)/10});return out;
+  }
+  function compare(today,last,p) {
+    const a=work(today),b=work(last);if(!b.length)return {kind:'first',label:'Primeira referência'};
+    if(!a.length)return {kind:'empty',label:'Sem séries confirmadas'};
+    if(a.length!==b.length)return {kind:'different',label:'Quantidade de séries diferente — veja os registros'};
+    if(a.some((s,i)=>s.kg!==b[i].kg)){
+      const sign=assisted(p)?-1:1,deltas=a.map((s,i)=>(s.kg-b[i].kg)*sign);
+      const up=deltas.every(v=>v>=0)&&deltas.some(v=>v>0)&&a.every((s,i)=>s.reps>=b[i].reps);
+      const down=deltas.every(v=>v<=0)&&deltas.some(v=>v<0)&&a.every((s,i)=>s.reps<=b[i].reps);
+      if(up)return {kind:'up',label:assisted(p)?'Menos assistência, mantendo as reps':'Mais carga, mantendo as reps'};
+      if(down)return {kind:'down',label:assisted(p)?'Mais assistência, sem aumentar reps':'Menos carga, sem aumentar reps'};
+      return {kind:'different',label:'Cargas e repetições diferentes — sem comparação direta'};
+    }
+    const diff=a.reduce((n,s)=>n+s.reps,0)-b.reduce((n,s)=>n+s.reps,0);
+    return {kind:diff>0?'up':diff<0?'down':'same',label:diff?'Mesmo peso: '+(diff>0?'+':'')+diff+' reps no total':'Mesmos pesos e repetições'};
+  }
+  function volume(days,logs,map) {
+    const out={};
+    const sum=(name,n,key)=>{const m=map[name];if(!m)return;const prim=new Set(m.p),sec=new Set(m.s);for(const k of new Set([...prim,...sec])){out[k]||={planned:0,done:0};out[k][key]+=n*(prim.has(k)?1:.5);}};
+    const eligible=new Set();for(const d of days||[])for(const e of d.ex)if(e[4]&&e[3]!=='—'){eligible.add(e[0]);sum(e[0],e[1],'planned');}
+    for(const d of logs)for(const [name,e] of Object.entries(d.ex||{}))if(eligible.has(name))sum(name,(e.sets||[]).filter(s=>s.done===true).length,'done');return out;
+  }
+  function streak(end,state,allowToday=true) {let n=0,d=end;for(let i=0;i<600;i++,d=add(d,-1))if(weekday(d)){const s=state(d);if(s==='trained')n++;else if(s!=='excused'&&!(allowToday&&d===end))break;}return n;}
+  return {valid,work,e1,history,target,records,compare,volume,streak,add};
+})();
+if(typeof module!=='undefined')module.exports=TreinoCore;
+
+// FIM TREINO CORE
+
 const IG = id => `https://www.instagram.com/breno.aceti/reel/${id}/`;
 const b = (id, txt) => `<span class="breno">Breno</span>${txt} <a href="${IG(id)}" target="_blank" rel="noopener">ver vídeo</a>`;
 
@@ -1067,7 +1156,8 @@ function renderDayCore(d){
     <div class="daymetas" id="daymetas" hidden></div>
     <p class="daylog"><span id="logstate" aria-live="polite">${modeText()}</span></p>
     ${cards}
-    ${SUPA ? `<button type="button" class="ghost shr" data-share="treino">${ICON_ENVIA}Compartilhar o treino de hoje</button>` : ""}
+    ${treinoPlus() ? `<button type="button" class="done-btn" data-resumo>Ver resumo deste treino</button>` : ""}
+    ${SUPA ? `<button type="button" class="ghost shr" data-share="treino">${ICON_ENVIA}Compartilhar o treino desta data</button>` : ""}
     ${SUPA ? "" : `<div class="panel sendbox"><h3>Terminou?</h3>
       <p id="sendsum" class="sendsum"></p>
       <div class="sendrow"><a class="btn-wa" id="sendwa" href="https://wa.me/" target="_blank" rel="noopener">Enviar no WhatsApp</a><button type="button" class="ghost" id="copytxt">Copiar texto</button></div>
@@ -1127,7 +1217,7 @@ const rowCount = {};   // séries do dia por exercício (o "− / +" muda; padr�
 function setRows(d, i, name, sets, marks, reps){
   const cur = (LOGS[docId(person.id, logDate)]?.ex?.[name]?.sets) || [];
   const k = `${person.id}:${logDate}:${name}`;
-  const kgLbl = /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg";   // halter: anota o peso de um halter só
+  const kgLbl = treinoPlus() && /Smith/i.test(name) ? "kg/lado" : /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg";   // halter: anota o peso de um halter só
   const total = rowCount[k] ?? Math.max(sets, cur.length);
   const rows = Array.from({length:total}, (_, s) => {
     const v = cur[s] || {}, on = !!(marks[i+"-"+s] ?? v.done), a = `data-name="${esc(name)}" data-set="${s}" data-n="${total}"`;
@@ -1181,9 +1271,9 @@ const ICON_ALVO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 // Resumo das metas do dia (quantas cargas sobem, quantas buscam o topo das reps)
 function refreshMetasDia(){
   const el = document.getElementById("daymetas"); if (!el) return;
-  const ms = [...document.querySelectorAll(".ex .meta:not([hidden])")], up = ms.filter(m => m.classList.contains("up")).length, topo = ms.length - up;
+  const ms = [...document.querySelectorAll(".ex .meta:not([hidden])")].filter(m => !treinoPlus() || ["hold", "up"].includes(m.dataset.kind)), up = ms.filter(m => m.classList.contains("up")).length, topo = ms.length - up;
   el.hidden = !ms.length;
-  el.innerHTML = ms.length ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><b>Metas ${logDate === trainDay() ? "de hoje" : "do dia"}</b><p>${[up ? `<b class="up">${up}</b> ${up === 1 ? "carga para subir" : "cargas para subir"}` : "", topo ? `<b>${topo}</b> ${topo === 1 ? "exercício" : "exercícios"} buscando o topo das reps` : ""].filter(Boolean).join(" · ")}</p><small>Calculadas pelo que você fez da última vez em cada exercício.</small></div>` : "";
+  el.innerHTML = ms.length ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><b>Metas ${logDate === trainDay() ? "de hoje" : "do dia"}</b><p>${[up ? `<b class="up">${up}</b> ${up === 1 ? "sugestão de aumento" : "sugestões de aumento"}` : "", topo ? `<b>${topo}</b> ${topo === 1 ? "exercício" : "exercícios"} buscando o topo das reps` : ""].filter(Boolean).join(" · ")}</p><small>Sugestões pelo último treino equivalente. Aumente só mantendo execução e sobrar da ficha.</small></div>` : "";
 }
 function refreshCarga(){
   queueMicrotask(refreshMetasDia);
@@ -1194,7 +1284,8 @@ function refreshCarga(){
     const name = box.dataset.name, sets = doc?.ex?.[name]?.sets || [];
     const last = lastFor(person.id, name, logDate);
     const mt = box.closest(".ex").querySelector(".meta");
-    if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name), sobe = /subiu|menos ajuda/.test(t), i = t.indexOf("</b>") + 4;
+    if (mt && treinoPlus()) { const e = person.days.find(d => d.id === current)?.ex.find(e => e[0] === name); if (e) { const t = metaTreino(e); mt.className = "meta" + (t.kind === "up" ? " up" : ""); mt.dataset.kind = t.kind; const html = renderMetaTreino(e); if (mt.innerHTML !== html) mt.innerHTML = html; mt.hidden = false; } }
+    else if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name), sobe = /subiu|menos ajuda/.test(t), i = t.indexOf("</b>") + 4;
       mt.className = "meta" + (sobe ? " up" : ""); mt.innerHTML = t ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><small>${sobe ? "Meta: subir a carga" : "Meta"}${logDate === trainDay() ? " hoje" : ""}</small><p>${t.slice(0, i)}<span>${t.slice(i).replace(/^,\s*/, " · ")}</span></p></div>` : ""; mt.hidden = !t; }
     box.querySelectorAll("input").forEach(inp => {
       const s = +inp.dataset.set, f = inp.dataset.field, lv = last?.sets?.[s]?.[f];
@@ -1221,16 +1312,18 @@ function onLogInput(inp){
 // Grava um pedaço de uma série (kg, reps ou feita) no treino da pessoa nesta data
 function writeSet(name, n, s, patch){
   if (futuro()) return avisaFuturo();
-  const id = docId(person.id, logDate), antes = trained(person.id, logDate);
+  const id = docId(person.id, logDate), antes = trained(person.id, logDate), previousDoc = LOGS[docId(person.id, logDate)];
   const doc = LOGS[id] ? JSON.parse(JSON.stringify(LOGS[id])) : {person:person.id, date:logDate, day:current, ex:{}};
   const e = doc.ex[name] || (doc.ex[name] = {sets:[]});
   while (e.sets.length < Math.max(n, s + 1)) e.sets.push({kg:"", reps:""});
   Object.assign(e.sets[s], patch);
+  if (treinoPlus()) { const cfg = person.days?.find(d => d.id === current)?.ex.find(x => x[0] === name); if (cfg) e.plan = {sets: cfg[1], reps: cfg[2], rir: cfg[3]}; if (doc.excused) doc.excused = false; }
   doc.updated = new Date().toISOString();
   LOGS[id] = doc; pending[id] = true; refreshSend(); keepDate(logDate);
   if (!antes && logDate === trainDay() && isWeekday(logDate) && trained(person.id, logDate)) { const n = streakOf(person.id); toast(`${flameSvg(n)}<span><b>${n} ${n === 1 ? "dia" : "dias"} de ofensiva!</b> Treino de hoje contado.</span>`); }
   setStatus("Salvando…");
   clearTimeout(timers[id]); timers[id] = setTimeout(() => saveLog(id), 700);
+  if (patch.done === true && !previousDoc?.ex?.[name]?.sets?.[s]?.done) recordeSerie(name, s, previousDoc);
 }
 function saveLog(id){
   chains[id] = (chains[id] || Promise.resolve()).then(async () => {
@@ -1371,7 +1464,7 @@ function treinoProg(p, s){
 function dayScore(p, s){
   const g = goalsFor(p, s), c = chkOf(p, s), t = treinoProg(p, s);
   const parts = [Math.min(1, (+c.agua || 0) / g.agua), Math.min(1, (+c.sono || 0) / g.sono)];
-  if (t) parts.push(t.total ? t.done / t.total : 0);
+  if (t && !justificado(p, s)) parts.push(t.total ? t.done / t.total : 0);
   return Math.round(parts.reduce((a, b) => a + b, 0) / parts.length * 100);
 }
 const ICON = {
@@ -1423,8 +1516,8 @@ function renderCal(){
     <div class="cal-h"><button type="button" class="cal-nav" data-calmes="-1" aria-label="Mês anterior">‹</button><h2>${MESES[m - 1]} ${y}</h2><button type="button" class="cal-nav" data-calmes="1" aria-label="Próximo mês">›</button></div>
     <div class="cal-g cal-wd">${["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"].map(x => `<span>${x}</span>`).join("")}</div>
     <div class="cal-g">${cells.map(d => { const fora = d.slice(0, 7) !== calMes, tr = trained(person.id, d), c = chkOf(person.id, d), ck = +c.agua > 0 || +c.sono > 0 || Array.isArray(c.refeicoes);
-      return `<button type="button" class="cal-d${fora ? " fora" : ""}${d === hoje ? " hoje" : ""}${d === logDate ? " on" : ""}${d > hoje ? " fut" : ""}${ck ? " ck" : ""}" data-caldate="${d}" aria-label="${brDate(d)}${tr ? ", treinou" : ""}"><b>${+d.slice(8, 10)}</b><i class="${tr ? "tr" : ""}"></i></button>`; }).join("")}</div>
-    <p class="hint cal-leg"><i class="tr"></i> treinou &nbsp; <i class="ckl"></i> check-in feito</p>
+      return `<button type="button" class="cal-d${fora ? " fora" : ""}${d === hoje ? " hoje" : ""}${d === logDate ? " on" : ""}${d > hoje ? " fut" : ""}${ck ? " ck" : ""}${justificado(person.id, d) ? " excused" : ""}" data-caldate="${d}" aria-label="${brDate(d)}${tr ? ", treinou" : justificado(person.id, d) ? ", dia justificado" : ""}"><b>${+d.slice(8, 10)}</b><i class="${tr ? "tr" : ""}"></i></button>`; }).join("")}</div>
+    <p class="hint cal-leg"><i class="tr"></i> treinou &nbsp; <i class="ckl"></i> check-in feito ${treinoPlus() ? ' &nbsp; <i class="excused"></i> justificado' : ""}</p>
     <div class="chips two-c"><button type="button" class="chip" data-caldate="${hoje}">Ir para hoje</button><button type="button" class="chip" data-calclose>Fechar</button></div></div>`;
 }
 function openCal(){
@@ -1484,17 +1577,18 @@ function refreshToday(){
   document.getElementById("ck-count").textContent = `${[+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0, !!c.peso, c.dieta != null].filter(Boolean).length}/5`;
   refreshExtras(); refreshProt(); refreshAlc();
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
+  const oldStreak = document.querySelector?.("section.streak"); if (oldStreak && treinoPlus()) oldStreak.outerHTML = renderStreak();
   const t = treinoProg(person.id, logDate), box = document.getElementById("todaytrain");
   box.innerHTML = gymBanner() + (!person.days ? `<div class="panel"><p>A ficha ${person.art} ${person.name} ainda está sendo montada.</p></div>`
     : !t ? `<div class="panel"><h3>Dia de descanso</h3><p>Sábado e domingo não têm treino. Capriche na água e no sono.</p></div>`
     : (() => { const exs = t.d.ex.filter(e => e[4]), min = Math.round(exs.reduce((a, e) => a + e[1] * (40 + e[4]), 0) / 60), feito = t.total && t.done >= t.total, st = feito ? "feito" : t.done ? "andando" : "afazer", hj = logDate === trainDay();
       const doc = LOGS[docId(person.id, logDate)], kc = doc && trained(person.id, logDate) ? sessionStats(person.id, doc).kcal : null;
       return `<button type="button" class="todaycard ${st}" data-screen="treino" style="--pc:var(${t.d.plate})">
-        <div class="tc-top"><span class="tc-day">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}</span><span class="tc-st">${feito ? "Feito ✓" : t.done ? "Em andamento" : logDate > trainDay() ? "Previsto" : hj ? "A fazer" : "Não feito"}</span></div>
+        <div class="tc-top"><span class="tc-day">${WD[parseDate(logDate).getDay()]} · ${brDate(logDate)}</span><span class="tc-st">${feito ? "Feito ✓" : t.done ? "Em andamento" : logDate > trainDay() ? "Previsto" : justificado(person.id, logDate) ? "Justificado" : hj ? "A fazer" : "Não feito"}</span></div>
         <h3>${t.d.name}</h3><p class="tc-sub">${t.d.sub}</p>
         <div class="tc-nums"><span><b class="num">${exs.length}</b>exercícios</span><span><b class="num">${t.total}</b>séries</span><span><b class="num">~${min}</b>min</span>${kc ? `<span><b class="num">~${kc}</b>kcal</span>` : ""}</div>
         <div class="tc-prog"><div class="pbar" aria-hidden="true"><i style="width:${t.total ? Math.round(t.done / t.total * 100) : 0}%"></i></div><span class="num">${t.done}/${t.total}</span></div>
-        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>`; })() + nutriCard());
+        <span class="tc-cta">${feito ? "Ver o treino" : t.done ? "Continuar o treino" : hj ? "Começar o treino" : "Abrir o treino"}${ICON.seta}</span></button>`; })() + nutriCard()) + painelJustificativa();
 }
 function writeChk(field, dir){
   if (futuro()) return avisaFuturo();
@@ -1510,8 +1604,8 @@ function writeChk(field, dir){
   clearTimeout(chkTimers[id]); chkTimers[id] = setTimeout(() => saveChk(id), 600);
 }
 // Meta batida: o anel pula, o cartão brilha e solta confete na cor do cartão (sem confete para quem pediu menos movimento)
-function celebrate(field){
-  const card = document.getElementById("card-" + field); if (!card) return;
+function celebrate(field, target){
+  const card = target || document.getElementById("card-" + field); if (!card) return;
   try { navigator.vibrate && navigator.vibrate([30, 40, 30]); } catch(e) {}
   card.classList.remove("win"); void card.offsetWidth; card.classList.add("win");
   if (calmo()) { setTimeout(() => card.classList.remove("win"), 1800); return; }
@@ -1562,6 +1656,7 @@ function trained(p, s){
 }
 const isWeekday = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5; };
 function streakOf(p){
+  if (treinoPlus()) return TreinoCore.streak(trainDay(), d => estadoDia(p, d));
   const today = trainDay(), d = parseDate(today); let n = 0;
   for (let i = 0; i < 600; i++) {
     const s = fmtDate(d);
@@ -1574,7 +1669,7 @@ function bestStreak(p){
   const dates = Object.values(LOGS).filter(x => x && x.person === p).map(x => x.date).sort();
   if (!dates.length) return 0;
   const today = trainDay(), d = parseDate(dates[0]), end = parseDate(today); let run = 0, best = 0;
-  while (d <= end) { const s = fmtDate(d); if (isWeekday(s)) { if (trained(p, s)) best = Math.max(best, ++run); else if (s !== today) run = 0; } d.setDate(d.getDate() + 1); }
+  while (d <= end) { const s = fmtDate(d); if (isWeekday(s)) { if (trained(p, s)) best = Math.max(best, ++run); else if (s !== today && !justificado(p, s)) run = 0; } d.setDate(d.getDate() + 1); }
   return best;
 }
 // A chama muda de cor conforme a ofensiva cresce
@@ -1596,11 +1691,12 @@ function flameSvg(n){
 function renderStreak(){
   const p = person.id, n = streakOf(p), best = bestStreak(p), today = trainDay();
   const week = weekOf(today).slice(0, 5).map(s => {
-    const st = trained(p, s) ? "done" : s === today ? "today" : s < today ? "miss" : "future";
-    return `<span class="sd ${st}" aria-label="${WD[parseDate(s).getDay()]}: ${{done: "treinou", today: "hoje", miss: "faltou", future: "ainda não chegou"}[st]}"><i>${st === "done" ? "✓" : st === "miss" ? "×" : ""}</i><em>${WD[parseDate(s).getDay()]}</em></span>`;
+    const st = trained(p, s) ? "done" : justificado(p, s) ? "excused" : s === today ? "today" : s < today ? "miss" : "future";
+    return `<span class="sd ${st}" aria-label="${WD[parseDate(s).getDay()]}: ${{done: "treinou", excused: "dia justificado", today: "hoje", miss: "faltou", future: "ainda não chegou"}[st]}"><i>${st === "done" ? "✓" : st === "miss" ? "×" : st === "excused" ? "−" : ""}</i><em>${WD[parseDate(s).getDay()]}</em></span>`;
   }).join("");
-  const h = nowFn().getHours(), falta = 24 - h, risco = isWeekday(today) && !trained(p, today) && n > 0;
+  const h = nowFn().getHours(), falta = 24 - h, risco = isWeekday(today) && !trained(p, today) && !justificado(p, today) && n > 0;
   const msg = trained(p, today) ? "Treino de hoje feito. Ofensiva garantida!"
+    : justificado(p, today) ? "Dia justificado: ofensiva preservada, sem somar treino."
     : !isWeekday(today) ? "Fim de semana: a ofensiva fica guardada até segunda."
     : !n ? "Zerada. Comece hoje uma ofensiva nova."
     : h >= 21 ? `Faltam ${falta} h para a meia-noite. Sem treino, seus ${n} ${n === 1 ? "dia" : "dias"} viram zero.`
@@ -1636,6 +1732,7 @@ const FRASES_PERDEU = [
 const fraseDoDia = (lista, chave) => { let hsh = 0; for (const ch of chave) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0; return lista[hsh % lista.length]; };
 const diaUtilAntes = d => { let x = addDays(d, -1); while (!isWeekday(x)) x = addDays(x, -1); return x; };
 function ofensivaAte(p, dia){
+  if (treinoPlus()) return TreinoCore.streak(dia, d => estadoDia(p, d), false);
   let n = 0, d = dia;
   while (trained(p, d)) { n++; d = diaUtilAntes(d); }
   return n;
@@ -1645,7 +1742,7 @@ function checkOfensiva(){
   if (!dadosDoServidor || !person.days) return;
   const p = person.id, hoje = trainDay(), ult = diaUtilAntes(hoje), k = "ofensiva:" + p, st = store.get(k), n = streakOf(p);
   if (st?.dia === ult && st.avisado) { if (n > (st.n || 0)) store.set(k, {dia: ult, n, avisado: true}); return; }
-  const perdeu = !trained(p, ult) ? ofensivaAte(p, diaUtilAntes(ult)) : 0;
+  const perdeu = !trained(p, ult) && !justificado(p, ult) ? ofensivaAte(p, diaUtilAntes(ult)) : 0;
   store.set(k, {dia: ult, n, avisado: true});
   if (perdeu) showOfensiva("perdeu", perdeu, ult);
   else if (st && st.dia !== ult && trained(p, ult)) showOfensiva("ganhou", n, ult);
@@ -2138,7 +2235,7 @@ function renderProgress(){
   const kcalBars = stats.slice(-10).map(s => ({l: dd(s.d.date).slice(0, 2), v: s.kcal || 0, tip: `${dd(s.d.date)}: ${s.kcal != null ? "~" + s.kcal + " kcal · " : ""}${s.min} min · ${s.sets} séries`}));
   // Cartões do topo: ofensiva (dias úteis da semana), treinos feitos x previstos, volume e calorias
   const ofen = streakOf(p), semDias = weekOf(today).slice(0, 5);
-  const previstos = person.days ? lastDays(28, today).filter(s => (s >= BLOCO.start && dayIdFor(s)) || trained(p, s)).length : 0;
+  const previstos = person.days ? lastDays(28, today).filter(s => (s >= BLOCO.start && dayIdFor(s) && !justificado(p, s)) || trained(p, s)).length : 0;
   const n = sess.length, fl = flameOf(ofen);
   const statCards = [
     stat({ico: flameSvg(ofen), c: fl.a, l: "Ofensiva", v: ofen, u: ofen === 1 ? "dia" : "dias",
@@ -2156,6 +2253,7 @@ function renderProgress(){
     <h2>Progresso</h2>
     ${renderPainel(p)}
     ${relCard(p)}
+    ${renderVolumeMuscular()}
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="stats">${statCards}</div>
 
@@ -2661,6 +2759,7 @@ function redesenhaPerfil(){ if (screen === "perfil") { const y = scrollY; view.i
 async function iniciaApp(){
   if (!SUPA || !("serviceWorker" in navigator)) return;
   try { swReg = await navigator.serviceWorker.register("sw.js"); if (temPush()) pushSub = await swReg.pushManager.getSubscription(); } catch(e) {}
+  if (SUPA.env === "teste" && pushSub) pushSegue();
   redesenhaPerfil(); if (screen === "perfil") carregaFotos();
 }
 // Ativar: o pedido de permissão tem que ser a primeira coisa do toque (regra do iPhone)
@@ -2803,6 +2902,79 @@ if (typeof window.addEventListener === "function") {
 document.addEventListener("visibilitychange", cuidaDaTela);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) checaAcademia(); });
 iniciaApp(); if (SUPA) setTimeout(checaAcademia, 1500);
+// INICIO TREINO UI
+// Integração das regras com a ficha; inserida no HTML pelo build.
+const treinoPlus = () => !SUPA || SUPA.env === 'teste';
+const planoEx = e => ({name:e[0],sets:e[1],reps:e[2],rir:e[3],leg:(MUS[e[0]]?.p||[]).some(m=>['quadriceps','hamstrings','glutes','calves','abductors'].includes(m)),largeJump:!!store.get('salto:'+person.id+':'+e[0])});
+const historicoEx = (name,before=logDate,day=current,p=person.id) => TreinoCore.history(LOGS,p,name,before,day);
+const estadoDia = (p,d) => trained(p,d)?'trained':justificado(p,d)?'excused':'';
+const justificado = (p,d) => treinoPlus() && d<=trainDay() && isWeekday(d) && LOGS[docId(p,d)]?.excused===true && !trained(p,d);
+function metaTreino(e,before=logDate,day=current,sessionDate=before){
+  const t=TreinoCore.target(historicoEx(e[0],before,day),planoEx(e));
+  const week=Math.round((parseDate(weekOf(sessionDate)[0])-parseDate(weekOf(BLOCO.start)[0]))/6048e5)+1;
+  if(week===1)return {...t,kind:'baseline',reason:'Semana de referência: mantenha sobrar 3 no topo da faixa. Sem aumento automático.',kg:null};
+  if(week>BLOCO.weeks)return {...t,kind:'review',reason:'Bloco encerrado: siga o deload/reavaliação combinado; sem aumento automático.',kg:null};
+  return t;
+}
+const alvoTexto = (t,e) => (t.kg==null?'':num(t.kg)+' '+(/halter|búlgaro|martelo/i.test(e[0])?'kg/halter':/Smith/i.test(e[0])?'kg/lado':/graviton/i.test(e[0])?'kg de assistência':'kg')+' · ')+t.reps;
+function renderMetaTreino(e){
+ const t=metaTreino(e),jump=!!store.get('salto:'+person.id+':'+e[0]);
+ return '<div class="mt-copy"><small>'+(t.kind==='up'?'Sugestão de aumento':'Meta desta sessão')+'</small><p><b>'+esc(alvoTexto(t,e))+'</b></p><p class="hint">'+esc(t.reason)+'</p>'+(t.stalled?'<p class="hint">Três sessões comparáveis sem avanço. Revise execução, sobrar e recuperação com o personal; sem deload automático.</p>':'')+(t.kind==='manual'?'':'<label class="jump-option"><input type="checkbox" data-largejump="'+esc(e[0])+'" '+(jump?'checked':'')+(futuro()?' disabled':'')+'> O menor salto disponível é grande demais</label>')+'</div>';
+}
+const seriesTexto = ss => (ss||[]).filter(s=>s.done===true).map(s=>TreinoCore.valid(s)?num(s.kg)+' × '+s.reps:'✓ sem kg/reps completos').join(' · ')||'Nenhuma série confirmada';
+function linhasResumo(){
+ const doc=LOGS[docId(person.id,logDate)],day=doc?.day||current,d=person.days?.find(x=>x.id===day);if(!doc||!d)return [];
+ return d.ex.filter(e=>doc.ex?.[e[0]]?.sets?.some(s=>s.done||filled(s))).map(e=>{
+   const now=doc.ex[e[0]].sets,prev=historicoEx(e[0],logDate,day).at(-1),last=prev?.ex[e[0]]?.sets||[];
+   return {e,now,last,prev,comparison:TreinoCore.compare(now,last,planoEx(e)),target:metaTreino(e,addDays(logDate,1),day,addDays(logDate,7))};
+ });
+}
+function resumoTexto(){
+ const rows=linhasResumo();if(!rows.length)return '';
+ return 'Resumo · '+person.name+' · '+brDate(logDate)+'\n'+rows.map(r=>r.e[0]+'\nAnterior: '+seriesTexto(r.last)+'\nNesta sessão: '+seriesTexto(r.now)+'\n'+r.comparison.label+'\nPróxima: '+alvoTexto(r.target,r.e)+' — '+r.target.reason).join('\n\n');
+}
+function renderResumo(){
+ const rows=linhasResumo();
+ return '<h2>Resumo · '+brDate(logDate)+'</h2><p class="hint">Séries confirmadas com ✓. Rascunhos não valem como recorde nem autorizam aumento.</p>'+(rows.length?rows.map(r=>'<article class="resumo-row"><h3>'+esc(r.e[0])+'</h3><dl><dt>Anterior'+(r.prev?' · '+brDate(r.prev.date):'')+'</dt><dd>'+esc(seriesTexto(r.last))+'</dd><dt>Nesta sessão</dt><dd>'+esc(seriesTexto(r.now))+'</dd></dl><p class="delta">'+({up:'▲ ',down:'▼ ',same:'= '}[r.comparison.kind]||'')+esc(r.comparison.label)+'</p><p><b>Próxima: '+esc(alvoTexto(r.target,r.e))+'</b></p><p class="hint">'+esc(r.target.reason)+'</p></article>').join('')+'<button type="button" class="done-btn" data-share-resumo>Compartilhar resumo</button>':'<p>Nenhuma série anotada nesta data.</p>');
+}
+
+function openTreinoDialog(kind){
+ let el=document.getElementById('treino-dialog');if(!el){el=document.createElement('dialog');el.id='treino-dialog';el.className='treino-dialog';document.body.appendChild(el);
+ el.addEventListener('click',ev=>{if(ev.target===el||ev.target.closest('[data-treino-close]'))el.close();if(ev.target.closest('[data-share-resumo]'))compartilhar({title:'Resumo do treino',text:resumoTexto()});
+ const b=ev.target.closest('[data-excuse]');if(b){salvaJustificativa(b.dataset.excuse);el.close();}});}
+ el.innerHTML='<button type="button" class="ghost" data-treino-close>Fechar</button>'+(kind==='resumo'?renderResumo():renderJustificativa());el.setAttribute('aria-label',kind==='resumo'?'Resumo do treino':'Dia justificado');el.showModal();
+}
+function renderJustificativa(){
+ return '<h2>Justificar '+brDate(logDate)+'</h2><p>Preserva a ofensiva, mas não soma treino nem séries. Pode desfazer depois.</p><p class="hint">O motivo fica só neste aparelho. No site público aparece apenas “Dia justificado”.</p><div class="opts">'+[['doente','Doente'],['viagem','Viagem'],['lesao','Lesão']].map(([v,t])=>'<button type="button" class="opt" data-excuse="'+v+'">'+t+'</button>').join('')+(justificado(person.id,logDate)?'<button type="button" class="opt" data-excuse="">Remover justificativa</button>':'')+'</div>';
+}
+function salvaJustificativa(reason){
+ if(futuro())return avisaFuturo();if(!isWeekday(logDate)||!person.days)return;
+ if(reason&&trained(person.id,logDate))return aviso('Já há treino registrado nesta data.','Não apague séries para justificar um dia treinado.');
+ const id=docId(person.id,logDate),doc=LOGS[id]?JSON.parse(JSON.stringify(LOGS[id])):{person:person.id,date:logDate,day:dayOf(person.id,logDate),ex:{}};
+ doc.excused=!!reason;doc.updated=new Date().toISOString();LOGS[id]=doc;pending[id]=true;store.set('motivo:'+id,reason||null);store.set('cargas:'+id,doc);keepDate(logDate);
+ clearTimeout(timers[id]);saveLog(id);const y=scrollY;draw();scrollTo(0,y);toast(reason?'Dia justificado. Ofensiva preservada, sem contar treino.':'Justificativa removida.');
+}
+function painelJustificativa(){
+ if(!treinoPlus()||!person.days||!isWeekday(logDate)||trained(person.id,logDate))return '';
+ return '<div class="day-excuse"><p>'+(justificado(person.id,logDate)?'<b>Dia justificado</b> · ofensiva preservada, sem contar treino.':'Não treinou por um imprevisto?')+'</p><button type="button" class="ghost" data-justify '+(futuro()?'disabled':'')+'>'+(justificado(person.id,logDate)?'Ver ou desfazer justificativa':'Justificar este dia')+'</button><p id="logstate" class="hint" role="status">'+esc(modeText())+'</p></div>';
+}
+function renderVolumeMuscular(){
+ if(!treinoPlus()||!person.days)return '';
+ const week=weekOf(logDate),end=logDate<trainDay()?logDate:trainDay(),docs=Object.values(LOGS).filter(d=>d.person===person.id&&d.date>=week[0]&&d.date<=week[6]&&d.date<=end);
+ const data=TreinoCore.volume(person.days,docs,MUS),period=week[0]>trainDay()?'Semana futura: só previsão da ficha.':'Realizadas até '+brDate(end)+'.';
+ return '<article class="panel volume-muscular"><h3>Séries por músculo</h3><p class="hint">Semana de '+brDate(week[0])+' · '+period+' Principal = 1; secundário = 0,5. Contagem aproximada pelo mapa muscular, não uma meta universal.</p><table><caption>Realizadas × previstas na ficha semanal</caption><thead><tr><th scope="col">Grupo</th><th scope="col">Feitas</th><th scope="col">Ficha</th></tr></thead><tbody>'+Object.entries(data).sort((a,b)=>b[1].planned-a[1].planned).map(([m,v])=>'<tr><th scope="row">'+esc(MUSCLE_PT[m]||m)+'</th><td>'+num(v.done)+'</td><td>'+num(v.planned)+'</td></tr>').join('')+'</tbody></table><p class="hint">Só ✓ entra como feito. Caminhada não conta. Ombros e costas estão agrupados conforme o mapa; estes totais não substituem a contagem refinada do personal.</p></article>';
+}
+function recordeSerie(name,index,previousDoc){
+ if(!treinoPlus()||logDate!==trainDay())return;
+ const doc=LOGS[docId(person.id,logDate)],s=doc?.ex?.[name]?.sets?.[index],e=person.days?.find(d=>d.id===current)?.ex.find(e=>e[0]===name);if(!e)return;
+ const prev=TreinoCore.history(LOGS,person.id,name,logDate,current).flatMap(d=>d.ex[name].sets).concat((previousDoc?.ex?.[name]?.sets||[]).filter((_,i)=>i!==index));
+ const records=TreinoCore.records(prev,s,planoEx(e));if(!records.length)return;
+ const k='pr:'+docId(person.id,logDate)+':'+name+':'+index,fingerprint=JSON.stringify([s.kg,s.reps]);if(store.get(k)===fingerprint)return;store.set(k,fingerprint);
+ toast('<b>'+esc(records.map(r=>r.label).join(' + '))+'</b><span>'+esc(name)+' · '+esc(seriesTexto([s]))+'</span>');
+ const card=[...document.querySelectorAll('.ex')].find(el=>el.querySelector('.lg')?.dataset.name===name);if(card)celebrate('recorde',card);
+}
+
+// FIM TREINO UI
 function draw(){ drawCore(); cuidaDaTela(); if (animNext) { animNext = false; enterAnim(); } }
 function drawCore(){
   drawWho(); drawHead(); drawTabs(); drawDock();
@@ -2839,6 +3011,7 @@ view.addEventListener("input", e => {
 });
 view.addEventListener("submit", e => { const form = e.target.closest("[data-sup-form]"); if (form) { e.preventDefault(); salvaProduto(form); } });
 view.addEventListener("change", e => {
+  if (e.target.matches("[data-largejump]")) { if (futuro()) { e.target.checked = !e.target.checked; return avisaFuturo(); } store.set("salto:" + person.id + ":" + e.target.dataset.largejump, e.target.checked); const y = scrollY; refreshCarga(); scrollTo(0, y); return; }
   const sd = e.target.dataset.supDia;
   if (sd) {
     if (!e.target.reportValidity()) return;
@@ -2887,6 +3060,8 @@ view.addEventListener("click", e=>{
   const sap = e.target.closest("[data-sup-apaga]"); if (sap){ atualizaSuplemento(sap.dataset.supApaga, null); return; }
   if (e.target.closest("[data-fototira]")){ store.set("foto:" + person.id, ""); const y = scrollY; draw(); scrollTo(0, y); return; }
   if (e.target.closest("[data-foto]")){ escolherFoto(); return; }
+  if (e.target.closest("[data-resumo]")) { openTreinoDialog("resumo"); return; }
+  if (e.target.closest("[data-justify]")) { openTreinoDialog("justifica"); return; }
   const sh = e.target.closest("[data-share]");
   if (sh){ const t = treinoText(); t ? compartilhar({title: "Treino", text: t}) : aviso("Nada anotado ainda.", "Anote alguma série antes de compartilhar."); return; }
   const dt = e.target.closest("[data-ditar]"); if (dt){ ditarSerie(+dt.dataset.ditar, dt); return; }
