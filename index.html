@@ -725,8 +725,6 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .resumo-row{border-top:1px solid var(--line);padding:18px 0;overflow-wrap:anywhere}
 .resumo-row dl{margin:12px 0}.resumo-row dt{color:var(--muted);font-size:.8rem}.resumo-row dd{margin:0 0 8px;font-family:var(--f-mono);font-size:.85rem}
 .resumo-row .delta{white-space:normal}
-.jump-option{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--soft);margin-top:10px;min-height:44px}
-.jump-option input{flex:none;width:20px;height:20px;accent-color:var(--lime)}
 .meta .mt-copy{min-width:0}.meta .mt-copy .hint{white-space:normal;font-size:.78rem;line-height:1.5;margin-top:8px}
 .day-excuse{border:1px dashed var(--line);border-radius:16px;padding:12px;margin-top:12px}.day-excuse p{font-size:.85rem;margin:0}
 .volume-muscular table{width:100%;border-collapse:collapse;font-size:.85rem}.volume-muscular caption{text-align:left;font-size:.78rem;color:var(--muted);padding-bottom:12px}
@@ -803,7 +801,6 @@ const TreinoCore = (() => {
     const held={...base,kind:'hold',kg,stalled,reason:full?'Mesma carga; busque o topo da faixa mantendo o sobrar da ficha.':'Séries faltantes ou não confirmadas: sem aumento de carga.'};
     if(!assisted(p)&&kg===0)return {...held,reason:'Sem carga externa registrada. Siga a ficha; sem peso inventado.'};
     if(!full||!check(last,hi))return held;
-    if(p.largeJump&&!(hist.length>=2&&hist.slice(-2).every(d=>check(d,hi+2))))return {...held,reps:String(hi+2),reason:'Salto grande: alcance topo +2 reps em duas sessões completas nesta carga, mantendo o sobrar.'};
     const step=assisted(p)?2.5:/Smith/i.test(p.name)?1.25:/halter|búlgaro|martelo/i.test(p.name)?(kg<10?1:2):2.5;
     const next=Math.max(0,Math.round((kg+(assisted(p)?-step:step))*100)/100);
     if(next===kg)return {...held,reason:'Sem assistência. Siga a meta de repetições da ficha.'};
@@ -2905,7 +2902,7 @@ iniciaApp(); if (SUPA) setTimeout(checaAcademia, 1500);
 // INICIO TREINO UI
 // Integração das regras com a ficha; inserida no HTML pelo build.
 const treinoPlus = () => !SUPA || SUPA.env === 'teste';
-const planoEx = e => ({name:e[0],sets:e[1],reps:e[2],rir:e[3],leg:(MUS[e[0]]?.p||[]).some(m=>['quadriceps','hamstrings','glutes','calves','abductors'].includes(m)),largeJump:!!store.get('salto:'+person.id+':'+e[0])});
+const planoEx = e => ({name:e[0],sets:e[1],reps:e[2],rir:e[3],leg:(MUS[e[0]]?.p||[]).some(m=>['quadriceps','hamstrings','glutes','calves','abductors'].includes(m))});
 const historicoEx = (name,before=logDate,day=current,p=person.id) => TreinoCore.history(LOGS,p,name,before,day);
 const estadoDia = (p,d) => trained(p,d)?'trained':justificado(p,d)?'excused':'';
 const justificado = (p,d) => treinoPlus() && d<=trainDay() && isWeekday(d) && LOGS[docId(p,d)]?.excused===true && !trained(p,d);
@@ -2918,8 +2915,8 @@ function metaTreino(e,before=logDate,day=current,sessionDate=before){
 }
 const alvoTexto = (t,e) => (t.kg==null?'':num(t.kg)+' '+(/halter|búlgaro|martelo/i.test(e[0])?'kg/halter':/Smith/i.test(e[0])?'kg/lado':/graviton/i.test(e[0])?'kg de assistência':'kg')+' · ')+t.reps;
 function renderMetaTreino(e){
- const t=metaTreino(e),jump=!!store.get('salto:'+person.id+':'+e[0]);
- return '<div class="mt-copy"><small>'+(t.kind==='up'?'Sugestão de aumento':'Meta desta sessão')+'</small><p><b>'+esc(alvoTexto(t,e))+'</b></p><p class="hint">'+esc(t.reason)+'</p>'+(t.stalled?'<p class="hint">Três sessões comparáveis sem avanço. Revise execução, sobrar e recuperação com o personal; sem deload automático.</p>':'')+(t.kind==='manual'?'':'<label class="jump-option"><input type="checkbox" data-largejump="'+esc(e[0])+'" '+(jump?'checked':'')+(futuro()?' disabled':'')+'> O menor salto disponível é grande demais</label>')+'</div>';
+ const t=metaTreino(e);
+ return '<div class="mt-copy"><small>'+(t.kind==='up'?'Sugestão de aumento':'Meta desta sessão')+'</small><p><b>'+esc(alvoTexto(t,e))+'</b></p><p class="hint">'+esc(t.reason)+'</p>'+(t.stalled?'<p class="hint">Três sessões comparáveis sem avanço. Revise execução, sobrar e recuperação com o personal; sem deload automático.</p>':'')+'</div>';
 }
 const seriesTexto = ss => (ss||[]).filter(s=>s.done===true).map(s=>TreinoCore.valid(s)?num(s.kg)+' × '+s.reps:'✓ sem kg/reps completos').join(' · ')||'Nenhuma série confirmada';
 function linhasResumo(){
@@ -3011,7 +3008,6 @@ view.addEventListener("input", e => {
 });
 view.addEventListener("submit", e => { const form = e.target.closest("[data-sup-form]"); if (form) { e.preventDefault(); salvaProduto(form); } });
 view.addEventListener("change", e => {
-  if (e.target.matches("[data-largejump]")) { if (futuro()) { e.target.checked = !e.target.checked; return avisaFuturo(); } store.set("salto:" + person.id + ":" + e.target.dataset.largejump, e.target.checked); const y = scrollY; refreshCarga(); scrollTo(0, y); return; }
   const sd = e.target.dataset.supDia;
   if (sd) {
     if (!e.target.reportValidity()) return;
