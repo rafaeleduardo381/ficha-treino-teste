@@ -732,11 +732,6 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .ex{position:relative}.ex.win{outline:2px solid var(--lime)}
 
 /* Limpeza de interface exclusiva do teste. */
-.treino-plus .ex .compact-meta{display:block;padding:0;border:0;border-radius:0;background:none;color:var(--soft)}
-.treino-plus .ex .compact-meta p{margin:0;font-size:.84rem;font-weight:400;color:var(--soft);line-height:1.5}
-.treino-plus .ex .compact-meta p b{font-size:inherit;font-weight:700;color:var(--ink)}
-.treino-plus .ex .compact-meta.up p b{color:var(--lime)}
-.treino-plus .ex .compact-meta .hint{margin-top:4px;font-size:.78rem;color:var(--muted)}
 .treino-plus .link-action{font:inherit;font-size:.82rem;font-weight:600;color:var(--soft);background:transparent;border:0;padding:8px 4px;min-height:44px;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:3px}
 .treino-plus .link-action:focus-visible,.treino-plus summary:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:4px}
 .treino-plus .rows .setctl .sbtn{min-height:44px;flex:none}
@@ -759,6 +754,10 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .treino-plus .treino-dialog>.done-btn{width:100%}
 
 .treino-plus .dictate-action[aria-pressed="true"]{color:var(--lime);font-weight:800}
+
+.treino-plus .ex .meta .mt-copy{min-width:0}
+.treino-plus .ex .meta .hint{font-size:.8rem;font-weight:400;color:var(--soft);line-height:1.5;margin-top:8px}
+.treino-plus #card-peso{grid-column:1/-1}
 
 /* FIM TREINO CSS */
 .navrow.info{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -828,12 +827,9 @@ const TreinoCore = (() => {
     const held={...base,kind:'hold',kg,stalled,reason:full?'Mesma carga; busque o topo da faixa mantendo o sobrar da ficha.':'Séries faltantes ou não confirmadas: sem aumento de carga.'};
     if(!assisted(p)&&kg===0)return {...held,reason:'Sem carga externa registrada. Siga a ficha; sem peso inventado.'};
     if(!full||!check(last,hi))return held;
-    const step=assisted(p)?2.5:/Smith/i.test(p.name)?1.25:/halter|búlgaro|martelo/i.test(p.name)?(kg<10?1:2):2.5;
-    const next=Math.max(0,Math.round((kg+(assisted(p)?-step:step))*100)/100);
-    if(next===kg)return {...held,reason:'Sem assistência. Siga a meta de repetições da ficha.'};
     const reserve=String(p.rir),singular=reserve==='1';
     const condition=reserve==='0'?'Se completou todas as repetições com boa execução':reserve==='0–1'||reserve==='0-1'?'Se respeitou a orientação de esforço da ficha e manteve boa execução':'Se ainda conseguia fazer mais '+reserve+' '+(singular?'repetição':'repetições')+' com boa execução';
-    return {...base,kind:'up',kg:next,reason:condition+', tente '+(assisted(p)?'a assistência sugerida':'o peso sugerido')+'. Comece com '+lo+' repetições.'};
+    return {...base,kind:'up',kg:null,previousKg:kg,reason:condition+', tente '+(assisted(p)?'o próximo nível com menos assistência':'o próximo peso disponível')+'. Comece com '+lo+' repetições.'};
   }
   function records(previous,set,p) {
     const prev=work(previous);if(!valid(set)||!prev.length||timed(p)||ambiguous(p))return [];
@@ -1243,7 +1239,7 @@ const rowCount = {};   // séries do dia por exercício (o "− / +" muda; padr�
 function setRows(d, i, name, sets, marks, reps){
   const cur = (LOGS[docId(person.id, logDate)]?.ex?.[name]?.sets) || [];
   const k = `${person.id}:${logDate}:${name}`;
-  const kgLbl = treinoPlus() && /Smith/i.test(name) ? "kg/lado" : /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg";   // halter: anota o peso de um halter só
+  const kgLbl = /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg";   // halter: anota o peso de um halter só
   const total = rowCount[k] ?? Math.max(sets, cur.length);
   const rows = Array.from({length:total}, (_, s) => {
     const v = cur[s] || {}, on = !!(marks[i+"-"+s] ?? v.done), a = `data-name="${esc(name)}" data-set="${s}" data-n="${total}"`;
@@ -1310,7 +1306,7 @@ function refreshCarga(){
     const name = box.dataset.name, sets = doc?.ex?.[name]?.sets || [];
     const last = lastFor(person.id, name, logDate);
     const mt = box.closest(".ex").querySelector(".meta");
-    if (mt && treinoPlus()) { const e = person.days.find(d => d.id === current)?.ex.find(e => e[0] === name); if (e) { const t = metaTreino(e); mt.className = "meta compact-meta" + (t.kind === "up" ? " up" : ""); mt.dataset.kind = t.kind; const html = renderMetaTreino(e); if (mt.innerHTML !== html) mt.innerHTML = html; mt.hidden = !html; } }
+    if (mt && treinoPlus()) { const e = person.days.find(d => d.id === current)?.ex.find(e => e[0] === name); if (e) { const t = metaTreino(e); mt.className = "meta" + (t.kind === "up" ? " up" : ""); mt.dataset.kind = t.kind; const html = renderMetaTreino(e); if (mt.innerHTML !== html) mt.innerHTML = html; mt.hidden = !html; } }
     else if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name), sobe = /subiu|menos ajuda/.test(t), i = t.indexOf("</b>") + 4;
       mt.className = "meta" + (sobe ? " up" : ""); mt.innerHTML = t ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><small>${sobe ? "Meta: subir a carga" : "Meta"}${logDate === trainDay() ? " hoje" : ""}</small><p>${t.slice(0, i)}<span>${t.slice(i).replace(/^,\s*/, " · ")}</span></p></div>` : ""; mt.hidden = !t; }
     box.querySelectorAll("input").forEach(inp => {
@@ -1346,7 +1342,7 @@ function writeSet(name, n, s, patch){
   if (treinoPlus()) { const cfg = person.days?.find(d => d.id === current)?.ex.find(x => x[0] === name); if (cfg) e.plan = {sets: cfg[1], reps: cfg[2], rir: cfg[3]}; if (doc.excused) doc.excused = false; }
   doc.updated = new Date().toISOString();
   LOGS[id] = doc; pending[id] = true; refreshSend(); keepDate(logDate);
-  if (!antes && logDate === trainDay() && isWeekday(logDate) && trained(person.id, logDate)) { const n = streakOf(person.id); toast(`${flameSvg(n)}<span><b>${n} ${n === 1 ? "dia" : "dias"} de ofensiva!</b> Treino de hoje contado.</span>`); }
+  if (!treinoPlus() && !antes && logDate === trainDay() && isWeekday(logDate) && trained(person.id, logDate)) { const n = streakOf(person.id); toast(`${flameSvg(n)}<span><b>${n} ${n === 1 ? "dia" : "dias"} de ofensiva!</b> Treino de hoje contado.</span>`); }
   setStatus("Salvando…");
   clearTimeout(timers[id]); timers[id] = setTimeout(() => saveLog(id), 700);
   if (patch.done === true && !previousDoc?.ex?.[name]?.sets?.[s]?.done) recordeSerie(name, s, previousDoc);
@@ -1573,7 +1569,7 @@ function renderToday(){
     ${renderStreak()}
     <h2 class="sec">Treino ${logDate === trainDay() ? "de hoje" : "de " + brDate(logDate)}</h2>
     <div id="todaytrain"></div>
-    <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count" title="itens registrados no dia">0/5</span></h2>
+    <h2 class="sec">Check-in ${logDate === hoje ? "de hoje" : "de " + brDate(logDate)} <span class="count" id="ck-count" title="itens registrados no dia">0/${treinoPlus() ? 4 : 5}</span></h2>
     <div class="cards">
       <article class="ck" id="card-agua" style="--c:var(--blue)"><div class="ck-h"><span class="ico">${ICON.agua}</span>Água<button type="button" class="badge" data-cheer="agua" aria-label="Meta de água batida: ver a comemoração">Meta ✓</button></div>${ring("agua", "var(--blue)")}
         <div class="step"><button type="button" data-ck="agua" data-d="-1" aria-label="Menos 250 ml">−</button><button type="button" data-ck="agua" data-d="1" aria-label="Mais 250 ml">+</button></div>
@@ -1600,7 +1596,9 @@ function refreshToday(){
   setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
-  document.getElementById("ck-count").textContent = `${[+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0, !!c.peso, c.dieta != null].filter(Boolean).length}/5`;
+  const checks = [+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0, !!c.peso];
+  if (!treinoPlus()) checks.push(c.dieta != null);
+  document.getElementById("ck-count").textContent = `${checks.filter(Boolean).length}/${checks.length}`;
   refreshExtras(); refreshProt(); refreshAlc();
   document.querySelectorAll("[data-dot]").forEach(el => el.style.setProperty("--p", dayScore(person.id, el.dataset.dot)));
   const oldStreak = document.querySelector?.("section.streak"); if (oldStreak && treinoPlus()) oldStreak.outerHTML = renderStreak();
@@ -1678,11 +1676,11 @@ function syncChk(server){
 // ───────────── Ofensiva: dias úteis seguidos com treino (sábado e domingo não contam nem quebram) ─────────────
 function trained(p, s){
   const doc = LOGS[docId(p, s)];
-  return !!doc && Object.values(doc.ex || {}).some(e => (e.sets || []).some(x => x.done || filled(x)));
+  return !!doc && Object.values(doc.ex || {}).some(e => (e.sets || []).some(x => treinoPlus() ? x.done === true : x.done || filled(x)));
 }
 const isWeekday = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5; };
 function streakOf(p){
-  if (treinoPlus()) return TreinoCore.streak(trainDay(), d => estadoDia(p, d));
+  if (treinoPlus()) return TreinoCore.streak(addDays(trainDay(), -1), d => estadoDia(p, d), false);
   const today = trainDay(), d = parseDate(today); let n = 0;
   for (let i = 0; i < 600; i++) {
     const s = fmtDate(d);
@@ -1694,7 +1692,7 @@ function streakOf(p){
 function bestStreak(p){
   const dates = Object.values(LOGS).filter(x => x && x.person === p).map(x => x.date).sort();
   if (!dates.length) return 0;
-  const today = trainDay(), d = parseDate(dates[0]), end = parseDate(today); let run = 0, best = 0;
+  const today = trainDay(), d = parseDate(dates[0]), end = parseDate(treinoPlus() ? addDays(today, -1) : today); let run = 0, best = 0;
   while (d <= end) { const s = fmtDate(d); if (isWeekday(s)) { if (trained(p, s)) best = Math.max(best, ++run); else if (s !== today && !justificado(p, s)) run = 0; } d.setDate(d.getDate() + 1); }
   return best;
 }
@@ -1721,7 +1719,7 @@ function renderStreak(){
     return `<span class="sd ${st}" aria-label="${WD[parseDate(s).getDay()]}: ${{done: "treinou", excused: "dia justificado", today: "hoje", miss: "faltou", future: "ainda não chegou"}[st]}"><i>${st === "done" ? "✓" : st === "miss" ? "×" : st === "excused" ? "−" : ""}</i><em>${WD[parseDate(s).getDay()]}</em></span>`;
   }).join("");
   const h = nowFn().getHours(), falta = 24 - h, risco = isWeekday(today) && !trained(p, today) && !justificado(p, today) && n > 0;
-  const msg = trained(p, today) ? "Treino de hoje feito. Ofensiva garantida!"
+  const msg = trained(p, today) ? (treinoPlus() ? "Treino registrado. Soma à ofensiva quando o dia terminar." : "Treino de hoje feito. Ofensiva garantida!")
     : justificado(p, today) ? "Dia justificado: ofensiva preservada, sem somar treino."
     : !isWeekday(today) ? "Fim de semana: a ofensiva fica guardada até segunda."
     : !n ? "Zerada. Comece hoje uma ofensiva nova."
@@ -2045,6 +2043,7 @@ function toggleRef(i){
 }
 // Cartão da comida em volta do treino: antes (17h–21h), durante (21h–23h30), depois (23h30 em diante); só no dia de treino de hoje
 function nutriCard(){
+  if (treinoPlus()) return "";   // Sem horário pessoal configurado, não presume a fase do treino.
   const d = nowFn(), m = d.getHours() * 60 + d.getMinutes(), diaTreino = m < 5 * 60 ? addDays(trainDay(), -1) : trainDay();
   if (!person.days || logDate !== diaTreino || !dayIdFor(logDate)) return "";
   const k = m >= 17 * 60 && m < 21 * 60 ? "antes" : m >= 21 * 60 && m < 23 * 60 + 30 ? "durante" : (m >= 23 * 60 + 30 || m < 5 * 60) ? "depois" : null;
@@ -2086,8 +2085,8 @@ function renderExtras(){
       <article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
         <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>
-      <button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
-        <b class="diet-st" id="dietst">Não marcada</b><span class="ck-note" id="dietsub">Toque para marcar no fim do dia</span></button>
+      ${treinoPlus() ? "" : `<button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
+        <b class="diet-st" id="dietst">Não marcada</b><span class="ck-note" id="dietsub">Toque para marcar no fim do dia</span></button>`}
     </div>`;
 }
 function refreshExtras(){
@@ -2097,7 +2096,7 @@ function refreshExtras(){
   const pin = document.getElementById("peso");
   if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
   const h = document.getElementById("pesohint");
-  if (h) { const t = pesoTrend(person.id, logDate); h.textContent = t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "na academia, ao chegar: antes de treinar, sem tênis"; }
+  if (h) { const t = pesoTrend(person.id, logDate); h.textContent = treinoPlus() && naAcademia && gymPerson === person.id && academiaSalva() && logDate === trainDay() ? "Perto da academia que você configurou. Registre o peso neste campo." : t && t.delta != null ? `média 7 dias ${num(t.avg.toFixed(1))} kg (${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))})` : "na academia, ao chegar: antes de treinar, sem tênis"; }
   const st = document.getElementById("dietst"), sub = document.getElementById("dietsub");
   if (st) { const op = DIETA_OP.find(([v]) => c.dieta != null && v === +c.dieta); st.textContent = op ? op[1] : "Não marcada"; st.classList.toggle("marcada", !!op);
     sub.textContent = op ? `${comidoDe(person.id, logDate).kcal.toLocaleString("pt-BR")} kcal` : "Toque para marcar no fim do dia"; }
@@ -2312,9 +2311,9 @@ function renderProgress(){
       ${bars({data: alBars, color: "var(--kcal)", max: Math.ceil(mk * 1.2 / 500) * 500, ref: mk, fmtY: v => (v / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " mil"})}<p class="sub">Calorias comidas por dia (14 dias) · linha tracejada = meta · toque numa barra para ver a proteína</p>` : `<p class="hint">Marque as refeições no check-in do Hoje para ver aqui quanto você come por dia.</p>`}
     </article>
 
-    <article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Alimentação")}
+    ${treinoPlus() ? renderOutrosRegistros(creatTile, alcDias, alcSem, alcCima) : `<article class="panel tinted" style="--c:var(--coral)">${phd(ICON.prato, "Alimentação")}
       ${dNow ? `<div class="mini ${creatTile ? "two" : ""}">${tile(dNow.ader + "%", "na dieta (7 dias)", dPrev ? `semana anterior: ${dPrev.ader}%` : "")}${creatTile}</div>${alcDias.length ? `<div class="mini two">${tile(alcSem + (alcSem === 1 ? " dose" : " doses"), "álcool (7 dias)", `~${(alcSem * ALC.kcal).toLocaleString("pt-BR")} kcal`)}${tile(alcDias.filter(v => v > 0).length, "dias com bebida", alcCima ? `${alcCima} acima do limite` : "")}</div>${alcSem >= ALC.aviso || alcCima ? `<p class="alert">${alcSem >= ALC.aviso ? `${alcSem} doses na semana: a partir de ${ALC.aviso} já pesa no sono e na recuperação.` : "Teve dia acima do seu limite: a recuperação daquela noite caiu."}</p>` : ""}` : ""}` : `<p class="hint">Marque a alimentação na tela Hoje para ver a aderência da semana.</p>`}
-    </article>
+    </article>`}
 
     <article class="panel tinted" style="--c:var(--kcal)">${phd(ICONF, "Calorias gastas no treino")}
       ${kcalBars.length ? bars({data: kcalBars, color: "var(--kcal)", fmtY: v => num(v)}) : `<p class="hint">Aparece depois do primeiro treino registrado.</p>`}
@@ -2745,29 +2744,49 @@ async function abrirCamera(modo, nome = ""){
 
 // ── Localização: marcar a academia e avisar ao chegar (só com o app aberto; a posição fica no aparelho) ──
 const distM = (a, b) => { const R = 6371000, r = x => x * Math.PI / 180, dl = r(b.lat - a.lat), dn = r(b.lon - a.lon), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
-let naAcademia = false, gymVisto = 0, gymMsg = "";
+let naAcademia = false, gymVisto = 0, gymMsg = "", gymPerson = "";
+const academiaSalva = () => { const g = store.get(treinoPlus() ? "gym-v2:" + person.id : "gym"); return g && (!treinoPlus() || g.confirmed === true) ? g : null; };
 function marcarAcademia(){
   if (!navigator.geolocation) return aviso("Este navegador não informa a localização.");
+  if (treinoPlus() && !confirm("Você está na academia agora? Salvar esta posição como a academia de " + person.name + " neste aparelho?")) return;
+  const owner = person.id, key = treinoPlus() ? "gym-v2:" + owner : "gym";
   gymMsg = "Pegando a sua posição…"; redesenhaPerfil();
-  navigator.geolocation.getCurrentPosition(p => { store.set("gym", {lat: p.coords.latitude, lon: p.coords.longitude, acc: Math.round(p.coords.accuracy || 0), at: Date.now()}); gymMsg = ""; naAcademia = true; redesenhaPerfil(); aviso("Academia marcada.", "Ao abrir o app lá, ele lembra de pesar."); },
-    e => { gymMsg = e.code === 1 ? "Localização bloqueada. Libere em Ajustes → Treino (ou Safari) → Localização." : "Não consegui pegar a posição. Tente perto de uma janela."; redesenhaPerfil(); }, {enableHighAccuracy: true, timeout: 15000});
+  navigator.geolocation.getCurrentPosition(p => {
+    const g = {lat: p.coords.latitude, lon: p.coords.longitude, acc: Math.round(p.coords.accuracy || 0), at: Date.now(), confirmed: true};
+    if (treinoPlus() && g.acc > 150) { gymMsg = "Localização imprecisa. Tente novamente perto de uma janela."; redesenhaPerfil(); return; }
+    store.set(key, g);
+    if (person.id !== owner) return;
+    gymMsg = ""; naAcademia = true; gymPerson = owner; gymVisto = 0; redesenhaPerfil();
+    aviso("Academia configurada.", "Posição salva só neste aparelho. O peso continua no campo Peso do Hoje.");
+  }, e => { if (person.id !== owner) return; gymMsg = e.code === 1 ? "Localização bloqueada. Libere em Ajustes → Treino (ou Safari) → Localização." : "Não consegui pegar a posição. Tente perto de uma janela."; redesenhaPerfil(); }, {enableHighAccuracy: true, timeout: 15000});
 }
 function checaAcademia(){
-  const g = store.get("gym"); if (!g || !navigator.geolocation || Date.now() - gymVisto < 5 * 60e3) return; gymVisto = Date.now();
-  navigator.geolocation.getCurrentPosition(p => { const perto = distM(g, {lat: p.coords.latitude, lon: p.coords.longitude}) <= Math.max(150, (p.coords.accuracy || 0) + (g.acc || 0)); if (perto !== naAcademia) { naAcademia = perto; refreshToday(); } }, () => {}, {maximumAge: 120000, timeout: 10000});
+  const g = academiaSalva();
+  if (!g) { naAcademia = false; return; }
+  const owner = person.id;
+  if (gymPerson !== owner) { gymPerson = owner; naAcademia = false; gymVisto = 0; }
+  if (!navigator.geolocation || Date.now() - gymVisto < 5 * 60e3) return;
+  gymVisto = Date.now();
+  navigator.geolocation.getCurrentPosition(p => {
+    if (person.id !== owner || academiaSalva()?.at !== g.at) return;
+    const accuracy = p.coords.accuracy || 0;
+    const perto = (!treinoPlus() || accuracy <= 150) && distM(g, {lat: p.coords.latitude, lon: p.coords.longitude}) <= Math.max(150, accuracy + (g.acc || 0));
+    if (perto !== naAcademia) { naAcademia = perto; refreshToday(); }
+  }, () => { naAcademia = false; }, {maximumAge: 120000, timeout: 10000});
 }
 function gymBanner(){
+  if (treinoPlus()) return "";   // Um único campo de peso no Hoje; não presume chegada.
   if (!naAcademia || !store.get("gym") || logDate !== trainDay()) return "";
   const temPeso = !!chkOf(person.id, logDate).peso;
   return `<article class="panel tinted" style="--c:var(--blue)">${phd(ICON_PIN, "Você chegou na academia")}<p class="alc-m">${temPeso ? "Peso de hoje já anotado ✓. Bom treino!" : "Antes de treinar: suba na balança (depois do banheiro, sem tênis) e anote o peso."}</p>${temPeso ? "" : `<button type="button" class="done-btn" data-irpeso>Anotar o peso agora</button>`}</article>`;
 }
 function permPanel(){
   if (!SUPA) return "";
-  const g = store.get("gym"), lin = (ico, c, t, sub, botoes) => `<li style="--c:${c}"><span class="ico">${ico}</span><span class="mt-l">${t}<small>${sub}</small></span><span class="pm-b">${botoes}</span></li>`;
+  const g = academiaSalva(), lin = (ico, c, t, sub, botoes) => `<li style="--c:${c}"><span class="ico">${ico}</span><span class="mt-l">${t}<small>${sub}</small></span><span class="pm-b">${botoes}</span></li>`;
   return `<article class="panel"><h3>Permissões do aparelho</h3><ul class="pf-metas pm">
     ${lin(ICON_CAM, "var(--coral)", "Câmera", "Foto de evolução e vídeo da execução", `<button type="button" class="chip" data-fotocam>Testar</button>`)}
     ${lin(ICON_MIC, "var(--lime)", "Microfone", "Ditar carga e repetições no treino", `<button type="button" class="chip" data-mictest>Testar</button>`)}
-    ${lin(ICON_PIN, "var(--blue)", "Localização", g ? `Academia marcada ✓ (precisão ~${g.acc} m)` : "Avisa de pesar ao chegar na academia", g ? `<button type="button" class="chip" data-gymdel>Remover</button>` : `<button type="button" class="chip" data-gymset>Marcar aqui</button>`)}
+    ${lin(ICON_PIN, "var(--blue)", "Localização", g ? `Configurada neste aparelho para ${person.name} (precisão ~${g.acc} m)` : "Não configurada. Só consulta GPS após você salvar a posição na academia; não usa horário.", g ? `<button type="button" class="chip" data-gymdel>Remover</button>` : `<button type="button" class="chip" data-gymset>Estou na academia: configurar</button>`)}
     ${lin(ICON_ENVIA, "var(--peso)", "Compartilhar", "Mandar treino, foto ou vídeo pelo WhatsApp", `<button type="button" class="chip" data-shareapp>Testar</button>`)}
   </ul>${gymMsg ? `<p class="ap-msg" role="status">${esc(gymMsg)}</p>` : ""}<p class="hint">O celular só pergunta na hora de usar. Foto, vídeo e posição ficam neste aparelho: nada disso vai para o servidor.</p></article>
   <article class="panel"><div class="ph"><h3>Fotos de evolução</h3><span class="delta">só neste celular</span></div>
@@ -2946,14 +2965,14 @@ function metaTreino(e,before=logDate,day=current,sessionDate=before){
   if(week>BLOCO.weeks)return {...t,kind:'review',reason:'Bloco encerrado: siga o deload/reavaliação combinado; sem aumento automático.',kg:null};
   return t;
 }
-const unidadeCarga = name => /halter|búlgaro|martelo/i.test(name)?'kg/halter':/Smith/i.test(name)?'kg/lado':/graviton/i.test(name)?'kg de assistência':'kg';
-const alvoTexto = (t,e) => (t.kg==null?'':num(t.kg)+' '+unidadeCarga(e[0])+' · ')+t.reps;
+const unidadeCarga = name => /halter|búlgaro|martelo/i.test(name)?'kg/halter':/graviton/i.test(name)?'kg de assistência':'kg';
+const alvoTexto = (t,e) => t.kind==='up' ? (/graviton/i.test(e[0])?'Próximo nível com menos assistência':'Próximo peso disponível')+' · '+t.reps : (t.kg==null?'':num(t.kg)+' '+unidadeCarga(e[0])+' · ')+t.reps;
 function renderMetaTreino(e){
  const t=metaTreino(e);
  if(!['up','hold','changed'].includes(t.kind))return '';
- if(t.kind==='changed')return '<p class="hint">Ficha atualizada. Registre as cargas deste treino.</p>';
- const title=t.kind==='up'?'Experimente':'Mantenha',notice=t.kind==='up'?'<p class="hint">'+esc(t.reason)+'</p>':'';
- return '<p>'+title+' <b>'+esc(alvoTexto(t,e))+' reps</b></p>'+notice+(t.stalled?'<p class="hint">Sem avanço em três treinos. Converse com o personal antes de mudar a ficha.</p>':'');
+ const title=t.kind==='up'?'Sugestão de aumento':'Meta desta sessão';
+ const content=t.kind==='changed'?'<p>Ficha atualizada. Registre as cargas deste treino.</p>':'<p><b>'+esc(alvoTexto(t,e))+' reps</b></p>'+(t.kind==='up'?'<p class="hint">Último registro: '+esc(num(t.previousKg)+' '+unidadeCarga(e[0]))+'. '+esc(t.reason)+'</p>':'');
+ return '<span class="mt-ico" aria-hidden="true">'+ICON_ALVO+'</span><div class="mt-copy"><small>'+title+'</small>'+content+(t.stalled?'<p class="hint">Sem avanço em três treinos. Converse com o personal antes de mudar a ficha.</p>':'')+'</div>';
 }
 function avisoBlocoTreino(){
  if(!treinoPlus())return '';
@@ -3033,6 +3052,13 @@ function recordeSerie(name,index,previousDoc){
  const k='pr:'+docId(person.id,logDate)+':'+name+':'+index,fingerprint=JSON.stringify([s.kg,s.reps]);if(store.get(k)===fingerprint)return;store.set(k,fingerprint);
  toast('<b>'+esc(records.map(r=>r.label).join(' + '))+'</b><span>'+esc(name)+' · '+esc(seriesTexto([s]))+'</span>');
  const card=[...document.querySelectorAll('.ex')].find(el=>el.querySelector('.lg')?.dataset.name===name);if(card)celebrate('recorde',card);
+}
+
+function renderOutrosRegistros(creatTile,alcDias,alcSem,alcCima){
+ if(!creatTile&&!alcDias.length)return '';
+ const alcool=alcDias.length?'<div class="mini two">'+tile(alcSem+(alcSem===1?' dose':' doses'),'álcool (7 dias)')+tile(alcDias.filter(v=>v>0).length,'dias com bebida')+'</div>':'';
+ const alerta=alcSem>=ALC.aviso||alcCima?'<p class="alert">'+(alcSem>=ALC.aviso?alcSem+' doses na semana: a partir de '+ALC.aviso+' já pesa no sono e na recuperação.':'Teve dia acima do seu limite: a recuperação daquela noite caiu.')+'</p>':'';
+ return '<article class="panel tinted" style="--c:var(--coral)">'+phd(ICON.prato,'Outros registros')+(creatTile?'<div class="mini">'+creatTile+'</div>':'')+alcool+alerta+'</article>';
 }
 
 // FIM TREINO UI
@@ -3132,7 +3158,7 @@ view.addEventListener("click", e=>{
   const fv = e.target.closest("[data-fotover]"); if (fv){ verFoto(+fv.dataset.fotover); return; }
   const mt0 = e.target.closest("[data-mictest]"); if (mt0){ ditar(fala => aviso("Microfone funcionando.", `Entendi: "${esc(fala)}"${numerosDe(fala).length ? " → " + numerosDe(fala).map(num).join(" e ") : ""}`), mt0); return; }
   if (e.target.closest("[data-gymset]")){ marcarAcademia(); return; }
-  if (e.target.closest("[data-gymdel]")){ store.set("gym", null); naAcademia = false; gymMsg = ""; redesenhaPerfil(); return; }
+  if (e.target.closest("[data-gymdel]")){ store.set(treinoPlus() ? "gym-v2:" + person.id : "gym", null); naAcademia = false; gymVisto = 0; gymMsg = ""; redesenhaPerfil(); return; }
   if (e.target.closest("[data-shareapp]")){ compartilhar({title: "Ficha de Treino", text: "Nosso app de treino: " + location.href.split("?")[0]}); return; }
   if (e.target.closest("[data-irpeso]")){ const pi = document.getElementById("peso"); if (pi) { pi.scrollIntoView({block: "center"}); pi.focus({preventScroll: true}); } return; }
   if (e.target.closest("[data-pushon]")){ ativarPush(); return; }
