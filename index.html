@@ -1589,21 +1589,26 @@ const FRASES_PERDEU = [
   "Ninguém viu você faltar. O espelho vai mostrar.",
   "A desculpa de ontem não levantou nenhum peso.",
   "Disciplina não tira folga. Você tirou.",
-  "Você prometeu para você mesmo. E quebrou.",
+  "Você prometeu que ia treinar. Não apareceu. Sua ofensiva acabou por sua escolha.",
   "Zerou. Dói? Ótimo. Guarda essa dor e leva para o treino de hoje.",
   "Quem falta um dia aprende a faltar dois. Vai deixar?"
 ];
 const fraseDoDia = (lista, chave) => { let hsh = 0; for (const ch of chave) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0; return lista[hsh % lista.length]; };
 const diaUtilAntes = d => { let x = addDays(d, -1); while (!isWeekday(x)) x = addDays(x, -1); return x; };
+function ofensivaAte(p, dia){
+  let n = 0, d = dia;
+  while (trained(p, d)) { n++; d = diaUtilAntes(d); }
+  return n;
+}
 let dadosDoServidor = false;   // só avalia a ofensiva depois que os treinos chegaram (senão acusaria perda sem ter os dados)
 function checkOfensiva(){
   if (!dadosDoServidor || !person.days) return;
   const p = person.id, hoje = trainDay(), ult = diaUtilAntes(hoje), k = "ofensiva:" + p, st = store.get(k), n = streakOf(p);
-  if (st && st.dia === ult) { if (n > (st.n || 0)) store.set(k, {dia: ult, n}); return; }   // este dia já foi avisado
-  store.set(k, {dia: ult, n});
-  if (!st) return;                                                // primeira vez neste aparelho: só começa a acompanhar
-  if (trained(p, ult)) showOfensiva("ganhou", n, ult);
-  else if (st.n > 0) showOfensiva("perdeu", st.n, ult);
+  if (st?.dia === ult && st.avisado) { if (n > (st.n || 0)) store.set(k, {dia: ult, n, avisado: true}); return; }
+  const perdeu = !trained(p, ult) ? ofensivaAte(p, diaUtilAntes(ult)) : 0;
+  store.set(k, {dia: ult, n, avisado: true});
+  if (perdeu) showOfensiva("perdeu", perdeu, ult);
+  else if (st && st.dia !== ult && trained(p, ult)) showOfensiva("ganhou", n, ult);
 }
 function showOfensiva(tipo, n, dia){
   let el = document.getElementById("ofmodal");
