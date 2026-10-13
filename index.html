@@ -138,8 +138,6 @@ nav.days button[aria-selected="true"] .nm{color:var(--bg)}
 .presc{grid-column:2;display:flex;flex-wrap:wrap;gap:6px}
 .tag{font-size:.8rem;font-weight:700;background:var(--surface2);color:var(--soft);border-radius:8px;padding:3px 9px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .tag.drop{background:var(--coral);color:#1A0B06}
-.last{margin:0;font-size:.85rem;color:var(--muted)}
-.last b{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .meta{margin:0;font-size:.9rem;color:var(--soft)}
 .meta b{font-weight:800;color:var(--lime)}
 .lg{display:grid;grid-template-columns:2rem minmax(0,1fr) minmax(0,1fr) 3.2rem;gap:8px;align-items:center}
@@ -1017,7 +1015,7 @@ function renderDayCore(d){
           ${flag?`<span class="tag drop">${flag}</span>`:""}
         </div>
       </div>
-      ${log ? `<div class="meta" hidden></div><p class="last" data-name="${esc(name)}"></p>` : ""}
+      ${log ? `<div class="meta" hidden></div>` : ""}
       ${boxes}
       ${log && SUPA ? `<div class="ex-acts"><button type="button" class="ghost" data-ditar="${i}" aria-pressed="false">${ICON_MIC}Ditar série</button><button type="button" class="ghost" data-filmar="${i}">${ICON_CAM}Filmar execução</button></div>` : ""}
       <details><summary>Execução</summary><ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul></details>
@@ -1074,7 +1072,6 @@ const brDate = s => `${s.slice(8,10)}/${s.slice(5,7)}`;
 const num = v => (v === "" || v == null) ? "" : String(v).replace(".", ",");
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 const filled = s => s && ((s.kg !== "" && s.kg != null) || (s.reps !== "" && s.reps != null));
-const fmtSets = sets => (sets || []).filter(filled).map(s => `${num(s.kg) || "–"}×${s.reps === "" || s.reps == null ? "–" : s.reps}`).join(" · ");
 const storageOk = (() => { try { localStorage.setItem("_t", "1"); const ok = localStorage.getItem("_t") === "1"; localStorage.removeItem("_t"); return ok; } catch(e) { return false; } })();
 const modeText = () => logMode === "online" ? "Salva online" : logMode === "local" ? (storageOk ? "Salva neste celular" : "Este navegador não guarda os dados: envie pelo WhatsApp antes de fechar") : "";
 try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.key(k); if (key && key.startsWith(CK)) LOGS[key.slice(CK.length)] = JSON.parse(localStorage.getItem(key)); } } catch(e) {}
@@ -1159,8 +1156,6 @@ function refreshCarga(){
   document.querySelectorAll(".lg").forEach(box => {
     const name = box.dataset.name, sets = doc?.ex?.[name]?.sets || [];
     const last = lastFor(person.id, name, logDate);
-    const p = box.closest(".ex").querySelector(".last");
-    if (p) p.innerHTML = last ? `Última vez (${brDate(last.date)}): <b>${fmtSets(last.sets)}</b>` : "Primeira vez: anote kg e reps de cada série.";
     const mt = box.closest(".ex").querySelector(".meta");
     if (mt) { const t = metaFor(last, box.dataset.reps, +box.dataset.sets, box.dataset.leg === "true", name), sobe = /subiu|menos ajuda/.test(t), i = t.indexOf("</b>") + 4;
       mt.className = "meta" + (sobe ? " up" : ""); mt.innerHTML = t ? `<span class="mt-ico" aria-hidden="true">${ICON_ALVO}</span><div><small>${sobe ? "Meta: subir a carga" : "Meta"}${logDate === trainDay() ? " hoje" : ""}</small><p>${t.slice(0, i)}<span>${t.slice(i).replace(/^,\s*/, " · ")}</span></p></div>` : ""; mt.hidden = !t; }
