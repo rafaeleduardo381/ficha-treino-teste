@@ -2937,7 +2937,7 @@ function redesenhaPerfil(){ if (screen === "perfil") { const y = scrollY; view.i
 async function iniciaApp(){
   if (!SUPA || !("serviceWorker" in navigator)) return;
   try { swReg = await navigator.serviceWorker.register("sw.js"); if (temPush()) pushSub = await swReg.pushManager.getSubscription(); } catch(e) {}
-  if (SUPA.env === "teste" && pushSub) pushSegue();
+  if (pushSub) pushSegue();
   redesenhaPerfil(); if (screen === "perfil") carregaFotos();
 }
 // Ativar: o pedido de permissão tem que ser a primeira coisa do toque (regra do iPhone)
@@ -3085,7 +3085,8 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) chec
 iniciaApp(); if (SUPA) setTimeout(checaAcademia, 1500);
 // INICIO TREINO UI
 // Integração das regras com a ficha; inserida no HTML pelo build.
-const treinoPlus = () => !SUPA || SUPA.env === 'teste';
+// Recursos aprovados pelo Rafael em 2026-10-14 valem nos dois ambientes; tabela e notificação continuam separadas por SUPA.
+const treinoPlus = () => true;
 const planoEx = e => ({name:e[0],sets:e[1],reps:e[2],rir:e[3],leg:(MUS[e[0]]?.p||[]).some(m=>['quadriceps','hamstrings','glutes','calves','abductors'].includes(m))});
 const historicoEx = (name,before=logDate,day=current,p=person.id) => TreinoCore.history(LOGS,p,name,before,day);
 const estadoDia = (p,d) => trained(p,d)?'trained':justificado(p,d)?'excused':'';
