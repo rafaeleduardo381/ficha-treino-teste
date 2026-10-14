@@ -757,15 +757,20 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 
 .treino-plus .ex .meta .mt-copy{min-width:0}
 .treino-plus .ex .meta .hint{font-size:.8rem;font-weight:400;color:var(--soft);line-height:1.5;margin-top:8px}
-.treino-plus #card-peso{grid-column:1/-1;background:var(--surface);gap:8px}
+.treino-plus #card-peso{grid-column:1/-1;background:var(--surface);padding:16px;border-radius:18px;gap:0}
 
-/* Peso corporal: formulário direto. Meta: número em primeiro plano. */
-.treino-plus #card-peso .pesorow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,9rem);gap:12px;align-items:center}
-.treino-plus #card-peso .peso-field{position:relative;min-width:0}
-.treino-plus #card-peso .pesoin{display:block;width:100%;min-width:0;height:auto;min-height:52px;padding:8px 40px 8px 12px;font-size:1.5rem;line-height:1.25;text-align:left;border-color:var(--muted)}
-.treino-plus #card-peso .pesoin:focus{outline:2px solid var(--peso);outline-offset:3px;border-color:var(--peso)}
-.treino-plus #card-peso .peso-unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.875rem;color:var(--soft);pointer-events:none}
-.treino-plus #card-peso .ck-note{font-size:.8125rem;line-height:1.4;text-wrap:wrap}
+/* Peso corporal: uma linha de registro com contexto, sem ação duplicada. */
+.treino-plus #card-peso .pesorow{display:grid;grid-template-columns:36px minmax(0,1fr) minmax(0,7rem);grid-template-areas:"icon label field" "icon hint field";column-gap:12px;row-gap:3px;align-items:center}
+.treino-plus #card-peso .peso-icon{grid-area:icon;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--peso) 12%,var(--surface));color:var(--peso)}
+.treino-plus #card-peso .peso-icon svg{display:block;width:20px;height:20px}
+.treino-plus #card-peso .ck-h{grid-area:label;align-self:end;font-size:.875rem;font-weight:700;line-height:1.35}
+.treino-plus #card-peso .peso-field{grid-area:field;position:relative;min-width:0;border:1px solid color-mix(in srgb,var(--peso) 24%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--peso) 5%,var(--surface))}
+.treino-plus #card-peso .pesoin{display:block;width:100%;min-width:0;height:auto;min-height:52px;padding:10px 28px 10px 10px;font-size:1.5rem;line-height:1.25;letter-spacing:-.04em;text-align:center;color:var(--ink);background:transparent;border:0;border-radius:11px;-webkit-appearance:none;appearance:none}
+.treino-plus #card-peso .pesoin::placeholder{color:var(--peso);font-size:.9375rem;font-weight:600;letter-spacing:0;opacity:1}
+.treino-plus #card-peso .pesoin:focus{outline:2px solid var(--peso);outline-offset:3px}
+.treino-plus #card-peso .peso-field:focus-within{background:color-mix(in srgb,var(--peso) 10%,var(--surface))}
+.treino-plus #card-peso .peso-unit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:500;color:var(--muted);pointer-events:none}
+.treino-plus #card-peso .ck-note{grid-area:hint;align-self:start;min-width:0;font-size:.75rem;line-height:1.5;color:var(--muted);text-align:left;text-wrap:wrap;overflow-wrap:anywhere}
 .treino-plus .ex .meta{align-items:flex-start;gap:10px}
 .treino-plus .ex .meta .mt-ico{width:28px;height:28px}
 .treino-plus .ex .meta .mt-copy{flex:1}
@@ -773,7 +778,7 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .treino-plus .ex .meta .mt-value b{font-size:2rem;line-height:1.15;overflow-wrap:anywhere}
 .treino-plus .ex .meta .mt-value .mt-unit{font-size:1rem;font-weight:600;color:var(--soft)}
 .treino-plus .ex .meta .mt-reps{font-size:.875rem;font-weight:600}
-@media(max-width:360px){.treino-plus #card-peso .pesorow{grid-template-columns:minmax(0,1fr) minmax(0,8rem);gap:8px}}
+@media(max-width:380px){.treino-plus #card-peso{padding:14px 12px}.treino-plus #card-peso .pesorow{grid-template-columns:30px minmax(0,1fr) minmax(0,6.5rem);column-gap:8px}.treino-plus #card-peso .peso-icon{width:30px;height:30px;border-radius:9px}}
 
 /* FIM TREINO CSS */
 /* INICIO FOGO CSS */
@@ -2202,8 +2207,10 @@ function refreshAlc(){
 function renderExtras(){
   return `${alcOntem()}<div class="cards">${protCard()}${alcCard()}
       ${treinoPlus() ? `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)">
-        <div class="pesorow"><label class="ck-h" for="peso">Peso corporal</label><div class="peso-field"><input id="peso" class="pesoin" type="text" inputmode="decimal" autocomplete="off" placeholder="—" aria-label="Peso corporal em quilogramas" aria-describedby="pesohint"><span class="peso-unit" aria-hidden="true">kg</span></div></div>
-        <p class="ck-note" id="pesohint">Ao chegar, antes do treino e sem tênis.</p></article>` : `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
+        <div class="pesorow"><span class="peso-icon" aria-hidden="true">${ICON.balanca}</span>
+          <label class="ck-h" for="peso">Peso corporal</label>
+          <div class="peso-field"><input id="peso" class="pesoin" type="text" inputmode="decimal" autocomplete="off" placeholder="Anotar" aria-label="Peso corporal em quilogramas" aria-describedby="pesohint"><span class="peso-unit" aria-hidden="true">kg</span></div>
+          <p class="ck-note" id="pesohint">Ao chegar, antes do treino e sem tênis.</p></div></article>` : `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
         <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>`}
       ${treinoPlus() ? "" : `<button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
