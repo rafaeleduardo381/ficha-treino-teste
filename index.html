@@ -554,7 +554,7 @@ body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-ou
 .of-perdas{list-style:none;margin:4px 0 6px;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left;font-size:.86rem;color:var(--soft);line-height:1.4}
 .of-perdas li{padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--coral) 9%,var(--surface2))}
 .of-perdas b{color:var(--ink)}
-.of-hold{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+.of-hold{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}
 .of-hold:disabled{opacity:.35}
 .of-hold-fill{position:absolute;inset:0;width:0;background:rgba(0,0,0,.28)}
 .of-hold.segurando .of-hold-fill{width:100%;transition:width 1.3s linear}
@@ -984,8 +984,8 @@ const TreinoCore = (() => {
     const stalled=mins.length===3&&mins.every(v=>v!=null)&&mins[1]<=mins[0]&&mins[2]<=mins[1];
     const held={...base,kind:'hold',kg,stalled,reason:full?'Mesma carga; busque o topo da faixa mantendo o sobrar da ficha.':'Séries faltantes ou não confirmadas: sem aumento de carga.'};
     if(!A&&kg===0)return !p.casa?{...held,reason:'Sem carga externa registrada. Siga a ficha; sem peso inventado.'}:full&&check(last,hi,0)?{...base,kind:'up',kg:0,previousKg:0,degrau:true,explain:true,reason:'Bateu o topo em todas as séries: hora de subir de degrau. O próximo nível está em "Sobe para", na Execução.'}:{...held,explain:true,reason:'Peso do corpo: busque '+hi+' reps em todas as séries, sem perder a execução.'};   // treino em casa: progride pelo degrau
-    const step=/halter|búlgaro|martelo/i.test(p.name)&&!A?(kg<10?1:2):5;   // pesos que existem: halter de 1 ou 2 kg; máquina, polia, barra, Smith (por lado), leg press e graviton de 5 kg
-    const efetiva=k=>A?(p.bw>0?p.bw-k:null):k,salto=k=>{const e=efetiva(k);return e!=null&&e>0&&step/e>0.15;};   // graviton: carga efetiva = peso do corpo − assistência
+    const mochila=/mochila/i.test(p.name),step=(mochila||/halter|búlgaro|martelo/i.test(p.name))&&!A?(kg<10?1:2):5;   // pesos que existem: halter de 1 ou 2 kg; mochila com garrafas de 1 L; máquina, polia, barra, Smith (por lado), leg press e graviton de 5 kg
+    const efetiva=k=>A?(p.bw>0?p.bw-k:null):k,salto=k=>{const e=efetiva(k);return !mochila&&e!=null&&e>0&&step/e>0.15;};   // mochila sobe de garrafa em garrafa: sem regra de salto grande   // graviton: carga efetiva = peso do corpo − assistência
     // subiu com salto grande e não chegou ao piso: volta para a carga anterior
     const ant=hist.length>1?trabalho(hist.at(-2)):null;
     if(full&&!mixed&&ant&&(A?kg<ant.kg:kg>ant.kg)&&salto(ant.kg)&&ss.some(s=>s.reps<lo))
@@ -1626,16 +1626,18 @@ async function loadRel(){
 function supaDb(){
   const h = {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key, "Content-Type": "application/json"};
   // coleção "treinos" → tabela de treinos do ambiente; "checkins" → tabela de check-ins do ambiente
+  // pedido com prazo: internet ruim na academia não pode deixar a fila de gravação parada para sempre
+  const comPrazo = (url, opt = {}, ms = 12000) => { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); return fetch(url, {...opt, signal: c.signal}).finally(() => clearTimeout(t)); };
   const ref = name => { const table = name === "checkins" ? (SUPA.checkins || "checkins") : (SUPA.table || "treinos"); const q = {
     doc: id => ({ async set(b){
-      const r = await fetch(`${SUPA.url}/rest/v1/${table}?on_conflict=id`, {method: "POST", headers: {...h, Prefer: "resolution=merge-duplicates,return=minimal"},
+      const r = await comPrazo(`${SUPA.url}/rest/v1/${table}?on_conflict=id`, {method: "POST", headers: {...h, Prefer: "resolution=merge-duplicates,return=minimal"},
         body: JSON.stringify({id, ...b})});
       if (!r.ok) throw {code: "unavailable"};
     }}),
     orderBy: () => q, limit: () => q,
     onSnapshot(next){
       const load = async () => { try {
-        const r = await fetch(`${SUPA.url}/rest/v1/${table}?select=*&order=date.desc&limit=1000`, {headers: h});
+        const r = await comPrazo(`${SUPA.url}/rest/v1/${table}?select=*&order=date.desc&limit=1000`, {headers: h}, 20000);
         if (!r.ok) return;
         const rows = await r.json();
         next({docs: rows.map(({id, ...rest}) => ({id, data: () => rest})), metadata: {fromCache: false}});
@@ -2129,7 +2131,10 @@ function viraDia(){
   diaVisto = hoje; current = dayOf(person.id, logDate) || current; draw(); checkOfensiva();
 }
 setInterval(viraDia, 30e3);
-document.addEventListener("visibilitychange", () => { if (!document.hidden) { viraDia(); checkOfensiva(); } FogoUI.mount(document, calmo()); });
+// Saiu da tela (bloqueou o celular, trocou de app): grava na hora o que estava esperando, antes que o sistema congele o app
+function gravaPendentes(){ for (const id of Object.keys(chkPending)) { clearTimeout(chkTimers[id]); saveChk(id); } for (const id of Object.keys(pending)) { clearTimeout(timers[id]); saveLog(id); } }
+if (typeof window !== "undefined" && window.addEventListener) window.addEventListener("pagehide", gravaPendentes);
+document.addEventListener("visibilitychange", () => { if (document.hidden) gravaPendentes(); if (!document.hidden) { viraDia(); checkOfensiva(); } FogoUI.mount(document, calmo()); });
 function toast(html){
   let t = document.getElementById("toast");
   if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
