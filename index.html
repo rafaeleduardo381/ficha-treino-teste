@@ -265,34 +265,71 @@ body.mov .pt[aria-pressed="true"] .pt-b{animation:check .4s cubic-bezier(.3,1.6,
 .sup-dayhead .avatar{flex:none;color:var(--ink)}
 .sup-dayhead .dayhead h2{color:var(--violet)}
 .sup-dayhead .dayhead p{line-height:1.4}
-.sup-card .ph{flex-wrap:wrap}
-.sup-card .tag{white-space:normal;overflow-wrap:anywhere}
-.sup-card .chips{display:flex;gap:6px;flex-wrap:wrap}
-.sup-card label{display:block;font-size:.8rem;font-weight:700;color:var(--soft)}
-.sup-card input,.sup-card select{display:block;width:100%;min-width:0;margin-top:5px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:1rem}
-.sup-card input[data-sup-dia]{font-size:1.65rem;font-family:var(--f-mono);font-weight:700;color:var(--c)}
-.sup-card input::placeholder{font-size:.9rem;color:var(--muted)}
-.sup-card input:disabled{opacity:.5}
-.sup-card input:focus,.sup-card select:focus{outline:2px solid var(--lime);outline-offset:1px}
-.sup-card .chip[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
-.sup-card form{display:flex;flex-direction:column;gap:12px;padding-top:12px}
-.sup-card form .ghost{display:flex;align-items:center;justify-content:center;gap:8px}
-.sup-card form .ghost svg{width:18px;height:18px}
-.sup-card .sup-result{margin:0;font-size:.87rem;color:var(--soft);line-height:1.4;min-height:2.8em}
-.sup-card .sup-result b{color:var(--c,var(--lime))}
-.sup-card .sup-result.warn b{color:var(--warn)}
-.sup-card .sup-result.high b{color:var(--coral)}
-.sup-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.sup-actions button{min-height:44px}
-.sup-reg{margin:0;font-size:.95rem;line-height:1.5}
-.sup-photo{display:block;max-width:100%;max-height:220px;margin:10px 0;border-radius:10px;object-fit:contain}
-.sup-history{width:100%;table-layout:fixed;border-collapse:collapse;font-size:.8rem}
-.sup-history caption{text-align:left;color:var(--muted);padding-bottom:10px}
-.sup-history th,.sup-history td{text-align:left;padding:8px 4px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
-.sup-history th:first-child{width:24%}
-.sup-history thead{color:var(--muted)}
-.sup-history button{min-height:44px;text-align:left}
-@media(max-width:480px){.sup-grid{grid-template-columns:1fr}}
+.sp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+@media(max-width:640px){.sp-grid{grid-template-columns:1fr}}
+.sp{display:flex;flex-direction:column;gap:14px}
+.sp .ph{flex-wrap:wrap;gap:8px}
+.sp .st-ico{color:var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface2))}
+.sp-tag{margin-left:auto;font-size:.75rem;font-weight:800;color:var(--soft);background:var(--surface2);border-radius:999px;padding:4px 10px;white-space:nowrap}
+.sp-note{margin:0;font-size:.84rem;color:var(--muted);line-height:1.45}
+.sp.off{gap:8px}
+.sp.off .ph{opacity:.75}
+.sp-main{display:flex;align-items:center;gap:14px;width:100%;min-height:72px;padding:12px 16px;border-radius:18px;border:1.5px dashed color-mix(in srgb,var(--c) 55%,var(--line));background:color-mix(in srgb,var(--c) 6%,var(--surface));color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:background .25s,border-color .25s,transform .15s}
+.sp-main:active{transform:scale(.98)}
+.sp-main:disabled{opacity:.5;cursor:default}
+.sp-ck{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:1.2rem;font-weight:900;color:transparent;border:2px solid color-mix(in srgb,var(--c) 60%,var(--line));transition:background .25s,color .25s,transform .3s}
+.sp-tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sp-tx b{font-size:1.05rem}
+.sp-tx small{font-size:.8rem;color:var(--muted)}
+.sp-main.on{border-style:solid;border-color:var(--c);background:color-mix(in srgb,var(--c) 18%,var(--surface))}
+.sp-main.on .sp-ck{background:var(--c);border-color:var(--c);color:var(--bg)}
+body.mov .sp-main.on .sp-ck{animation:spPop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes spPop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+.sp-sem{display:flex;align-items:center;gap:12px}
+.sp-sem p{margin:0 0 0 auto;font-size:.8rem;color:var(--muted);white-space:nowrap}
+.sp-sem p b{color:var(--ink);font-size:.95rem}
+.sp-dots{display:flex;gap:6px}
+.sp-d{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;border:0;background:none;color:var(--muted);font:inherit;cursor:pointer;min-width:26px}
+.sp-d i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.75rem;font-weight:900;background:var(--surface2);color:var(--bg)}
+.sp-d.on i{background:var(--c)}
+.sp-d.sel i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px color-mix(in srgb,var(--c) 70%,var(--line))}
+.sp-d small{font-size:.66rem;font-weight:700}
+.sp-row{display:flex;align-items:center;gap:14px}
+.sp-step{flex:none}
+.sp-step button:disabled{opacity:.35;cursor:default}
+.sp-step button:last-child{border-left:1px solid var(--line);color:var(--lime)}
+.sp-n{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:64px;height:46px;border-left:1px solid var(--line);line-height:1}
+.sp-n b{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.sp-n small{font-size:.66rem;color:var(--muted);margin-top:2px}
+.sp-gain{margin:0;display:flex;flex-direction:column;line-height:1.15}
+.sp-gain b{font-size:1.5rem;color:var(--c)}
+.sp-gain small{font-size:.8rem;color:var(--muted)}
+.sp-prot{display:flex;flex-direction:column;gap:6px}
+.sp-pl{display:flex;align-items:baseline;justify-content:space-between;font-size:.85rem;color:var(--soft)}
+.sp-pl b{font-size:1.1rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.sp-pl b small{font-size:.8rem;color:var(--muted);font-weight:700}
+.sp-bar{display:flex;height:10px;border-radius:999px;background:var(--surface2);overflow:hidden;gap:2px}
+.sp-bar i{display:block;height:100%;transition:width .5s}
+.sp-bar .ref{background:var(--coral)}
+.sp-bar .wh{background:var(--c)}
+.sp-leg{margin:0;display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);flex-wrap:wrap}
+.sp-leg .k{width:8px;height:8px;border-radius:2px;display:inline-block}
+.sp-leg .k.ref{background:var(--coral)}
+.sp-leg .k.wh{background:var(--c);margin-left:8px}
+.sp-form{display:flex;flex-direction:column;gap:12px;padding-top:14px}
+.sp-form + .sp-form{border-top:1px solid var(--line);margin-top:14px}
+.sp-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sp-f{display:flex;flex-direction:column;gap:5px;font-size:.78rem;font-weight:700;color:var(--soft);min-width:0}
+.sp-in{display:flex;align-items:center;gap:6px;height:48px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.sp-in:focus-within{border-color:var(--lime)}
+.sp-in input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:1.05rem;font-weight:700;padding:0;-webkit-appearance:none;appearance:none}
+.sp-in input:focus{outline:none}
+.sp-in input::placeholder{color:var(--muted);font-weight:500;font-size:.9rem}
+.sp-in em{font-style:normal;font-size:.78rem;color:var(--muted);white-space:nowrap}
+.sp-uso{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
+.sp-uso .chips{display:flex;gap:6px}
+.sp-uso .chip[aria-pressed="true"],.sp .chip[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
+.sp .linkbtn{align-self:flex-start}
 .cd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;position:relative}
 .cd-r{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
 .cd-r.bol{background:linear-gradient(180deg,color-mix(in srgb,var(--coral) 9%,var(--surface)) 0,var(--surface) 70px)}
@@ -1972,60 +2009,71 @@ const SONO_Q = ["Péssimo", "Ruim", "Ok", "Bom", "Ótimo"];
 const DIETA_OP = [[1, "Segui o plano"], [0.5, "Saí um pouco"], [0, "Saí do plano"]];
 const suplementoPerfil = p => store.get("suplementos:" + p) || {};
 const suplementoStatus = valor => valor == null ? "Não informado" : valor === "nao" ? "Não usa" : valor === "parou" ? "Parou de usar" : "Usa";
-const creatinaEstado = g => g == null ? "Sem registro" : g === 0 ? "Não tomou" : g < 3 ? "Abaixo da faixa usual (3–5 g)" : g <= 5 ? "Dentro da faixa usual (3–5 g)" : "Acima da faixa usual (3–5 g); confira o rótulo";
 const supDia = (p, s) => { const c = chkOf(p, s), d = store.get("supdia:" + docId(p, s)) || {}; return {creatina_g: Object.hasOwn(c, "creatina_g") ? c.creatina_g : d.creatina_g ?? null, whey_g: Object.hasOwn(c, "whey_g") ? c.whey_g : d.whey_g ?? null}; };
 const wheyProt = (p, g) => { const cfg = suplementoPerfil(p); return g === 0 ? 0 : g == null || !(cfg.whey_porcao > 0) || cfg.whey_prot == null || cfg.whey_prot > cfg.whey_porcao ? null : Math.round(g * cfg.whey_prot / cfg.whey_porcao * 10) / 10; };
-const wheyDia = (p, s) => { const c = chkOf(p, s), d = supDia(p, s); return d.whey_g == null ? null : d.whey_g === 0 ? 0 : Object.hasOwn(c, "whey_prot_g") ? c.whey_prot_g : wheyProt(p, d.whey_g); };
-const supEstado = g => g == null ? "Sem registro" : g === 0 ? "Não tomou" : `${num(g)} g`;
-const supHistorico = p => lastDays(7, logDate > trainDay() ? trainDay() : logDate).reverse().map(d => ({d, ...supDia(p, d)}));
-function supResultado(tipo){
-  const p = person.id, d = supDia(p, logDate), g = d[tipo + "_g"];
-  if (tipo === "creatina") return `<b>${creatinaEstado(g)}</b>`;
-  if (g == null || g === 0) return `<b>${supEstado(g)}</b>`;
-  const prot = wheyDia(p, logDate);
-  return prot == null ? `<b>Proteína ainda não calculada.</b> Confira o rótulo em Meus produtos e confirme novamente as gramas do dia.` : `<b>${num(prot)} g de proteína</b> fornecidos por ${num(g)} g de pó.`;
+const wheyDia = (p, s) => { const c = chkOf(p, s), d = supDia(p, s); return d.whey_g == null ? null : d.whey_g === 0 ? 0 : Object.hasOwn(c, "whey_prot_g") && c.whey_prot_g != null ? c.whey_prot_g : wheyProt(p, d.whey_g); };
+// Whey somado ao dia: proteína gravada no check-in; kcal pelo rótulo ou ~4 kcal por grama de pó (estimativa)
+function wheyExtra(p, s){
+  const g = supDia(p, s).whey_g, prot = wheyDia(p, s) || 0, cfg = suplementoPerfil(p);
+  if (!(g > 0)) return {kcal: 0, prot: 0};
+  return {kcal: Math.round(cfg.whey_kcal > 0 && cfg.whey_porcao > 0 ? g * cfg.whey_kcal / cfg.whey_porcao : g * 4), prot: Math.round(prot)};
 }
-function renderSupAlimentacao(){
-  const p = person.id, meta = metas(p, logDate), c = chkOf(p, logDate), tem = regAlim(p, logDate) || c.prot_g != null;
-  const prot = tem ? comidoDe(p, logDate).prot : null;
-  return `<p class="sup-reg">${prot == null ? "Alimentação ainda sem registro neste dia." : `<b>${num(prot)} g de proteína</b> estimados nas refeições marcadas.`}${meta.total ? ` Referência diária: ${meta.faixa[0]}–${meta.faixa[1]} g.` : " Meta pessoal ainda não definida."}</p>
-    <p class="hint">O whey aparece separado. Não somamos automaticamente: uma refeição marcada pode já incluí-lo. Esses registros parciais não dizem sozinhos se você comeu pouco ou muito.</p>`;
+const DOSE_CREAT = 3;   // padrão do rótulo mais comum; a pessoa ajusta em Meus produtos (faixa do agente de nutrição: 3–5 g)
+const doseCreat = p => { const v = +suplementoPerfil(p).creatina_porcao; return v > 0 && v <= 10 ? v : DOSE_CREAT; };
+const tomouCreat = (p, s) => { const g = supDia(p, s).creatina_g; return g != null ? g > 0 : chkOf(p, s).creatina === true; };
+function supSemana(p, tipo){   // 7 dias até o dia escolhido (ou hoje, se o escolhido for futuro)
+  const fim = logDate > trainDay() ? trainDay() : logDate;
+  return lastDays(7, fim).map(d => {
+    const on = tipo === "creatina" ? tomouCreat(p, d) : supDia(p, d).whey_g > 0;
+    return `<button type="button" class="sp-d${on ? " on" : ""}${d === logDate ? " sel" : ""}" data-date="${d}" aria-label="${WD[parseDate(d).getDay()]} ${brDate(d)}: ${on ? "tomou" : "sem registro"}"><i>${on ? "✓" : ""}</i><small>${WD[parseDate(d).getDay()].slice(0, 1)}</small></button>`;
+  }).join("");
 }
-function renderSupHistorico(){
-  return `<table class="sup-history"><caption>Últimos 7 dias até ${brDate(logDate > trainDay() ? trainDay() : logDate)}</caption><thead><tr><th scope="col">Dia</th><th scope="col">Creatina</th><th scope="col">Whey · pó</th></tr></thead><tbody>${supHistorico(person.id).map(d => `<tr><th scope="row"><button type="button" class="linkbtn" data-date="${d.d}" aria-label="Ver suplementos de ${brDate(d.d)}">${brDate(d.d)}</button></th><td>${supEstado(d.creatina_g)}</td><td>${supEstado(d.whey_g)}</td></tr>`).join("")}</tbody></table>`;
-}
-function renderSuplementos(){
-  const p = person.id, cfg = suplementoPerfil(p), c = supDia(p, logDate), bloqueado = futuro() ? "disabled" : "";
-  const status = (tipo, label) => `<div class="chips" role="group" aria-label="${label}">${[["sim", "Uso"], ["nao", "Não uso"], ["parou", "Parei"]].map(([v, t]) => `<button type="button" class="chip" data-sup-status="${tipo}" data-value="${v}" aria-pressed="${cfg[tipo] === v}">${t}</button>`).join("")}</div>`;
-  const campo = (nome, label, v) => `<label>${label}<input type="number" min="0" max="500" step="0.1" inputmode="decimal" name="${nome}" value="${esc(v ?? "")}" placeholder="g"></label>`;
-  const produto = tipo => `<label>Nome do produto<input type="text" maxlength="80" name="${tipo}_produto" value="${esc(cfg[tipo + "_produto"] || "")}" placeholder="Opcional"></label>`;
-  const foto = tipo => { const img = cfg[tipo + "_foto"]; return `<button type="button" class="ghost" data-sup-foto="${tipo}_foto">${ICON_CAM} Foto do rótulo</button>${typeof img === "string" && img.startsWith("data:image/jpeg;base64,") ? `<img class="sup-photo" src="${esc(img)}" alt="Rótulo de ${tipo}"><button type="button" class="linkbtn" data-sup-apaga="${tipo}_foto">Remover foto</button>` : ""}<p class="hint">A foto não é lida automaticamente. Confira os valores e salve o produto.</p>`; };
-  const registro = (tipo, nome, unidade, cor) => `<article class="panel tinted sup-card ${tipo}" style="--c:var(${cor})">
-    ${phd(ICON_POTE, nome, `<span class="tag">${esc(cfg[tipo + "_produto"] || "Total do dia")}</span>`)}
-    <label>Total tomado · ${unidade}<input type="number" min="0" max="${tipo === "creatina" ? 100 : 500}" step="0.1" inputmode="decimal" data-sup-dia="${tipo}_g" value="${esc(c[tipo + "_g"] ?? "")}" placeholder="Sem registro" aria-describedby="sup-${tipo}-resultado" ${bloqueado}></label>
-    <div class="sup-actions"><button type="button" class="ghost" data-sup-zero="${tipo}_g" ${bloqueado}>Não tomei</button><button type="button" class="linkbtn" data-sup-limpa="${tipo}_g" ${bloqueado}>Limpar registro</button></div>
-    <p class="sup-result" id="sup-${tipo}-resultado" role="status">${supResultado(tipo)}</p>
-    <p class="hint">${tipo === "creatina" ? "Referência usual: 3–5 g/dia de creatina, não de pó. Não dobre a dose para compensar um dia sem tomar." : "Registre o pó pesado, não o número de colheres. A proteína é calculada pelo rótulo salvo, sem dose fixa de whey."}</p>
+const supContaSemana = (p, tipo) => { const fim = logDate > trainDay() ? trainDay() : logDate; return lastDays(7, fim).filter(d => tipo === "creatina" ? tomouCreat(p, d) : supDia(p, d).whey_g > 0).length; };
+function creatCard(){
+  const p = person.id, cfg = suplementoPerfil(p), dose = doseCreat(p), on = tomouCreat(p, logDate), g = supDia(p, logDate).creatina_g, n = supContaSemana(p, "creatina");
+  if (cfg.creatina_status === "nao" || cfg.creatina_status === "parou") return `<article class="panel sp off" style="--c:var(--violet)">${phd(ICON_POTE, "Creatina", `<button type="button" class="chip" data-sup-status="creatina_status" data-value="sim">Passei a usar</button>`)}<p class="sp-note">Você marcou que ${cfg.creatina_status === "nao" ? "não usa" : "parou de usar"}. Tudo bem: suplemento é opcional.</p></article>`;
+  const hoje = logDate === trainDay();
+  return `<article class="panel sp" id="sp-creatina" style="--c:var(--violet)">
+    ${phd(ICON_POTE, "Creatina", `<span class="sp-tag">${num(dose)} g por dia</span>`)}
+    <button type="button" class="sp-main${on ? " on" : ""}" data-sp-creat aria-pressed="${on}" ${futuro() ? "disabled" : ""}><span class="sp-ck" aria-hidden="true">✓</span><span class="sp-tx"><b>${on ? (hoje ? "Tomou hoje" : "Tomou neste dia") : hoje ? "Tomei hoje" : "Tomei neste dia"}</b><small>${on ? num(g > 0 ? g : dose) + " g · toque para desfazer" : "Toque quando tomar " + num(dose) + " g"}</small></span></button>
+    <div class="sp-sem"><div class="sp-dots" role="group" aria-label="Creatina nos últimos 7 dias">${supSemana(p, "creatina")}</div><p><b>${n} de 7</b> dias</p></div>
+    <p class="sp-note">${n >= 6 ? "Constância ótima. O efeito vem do acúmulo no músculo, então é isso mesmo: todo dia, inclusive fim de semana." : "O efeito vem do acúmulo no músculo: tome todo dia, inclusive fim de semana. Esqueceu um dia? Não dobre a dose no seguinte."}</p>
   </article>`;
+}
+function wheyCard(){
+  const p = person.id, cfg = suplementoPerfil(p), g = supDia(p, logDate).whey_g, rotulo = cfg.whey_porcao > 0 && cfg.whey_prot != null && cfg.whey_prot <= cfg.whey_porcao;
+  if (cfg.whey_status === "nao" || cfg.whey_status === "parou") return `<article class="panel sp off" style="--c:var(--blue)">${phd(ICON_POTE, "Whey", `<button type="button" class="chip" data-sup-status="whey_status" data-value="sim">Passei a usar</button>`)}<p class="sp-note">Você marcou que ${cfg.whey_status === "nao" ? "não usa" : "parou de usar"}. Comida já resolve a proteína.</p></article>`;
+  if (!rotulo) return `<article class="panel sp" id="sp-whey" style="--c:var(--blue)">
+    ${phd(ICON_POTE, "Whey", `<span class="sp-tag">opcional</span>`)}
+    <p class="sp-note">Para o whey entrar na sua proteína do dia, copie 2 números do rótulo. É uma vez só.</p>
+    <form data-sup-form="whey" class="sp-form"><div class="sp-2">${spCampo("whey_porcao", "Porção", "g de pó", cfg.whey_porcao, 1, 100)}${spCampo("whey_prot", "Proteína na porção", "g", cfg.whey_prot, 0, 100)}</div><button type="submit" class="done-btn">Salvar rótulo</button></form>
+    <button type="button" class="linkbtn" data-sup-status="whey_status" data-value="nao">Não uso whey</button>
+  </article>`;
+  const doses = g > 0 ? Math.round(g / cfg.whey_porcao * 10) / 10 : 0, w = wheyExtra(p, logDate), m = metas(p, logDate), ref = regAlim(p, logDate) ? comidoDe(p, logDate).prot - w.prot : null;
+  const alvo = m.faixa ? m.faixa[0] : 0, tot = (ref || 0) + w.prot, pct = v => alvo ? Math.min(100, v / alvo * 100) : 0;
+  return `<article class="panel sp" id="sp-whey" style="--c:var(--blue)">
+    ${phd(ICON_POTE, "Whey", `<span class="sp-tag">${num(cfg.whey_porcao)} g = ${num(cfg.whey_prot)} g proteína</span>`)}
+    <div class="sp-row"><div class="step sp-step"><button type="button" data-sp-whey="-1" aria-label="Menos uma dose" ${futuro() || !doses ? "disabled" : ""}>−</button><span class="sp-n"><b>${num(doses)}</b><small>${doses === 1 ? "dose" : "doses"}</small></span><button type="button" data-sp-whey="1" aria-label="Mais uma dose" ${futuro() ? "disabled" : ""}>+</button></div>
+      <p class="sp-gain">${w.prot ? `<b>+${w.prot} g</b><small>de proteína</small>` : `<small>Nenhuma dose ${logDate === trainDay() ? "hoje" : "neste dia"}</small>`}</p></div>
+    ${alvo ? `<div class="sp-prot"><div class="sp-pl"><span>Proteína do dia</span><b>${tot} <small>/ ${alvo} g</small></b></div><div class="sp-bar" role="img" aria-label="${ref || 0} g das refeições e ${w.prot} g de whey, meta ${alvo} g"><i class="ref" style="width:${pct(ref || 0)}%"></i><i class="wh" style="width:${Math.max(0, pct(tot) - pct(ref || 0))}%"></i></div>
+      <p class="sp-leg"><span class="k ref"></span>refeições ${ref == null ? "não marcadas" : ref + " g"}<span class="k wh"></span>whey ${w.prot} g</p></div>` : ""}
+    <p class="sp-note">${ref == null ? "Marque as refeições no Hoje para ver o total certo. " : tot >= alvo && alvo ? "Meta de proteína batida. " : ""}Whey é atalho, não obrigação: use quando a comida não fechar a meta.</p>
+  </article>`;
+}
+const spCampo = (nome, label, uni, v, min, max) => `<label class="sp-f"><span>${label}</span><span class="sp-in"><input type="number" min="${min}" max="${max}" step="0.1" inputmode="decimal" name="${nome}" value="${esc(v ?? "")}" required><em>${uni}</em></span></label>`;
+function renderSuplementos(){
+  const p = person.id, cfg = suplementoPerfil(p);
+  const uso = (tipo, nome) => `<div class="sp-uso"><span>Usa ${nome}?</span><div class="chips" role="group" aria-label="Usa ${nome}">${[["sim", "Sim"], ["nao", "Não"]].map(([v, t]) => `<button type="button" class="chip" data-sup-status="${tipo}_status" data-value="${v}" aria-pressed="${(cfg[tipo + "_status"] === "parou" ? "nao" : cfg[tipo + "_status"]) === v}">${t}</button>`).join("")}</div></div>`;
   return `<section class="list" id="suplementos" aria-label="Suplementos">
-    <div class="sup-dayhead"><div class="dayhead"><div><div class="eyebrow">Rotina ${person.art} ${esc(person.name)}</div><h2>Suplementos</h2><p class="dsub">Seu registro diário, seus produtos e seu histórico.</p></div></div><button type="button" class="avatar" data-perfil aria-label="Trocar pessoa ou abrir perfil">${esc(person.name.slice(0, 1))}</button></div>
+    <div class="sup-dayhead"><div class="dayhead"><div><div class="eyebrow">Rotina ${person.art} ${esc(person.name)}</div><h2>Suplementos</h2><p class="dsub">Um toque por dia. O whey entra na proteína.</p></div></div><button type="button" class="avatar" data-perfil aria-label="Trocar pessoa ou abrir perfil">${esc(person.name.slice(0, 1))}</button></div>
     ${renderWeekNav(true)}
-    <h3 class="sec">Registro ${logDate === trainDay() ? "de hoje" : "de " + brDate(logDate)}</h3>
-    <p class="hint">Vazio = sem registro. Zero = não tomou. Digite o total do dia; outro lançamento substitui esse valor, não soma.</p>
-    <div class="sup-grid">${registro("creatina", "Creatina", "g de creatina", "--violet")}${registro("whey", "Whey", "g de pó", "--blue")}</div>
-    <p class="ckstate" id="sup-save-state" role="status">${esc(chkStatus[docId(p, logDate)] || (SUPA ? "Gramas sincronizadas pelo check-in. Salva ao sair do campo." : "Registros guardados neste aparelho."))}</p>
-    <article class="panel tinted" style="--c:var(--kcal)">${phd(ICON.prato, "Proteína e alimentação")}<div id="sup-alimentacao">${renderSupAlimentacao()}</div><div class="chips"><button type="button" class="chip" data-screen="hoje">Registrar refeições</button><button type="button" class="chip" data-screen="cardapio">Ver cardápio</button></div></article>
-    <h3 class="sec">Meus produtos</h3><p class="hint">Cadastre uma vez. Produto e foto ficam neste aparelho; não mudam os registros dos dias anteriores.</p>
-    <div class="sup-grid">
-      <article class="panel sup-card">${phd(ICON_POTE, "Creatina")}<p class="hint">Uso informado: ${suplementoStatus(cfg.creatina_status)}. Não usa? Veja a orientação abaixo; suplemento é opcional.</p>${status("creatina_status", "Uso de creatina")}
-        <details data-sup-details="creatina"><summary>Produto e rótulo</summary><form data-sup-form="creatina">${produto("creatina")}<label>Tipo<select name="creatina_tipo"><option value="">Selecione</option><option value="monohidratada" ${cfg.creatina_tipo === "monohidratada" ? "selected" : ""}>Monohidratada</option><option value="outra" ${cfg.creatina_tipo === "outra" ? "selected" : ""}>Outra</option></select></label>${campo("creatina_porcao", "Creatina por porção do rótulo (g)", cfg.creatina_porcao)}${foto("creatina")}<button type="submit" class="done-btn">Salvar produto</button></form></details>
-      </article>
-      <article class="panel sup-card">${phd(ICON_POTE, "Whey")}<p class="hint">Uso informado: ${suplementoStatus(cfg.whey_status)}. Comida também pode completar a proteína.</p>${status("whey_status", "Uso de whey")}
-        <details data-sup-details="whey"><summary>Produto e rótulo</summary><form data-sup-form="whey">${produto("whey")}${campo("whey_porcao", "Pó por porção do rótulo (g)", cfg.whey_porcao)}${campo("whey_prot", "Proteína nessa porção (g)", cfg.whey_prot)}${foto("whey")}<button type="submit" class="done-btn">Salvar produto</button></form></details>
-      </article>
-    </div>
-    <article class="panel"><h3>Histórico recente</h3><p class="hint">Registro de consumo, não ofensiva. Sem registro não significa falta. Toque na data para conferir.</p><div id="sup-historico">${renderSupHistorico()}</div></article>
-    <article class="panel"><details><summary>Como usar os suplementos</summary><p><b>Creatina:</b> a monohidratada é a forma mais estudada para força e desempenho. A referência usual é 3–5 g por dia, incluindo descanso; pode aumentar água no músculo e peso na balança. Estar acima dessa faixa não é diagnóstico de toxicidade nem motivo para aumentar a dose.</p><p><b>Whey:</b> conveniência para completar proteína, não obrigação. Se sua alimentação já atende à meta, não precisa acrescentar whey só para marcar este cartão. Prefira conferir gramas no rótulo a usar “um scoop” como medida universal.</p><p class="hint">Tem doença renal/hepática, usa remédios ou está gestante? Converse com médico ou nutricionista. Whey contém proteína do leite; lactose varia conforme o produto. Informação geral, não orientação médica individual.</p></details></article>
+    <div class="sp-grid" id="sp-cards">${creatCard()}${wheyCard()}</div>
+    <p class="ckstate" id="sup-save-state" role="status">${esc(chkStatus[docId(p, logDate)] || "")}</p>
+    <article class="panel"><details data-sup-details="produtos"><summary>Meus produtos</summary>
+      <form data-sup-form="creatina" class="sp-form">${uso("creatina", "creatina")}<div class="sp-2">${spCampo("creatina_porcao", "Dose diária", "g", cfg.creatina_porcao ?? DOSE_CREAT, 1, 10)}<label class="sp-f"><span>Produto</span><span class="sp-in"><input type="text" maxlength="60" name="creatina_produto" value="${esc(cfg.creatina_produto || "")}" placeholder="opcional"></span></label></div><button type="submit" class="ghost">Salvar creatina</button></form>
+      <form data-sup-form="whey" class="sp-form">${uso("whey", "whey")}<div class="sp-2">${spCampo("whey_porcao", "Porção", "g de pó", cfg.whey_porcao, 1, 100)}${spCampo("whey_prot", "Proteína", "g", cfg.whey_prot, 0, 100)}</div><div class="sp-2">${spCampo("whey_kcal", "Calorias", "kcal", cfg.whey_kcal, 0, 1000).replace(" required", "")}<label class="sp-f"><span>Produto</span><span class="sp-in"><input type="text" maxlength="60" name="whey_produto" value="${esc(cfg.whey_produto || "")}" placeholder="opcional"></span></label></div><button type="submit" class="ghost">Salvar whey</button></form>
+      <p class="hint">Fica guardado neste celular. Sem as calorias do rótulo, contamos ~4 kcal por grama de pó.</p></details></article>
+    <article class="panel"><details><summary>Por que e como usar</summary><p><b>Creatina:</b> monohidratada, ${num(DOSE_CREAT)}–5 g por dia, em qualquer horário, inclusive no descanso. É a mais estudada para força e desempenho. Pode subir um pouco o peso na balança (água no músculo), e isso é normal.</p><p><b>Whey:</b> é comida em pó, um atalho para fechar a proteína. Se as refeições já batem a meta, não precisa.</p><p class="hint">Tem doença renal ou hepática, usa remédios ou está gestante? Fale com médico ou nutricionista antes. Informação geral, não orientação médica individual.</p></details></article>
   </section>`;
 }
 function redesenhaSup(){
@@ -2037,34 +2085,13 @@ function redesenhaSup(){
 }
 function refreshSuplementos(){
   if (screen !== "suplementos") return;
-  const d = supDia(person.id, logDate);
-  for (const tipo of ["creatina", "whey"]) {
-    const input = view.querySelector(`[data-sup-dia="${tipo}_g"]`), result = document.getElementById(`sup-${tipo}-resultado`);
-    if (input && input !== document.activeElement) input.value = d[tipo + "_g"] ?? "";
-    if (result) { result.innerHTML = supResultado(tipo); result.classList.toggle("high", tipo === "creatina" && d.creatina_g > 5); result.classList.toggle("warn", tipo === "creatina" && d.creatina_g > 0 && d.creatina_g < 3); }
-  }
-  const hist = document.getElementById("sup-historico"), alim = document.getElementById("sup-alimentacao");
-  if (hist) hist.innerHTML = renderSupHistorico();
-  if (alim) alim.innerHTML = renderSupAlimentacao();
+  const el = document.getElementById("sp-cards"); if (el) el.innerHTML = creatCard() + wheyCard();
 }
 function salvaSuplemento(perfil, p = person.id){
   try { localStorage.setItem(NS + "suplementos:" + p, JSON.stringify(perfil)); }
   catch(e) { aviso("Não foi possível guardar neste aparelho.", "Confira o espaço disponível; o cadastro anterior não foi alterado."); return false; }
   if (p === person.id) redesenhaSup();
   return true;
-}
-function fotoRotulo(campo){
-  let inp = document.getElementById("supfotoin");
-  if (!inp) { inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.id = "supfotoin"; inp.hidden = true; document.body.appendChild(inp);
-    inp.addEventListener("change", () => { const f = inp.files && inp.files[0], alvo = inp.dataset.campo, p = inp.dataset.person; inp.value = ""; if (!f || !alvo) return;
-      const img = new Image(), url = URL.createObjectURL(f);
-      img.onload = () => { const k = Math.min(1, 800 / Math.max(img.width, img.height)), c = document.createElement("canvas");
-        c.width = Math.max(1, Math.round(img.width * k)); c.height = Math.max(1, Math.round(img.height * k));
-        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
-        if (salvaSuplemento({...suplementoPerfil(p), [alvo]: c.toDataURL("image/jpeg", .7)}, p)) aviso("Foto guardada neste celular.", "Confira os números do rótulo e salve o produto."); };
-      img.onerror = () => { URL.revokeObjectURL(url); aviso("Não consegui abrir essa foto.", "Tente outra imagem."); };
-      img.src = url; }); }
-  inp.dataset.campo = campo; inp.dataset.person = person.id; inp.click();
 }
 function atualizaSuplemento(campo, valor){ salvaSuplemento({...suplementoPerfil(person.id), [campo]: valor}); }
 function salvaProduto(form){
@@ -2075,7 +2102,8 @@ function salvaProduto(form){
     const el = form.elements.namedItem("whey_prot"); el.setCustomValidity("Informe uma porção maior que zero. A proteína não pode superar os gramas de pó dessa porção."); el.reportValidity(); return false;
   }
   if (!salvaSuplemento(perfil)) return false;
-  aviso("Produto salvo neste aparelho.", "Registros anteriores não mudam. Se corrigiu o rótulo, confirme novamente as gramas do dia que deseja corrigir.");
+  const g = supDia(person.id, logDate).whey_g; if (tipo === "whey" && g > 0 && !futuro()) setChk({whey_prot_g: wheyProt(person.id, g)});   // rótulo corrigido recalcula o dia aberto
+  aviso("Produto salvo.", "Fica guardado neste celular.");
   return true;
 }
 function registraSuplemento(campo, valor){
@@ -2084,7 +2112,9 @@ function registraSuplemento(campo, valor){
   const patch = {[campo]: valor};
   if (campo === "creatina_g") patch.creatina = valor == null ? null : valor > 0;
   if (campo === "whey_g") patch.whey_prot_g = wheyProt(person.id, valor);
+  if (campo === "whey_g" && regAlim(person.id, logDate)) { const m = metas(person.id, logDate), ref = comidoDe(person.id, logDate).prot - wheyExtra(person.id, logDate).prot; if (m.faixa) patch.proteina = ref + (patch.whey_prot_g || 0) >= m.faixa[0]; }
   setChk(patch);
+  if (typeof refreshProt === "function") try { refreshProt(); } catch {}
   refreshSuplementos();
 }
 // Metas calculadas pelo peso e pelo objetivo — regra do agente de nutrição (2026-10-09).
@@ -2169,8 +2199,9 @@ const feitasDe = (p, s) => { const r = chkOf(p, s).refeicoes; return Array.isArr
 const regAlim = (p, s) => Array.isArray(chkOf(p, s).refeicoes);
 // Total comido no dia: usa o que foi gravado (kcal e prot_g); se faltar, soma as refeições marcadas
 function comidoDe(p, s){
-  const c = chkOf(p, s); if (c.kcal != null) return {kcal: +c.kcal || 0, prot: +c.prot_g || 0};
-  const rs = refeicoesDe(p, s); return feitasDe(p, s).reduce((a, i) => rs[i] ? {kcal: a.kcal + rs[i].kcal, prot: a.prot + rs[i].prot} : a, {kcal: 0, prot: 0});
+  const c = chkOf(p, s), w = wheyExtra(p, s); if (c.kcal != null) return {kcal: (+c.kcal || 0) + w.kcal, prot: (+c.prot_g || 0) + w.prot};
+  const rs = refeicoesDe(p, s), r = feitasDe(p, s).reduce((a, i) => rs[i] ? {kcal: a.kcal + rs[i].kcal, prot: a.prot + rs[i].prot} : a, {kcal: 0, prot: 0});
+  return {kcal: r.kcal + w.kcal, prot: r.prot + w.prot};
 }
 function metaBatida(p, s){ const m = metas(p, s), c = comidoDe(p, s); return !!m.kcal && c.kcal >= m.kcal[0] && c.prot >= m.faixa[0]; }
 function protCard(){
@@ -2181,7 +2212,7 @@ function protCard(){
       <div class="al-l"><div class="al-v"><b class="num" id="al-k">0</b><span id="al-km"></span></div><div class="st-bar" style="--c:var(--kcal)"><i id="al-kb"></i></div></div>
       <div class="al-l"><div class="al-v"><b class="num" id="al-p">0</b><span id="al-pm"></span></div><div class="st-bar" style="--c:var(--coral)"><i id="al-pb"></i></div></div>
     </div>
-    <p class="alc-linha" id="al-alc" hidden></p>
+    <p class="alc-linha" id="al-alc" hidden></p><p class="alc-linha" id="al-whey" hidden></p>
     <ul class="al-list">${rs.map((r, i) => `<li><button type="button" class="al-r" data-ref="${i}" aria-pressed="false"><span class="al-c" aria-hidden="true">✓</span><span class="al-n"><b>${esc(r.nome)}</b><small>${esc(r.hora)} · ${r.itens.map(esc).join(" · ")}</small></span><span class="al-k num">${r.kcal.toLocaleString("pt-BR")} kcal<small>${r.prot} g proteína</small></span></button></li>`).join("")}</ul>
     <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio.</p></article>`;
 }
@@ -2194,6 +2225,7 @@ function refreshProt(){
   document.getElementById("al-kb").style.width = Math.min(100, c.kcal / mk * 100) + "%";
   document.getElementById("al-pb").style.width = Math.min(100, c.prot / m.total * 100) + "%";
   card.classList.toggle("met", metaBatida(person.id, logDate));
+  const wx = wheyExtra(person.id, logDate), we = document.getElementById("al-whey"); if (we) { we.hidden = !wx.prot; we.textContent = wx.prot ? `Inclui whey: +${wx.prot} g de proteína e ${wx.kcal} kcal (aba Suplementos).` : ""; }
   const an = alcDe(person.id, logDate), ae = document.getElementById("al-alc");
   if (ae) { ae.hidden = !an; ae.textContent = an ? `Álcool: +${(an * ALC.kcal).toLocaleString("pt-BR")} kcal (total do dia ${(c.kcal + an * ALC.kcal).toLocaleString("pt-BR")} kcal). A meta se bate só com comida.` : ""; }
 }
@@ -2201,7 +2233,7 @@ function toggleRef(i){
   const f = feitasDe(person.id, logDate), on = f.includes(i), nf = on ? f.filter(x => x !== i) : [...f, i].sort((a, b) => a - b);
   const rs = refeicoesDe(person.id, logDate), tot = nf.reduce((a, j) => rs[j] ? {kcal: a.kcal + rs[j].kcal, prot: a.prot + rs[j].prot} : a, {kcal: 0, prot: 0});
   const antes = metaBatida(person.id, logDate);
-  setChk({refeicoes: nf, kcal: tot.kcal, prot_g: tot.prot, proteina: tot.prot >= metas(person.id, logDate).faixa[0]});
+  setChk({refeicoes: nf, kcal: tot.kcal, prot_g: tot.prot, proteina: tot.prot + wheyExtra(person.id, logDate).prot >= metas(person.id, logDate).faixa[0]});
   if (!antes && metaBatida(person.id, logDate)) requestAnimationFrame(() => celebrate("prot"));
 }
 // Cartão da comida em volta do treino: antes (17h–21h), durante (21h–23h30), depois (23h30 em diante); só no dia de treino de hoje
@@ -3308,7 +3340,7 @@ view.addEventListener("touchstart", e => { const w = e.target.closest("#weekstri
 view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y; swipe = null;
   if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); goDate(addDays(logDate, dx > 0 ? -7 : 7), dx > 0 ? "l" : "r"); } });
 // Dia futuro: dá para ver o treino previsto, mas não registrar
-view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
+view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep], [data-sp-creat], [data-sp-whey]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "peso") { e.preventDefault(); salvaPeso(e.target); } });
 view.addEventListener("input", e => { if (e.target.id === "peso") pzSync(); });
 let pzRep = null, pzRepetiu = false;
@@ -3321,11 +3353,6 @@ view.addEventListener("input", e => {
 });
 view.addEventListener("submit", e => { const form = e.target.closest("[data-sup-form]"); if (form) { e.preventDefault(); salvaProduto(form); } });
 view.addEventListener("change", e => {
-  const sd = e.target.dataset.supDia;
-  if (sd) {
-    if (!e.target.reportValidity()) return;
-    registraSuplemento(sd, e.target.value === "" ? null : Math.round(e.target.valueAsNumber * 10) / 10);
-    return; }
   if (e.target.id === "peso") return; if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); } });
 who.addEventListener("click", e=>{
   const btn = e.target.closest("[data-person]"); if(!btn) return;
@@ -3361,12 +3388,10 @@ view.addEventListener("click", e=>{
   const wkb = e.target.closest("[data-week]");
   if (wkb){ goDate(addDays(logDate, 7 * +wkb.dataset.week), +wkb.dataset.week < 0 ? "l" : "r"); return; }
   if (e.target.closest("[data-cal]")){ openCal(); return; }
-  const zero = e.target.closest("[data-sup-zero]"); if (zero) { registraSuplemento(zero.dataset.supZero, 0); return; }
-  const limpa = e.target.closest("[data-sup-limpa]"); if (limpa) { registraSuplemento(limpa.dataset.supLimpa, null); return; }
+  if (e.target.closest("[data-sp-creat]")) { registraSuplemento("creatina_g", tomouCreat(person.id, logDate) ? null : doseCreat(person.id)); if (navigator.vibrate) try { navigator.vibrate(12); } catch {} return; }
+  const spw = e.target.closest("[data-sp-whey]"); if (spw) { const cfg = suplementoPerfil(person.id), g = supDia(person.id, logDate).whey_g || 0, d = Math.max(0, Math.round((g / cfg.whey_porcao + +spw.dataset.spWhey) * 10) / 10); registraSuplemento("whey_g", d ? Math.round(d * cfg.whey_porcao * 10) / 10 : null); return; }
   const sst = e.target.closest("[data-sup-status]");
-  if (sst){ const k = sst.dataset.supStatus, v = sst.dataset.value; atualizaSuplemento(k, suplementoPerfil(person.id)[k] === v ? null : v); return; }
-  const sft = e.target.closest("[data-sup-foto]"); if (sft){ fotoRotulo(sft.dataset.supFoto); return; }
-  const sap = e.target.closest("[data-sup-apaga]"); if (sap){ atualizaSuplemento(sap.dataset.supApaga, null); return; }
+  if (sst){ const k = sst.dataset.supStatus, v = sst.dataset.value; atualizaSuplemento(k, v); return; }
   if (e.target.closest("[data-fototira]")){ store.set("foto:" + person.id, ""); const y = scrollY; draw(); scrollTo(0, y); return; }
   if (e.target.closest("[data-foto]")){ escolherFoto(); return; }
   if (e.target.closest("[data-resumo]")) { openTreinoDialog("resumo"); return; }
