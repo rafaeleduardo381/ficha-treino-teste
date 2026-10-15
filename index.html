@@ -471,26 +471,33 @@ body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-ou
 .cam-t{min-width:6.5em;text-align:right;font-size:.82rem;font-weight:800;font-variant-numeric:tabular-nums}
 .sd.feriado i{background:none;border:1.5px dashed var(--line);color:var(--muted);font-size:.7rem}
 #card-peso.pz{grid-column:1/-1;align-items:stretch;gap:12px}
-.pz-h{display:flex;align-items:center;gap:10px}
-.pz-ico{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--peso) 16%,var(--surface2));color:var(--peso)}
-.pz-ico svg{width:18px;height:18px}
-.pz-t{flex:1;font-weight:800;font-size:1rem}
-.pz-st{font-size:.74rem;font-weight:800;border-radius:999px;padding:3px 10px;background:var(--surface2);color:var(--muted);white-space:nowrap}
-.pz-st.ok{background:color-mix(in srgb,var(--peso) 22%,var(--surface2));color:var(--ink)}
-.pz-st:empty{display:none}
-.pz-v{display:flex;align-items:baseline;gap:6px}
-.pz-v b{font-size:2.2rem;font-weight:800;line-height:1}
-.pz-kg{font-size:1rem;font-weight:700;color:var(--soft)}
-.pz-ed{margin-left:auto;align-self:center;min-height:40px}
-.pz-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch}
-.pz-field{position:relative}
-.pz-input{width:100%;height:54px;font:inherit;font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;text-align:left;color:var(--ink);background:var(--bg);border:1.5px solid color-mix(in srgb,var(--peso) 45%,var(--line));border-radius:14px;padding:0 48px 0 14px;-webkit-appearance:none;appearance:none}
-.pz-input::placeholder{color:var(--muted);opacity:.55;font-weight:700}
-.pz-input:focus{outline:none;border-color:var(--peso);box-shadow:0 0 0 3px color-mix(in srgb,var(--peso) 25%,transparent)}
-.pz-unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:1rem;font-weight:800;color:var(--soft);pointer-events:none}
-.pz-save{height:54px;padding:0 18px;background:var(--peso);color:#120B26}
-.pz-note{margin:0;display:flex;flex-direction:column;gap:2px;font-size:.78rem;color:var(--muted);line-height:1.4}
+.pz-t{flex:1;min-width:0}
+.pz-st{display:none;margin-left:auto;font-size:.7rem;font-weight:800;color:var(--bg);background:var(--c);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.pz-st.ok{display:inline-block}
+.pz-v{display:flex;align-items:center;gap:10px;min-height:54px}
+.pz-big{margin:0;display:flex;align-items:baseline;gap:6px}
+.pz-big b{font-size:2.3rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.pz-big span{font-size:1rem;font-weight:700;color:var(--soft)}
+.pz-ed{margin-left:auto;min-height:40px}
+.pz-in{display:flex;gap:10px;align-items:stretch}
+.pz-in[hidden]{display:none}
+.pz-step{flex:1;min-width:0}
+.pz-step button{flex:none;height:54px}
+.pz-step button:last-child{color:var(--lime)}
+.pz-step button+.pz-field{border-left:1px solid var(--line)}
+.pz-field{flex:1;min-width:0;height:54px;display:flex;align-items:center;justify-content:center;gap:4px;border-right:1px solid var(--line);cursor:text}
+.pz-input{width:4.6ch;min-width:0;padding:0;border:0;background:none;font:inherit;font-size:1.6rem;font-weight:800;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink);-webkit-appearance:none;appearance:none}
+.pz-input::placeholder{color:var(--muted);opacity:.7}
+.pz-input:focus{outline:none}
+.pz-field:focus-within{box-shadow:inset 0 0 0 2px var(--peso);border-radius:4px}
+.pz-unit{font-size:.95rem;font-weight:700;color:var(--soft)}
+.pz-save{flex:none;height:54px;padding:0 18px;font:inherit;font-weight:800;border:0;border-radius:14px;background:var(--lime);color:var(--bg);cursor:pointer;transition:background .2s,color .2s}
+.pz-save.fechar{background:var(--surface2);color:var(--ink)}
+.pz-save:disabled{background:var(--surface2);color:var(--muted);cursor:default}
+.pz-note{margin:0;display:flex;flex-direction:column;gap:2px;font-size:.78rem;color:var(--muted);line-height:1.45}
+.pz-note:empty{display:none}
 .pz-note b{color:var(--soft);font-weight:700}
+@media (max-width:380px){.pz-step button{width:42px}.pz-save{padding:0 14px}}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -779,20 +786,7 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 
 .treino-plus .ex .meta .mt-copy{min-width:0}
 .treino-plus .ex .meta .hint{font-size:.8rem;font-weight:400;color:var(--soft);line-height:1.5;margin-top:8px}
-.treino-plus #card-peso{grid-column:1/-1;background:var(--surface);padding:16px;border-radius:18px;gap:0}
 
-/* Peso corporal: uma linha de registro com contexto, sem ação duplicada. */
-.treino-plus #card-peso .pesorow{display:grid;grid-template-columns:36px minmax(0,1fr) minmax(0,7rem);grid-template-areas:"icon label field" "icon hint field";column-gap:12px;row-gap:3px;align-items:center}
-.treino-plus #card-peso .peso-icon{grid-area:icon;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--peso) 12%,var(--surface));color:var(--peso)}
-.treino-plus #card-peso .peso-icon svg{display:block;width:20px;height:20px}
-.treino-plus #card-peso .ck-h{grid-area:label;align-self:end;font-size:.875rem;font-weight:700;line-height:1.35}
-.treino-plus #card-peso .peso-field{grid-area:field;position:relative;min-width:0;border:1px solid color-mix(in srgb,var(--peso) 24%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--peso) 5%,var(--surface))}
-.treino-plus #card-peso .pesoin{display:block;width:100%;min-width:0;height:auto;min-height:52px;padding:10px 28px 10px 10px;font-size:1.5rem;line-height:1.25;letter-spacing:-.04em;text-align:center;color:var(--ink);background:transparent;border:0;border-radius:11px;-webkit-appearance:none;appearance:none}
-.treino-plus #card-peso .pesoin::placeholder{color:var(--peso);font-size:.9375rem;font-weight:600;letter-spacing:0;opacity:1}
-.treino-plus #card-peso .pesoin:focus{outline:2px solid var(--peso);outline-offset:3px}
-.treino-plus #card-peso .peso-field:focus-within{background:color-mix(in srgb,var(--peso) 10%,var(--surface))}
-.treino-plus #card-peso .peso-unit{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:500;color:var(--muted);pointer-events:none}
-.treino-plus #card-peso .ck-note{grid-area:hint;align-self:start;min-width:0;font-size:.75rem;line-height:1.5;color:var(--muted);text-align:left;text-wrap:wrap;overflow-wrap:anywhere}
 .treino-plus .ex .meta{align-items:flex-start;gap:10px}
 .treino-plus .ex .meta .mt-ico{width:28px;height:28px}
 .treino-plus .ex .meta .mt-copy{flex:1}
@@ -800,7 +794,6 @@ body[data-tela="treino"] .toprow{justify-content:flex-end}
 .treino-plus .ex .meta .mt-value b{font-size:2rem;line-height:1.15;overflow-wrap:anywhere}
 .treino-plus .ex .meta .mt-value .mt-unit{font-size:1rem;font-weight:600;color:var(--soft)}
 .treino-plus .ex .meta .mt-reps{font-size:.875rem;font-weight:600}
-@media(max-width:380px){.treino-plus #card-peso{padding:14px 12px}.treino-plus #card-peso .pesorow{grid-template-columns:30px minmax(0,1fr) minmax(0,6.5rem);column-gap:8px}.treino-plus #card-peso .peso-icon{width:30px;height:30px;border-radius:9px}}
 
 /* FIM TREINO CSS */
 /* INICIO FOGO CSS */
@@ -1600,7 +1593,7 @@ const ICON = {
   agua: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>`,
   sono: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>`,
   prato: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="7"/><circle cx="12" cy="13" r="3.5"/><path d="M3 4v6M3 7h2M21 4v16"/></svg>`,
-  balanca: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8.5 9.5a4.5 4.5 0 0 1 7 0L12 12z"/></svg>`,
+  balanca: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M7.8 10.2a5 5 0 0 1 8.4 0" stroke-linecap="round"/><path d="M12 10.6l1.7-2.3" stroke-linecap="round"/></svg>`,
   seta: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`
 };
 const DOTS = 40;
@@ -2252,10 +2245,10 @@ function refreshAlc(){
 }
 function renderExtras(){
   return `${alcOntem()}<div class="cards">${protCard()}${alcCard()}
-      ${treinoPlus() ? `<article class="ck mini-ck pz" id="card-peso" style="--c:var(--peso)">
-        <div class="pz-h"><span class="pz-ico" aria-hidden="true">${ICON.balanca}</span><label class="pz-t" for="peso">Peso corporal</label><span class="pz-st" id="pz-st"></span></div>
-        <div class="pz-v" id="pz-v" hidden><b class="num" id="pz-num"></b><span class="pz-kg">kg</span><button type="button" class="ghost pz-ed" data-pesoedit>Editar</button></div>
-        <div class="pz-in" id="pz-in"><div class="pz-field"><input id="peso" class="pz-input" type="text" inputmode="decimal" autocomplete="off" placeholder="00,0" aria-label="Peso corporal em quilogramas" aria-describedby="pesohint"><span class="pz-unit" aria-hidden="true">kg</span></div><button type="button" class="done-btn pz-save" data-pesosave>Salvar</button></div>
+      ${treinoPlus() ? `<article class="ck pz" id="card-peso" style="--c:var(--peso)">
+        <div class="ck-h"><span class="ico">${ICON.balanca}</span><label class="pz-t" for="peso">Peso corporal</label><span class="pz-st" id="pz-st"></span></div>
+        <div class="pz-v" id="pz-v" hidden><p class="pz-big"><b class="num" id="pz-num"></b><span>kg</span></p><button type="button" class="ghost pz-ed" data-pesoedit>Editar</button></div>
+        <div class="pz-in" id="pz-in"><div class="step pz-step"><button type="button" data-pstep="-1" aria-label="Menos 0,1 kg">−</button><div class="pz-field"><input id="peso" class="pz-input" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" aria-label="Peso corporal em quilogramas" aria-describedby="pesohint"><span class="pz-unit" aria-hidden="true">kg</span></div><button type="button" data-pstep="1" aria-label="Mais 0,1 kg">+</button></div><button type="button" class="pz-save" id="pz-save" data-pesosave disabled>Salvar</button></div>
         <p class="pz-note" id="pesohint"></p></article>` : `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
         <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>`}
@@ -2264,6 +2257,25 @@ function renderExtras(){
     </div>`;
 }
 let pesoEditando = false;
+function pesoAnterior(p, s){   // última pesagem antes do dia, para servir de ponto de partida
+  let best = null; for (const c of Object.values(CHK)) if (c && c.person === p && c.peso && c.date < s && (!best || c.date > best.date)) best = c;
+  if (!best) return null;
+  const dias = Math.round((parseDate(s) - parseDate(best.date)) / 864e5);
+  return {v: +best.peso, quando: dias === 1 ? "ontem" : dias < 7 ? "na " + ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"][parseDate(best.date).getDay()] : "em " + best.date.slice(8, 10) + "/" + best.date.slice(5, 7)};
+}
+const pesoLido = inp => { const v = Number(String(inp?.value || "").trim().replace(",", ".")); return v > 20 && v < 300 ? Math.round(v * 10) / 10 : null; };
+function pzSync(){   // Salvar só acende com um peso válido e diferente do salvo
+  const inp = document.getElementById("peso"), b = document.getElementById("pz-save"); if (!inp || !b) return;
+  const v = pesoLido(inp), atual = CHK[docId(person.id, logDate)]?.peso;
+  const igual = atual != null && +atual === v, fechar = pesoEditando && atual != null && (igual || v == null);   // editando sem mudar: o botão fecha
+  b.disabled = !fechar && (v == null || igual); b.textContent = fechar ? "Fechar" : "Salvar"; b.classList.toggle("fechar", fechar);
+}
+function pesoPasso(d){
+  const inp = document.getElementById("peso"); if (!inp) return;
+  const base = pesoLido(inp) ?? pesoAnterior(person.id, logDate)?.v ?? null;
+  if (base == null) { inp.focus(); return; }
+  inp.value = num((Math.round((base + d / 10) * 10) / 10).toFixed(1)); pzSync();
+}
 function salvaPeso(inp){
   const txt = inp.value.trim(); if (!txt) { pesoEditando = false; return refreshExtras(); }
   const v = Number(txt.replace(",", "."));
@@ -2275,16 +2287,22 @@ function refreshExtras(){
   document.querySelectorAll("[data-sq]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.sq === c.sono_q)));
   const sn = document.getElementById("ck-sono-note"); if (sn) sn.textContent = c.sono_q ? `Dormiu: ${SONO_Q[c.sono_q - 1].toLowerCase()}` : "Como dormiu? Toque numa carinha";
   const pin = document.getElementById("peso"), pz = document.getElementById("pz-v");
-  if (pz) {   // cartão novo: mostra o peso salvo ou o campo para anotar
-    const tem = !!c.peso && !pesoEditando, hoje0 = logDate === trainDay();
-    pz.hidden = !tem; document.getElementById("pz-in").hidden = tem;
-    document.getElementById("pz-num").textContent = c.peso ? num((+c.peso).toFixed(1)) : "";
-    const st = document.getElementById("pz-st"); st.textContent = c.peso ? (hoje0 ? "Anotado hoje ✓" : "Anotado ✓") : futuro() ? "" : hoje0 ? "Ainda não anotado" : "Não anotado";
-    st.className = "pz-st" + (c.peso ? " ok" : "");
-  }
-  if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
   const h = document.getElementById("pesohint");
-  if (h && pz) { const t = pesoTrend(person.id, logDate); h.innerHTML = (t && t.delta != null ? `<b>Média 7 dias: ${num(t.avg.toFixed(1))} kg · ${t.delta >= 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))} kg</b>` : "") + `<span>${!c.peso && naAcademia && gymPerson === person.id && academiaSalva() && logDate === trainDay() ? "Perto da academia que você configurou. Registre seu peso." : "Pese ao chegar, antes do treino, depois do banheiro e sem tênis."}</span>`; }
+  if (pz) {   // cartão novo: peso salvo em destaque, ou − valor + para anotar
+    const tem = !!c.peso && !pesoEditando, hoje0 = logDate === trainDay(), ult = pesoAnterior(person.id, logDate), t = pesoTrend(person.id, logDate);
+    pz.hidden = !tem; document.getElementById("pz-in").hidden = tem || futuro();
+    document.getElementById("pz-num").textContent = c.peso ? num((+c.peso).toFixed(1)) : "";
+    const st = document.getElementById("pz-st"); st.textContent = c.peso ? "Anotado ✓" : ""; st.className = "pz-st" + (c.peso ? " ok" : "");
+    if (pin && pin !== document.activeElement) pin.value = c.peso ? num((+c.peso).toFixed(1)) : "";
+    if (pin) pin.placeholder = ult ? num(ult.v.toFixed(1)) : "0,0";
+    pzSync();
+    const media = t ? `Média 7 dias <b>${num(t.avg.toFixed(1))} kg</b>` + (t.delta != null && Math.abs(t.delta) >= 0.05 ? ` · ${t.delta > 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))} kg na semana` : "") : "";
+    const perto = !c.peso && naAcademia && gymPerson === person.id && academiaSalva() && hoje0;
+    const linhas = tem ? [media] : [perto ? "Perto da academia que você configurou. Registre seu peso." : ult ? `Última: <b>${num(ult.v.toFixed(1))} kg</b> ${ult.quando}` : "", futuro() ? "" : "Ao chegar, antes do treino e sem tênis."];
+    if (h) h.innerHTML = linhas.filter(Boolean).map(x => `<span>${x}</span>`).join("");
+  }
+  else if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
+  if (h && pz) {}
   else if (h) {
     const t = pesoTrend(person.id, logDate);
     const near = treinoPlus() && naAcademia && gymPerson === person.id && academiaSalva() && logDate === trainDay();
@@ -3290,8 +3308,13 @@ view.addEventListener("touchstart", e => { const w = e.target.closest("#weekstri
 view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y; swipe = null;
   if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); goDate(addDays(logDate, dx > 0 ? -7 : 7), dx > 0 ? "l" : "r"); } });
 // Dia futuro: dá para ver o treino previsto, mas não registrar
-view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
+view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "peso") { e.preventDefault(); salvaPeso(e.target); } });
+view.addEventListener("input", e => { if (e.target.id === "peso") pzSync(); });
+let pzRep = null, pzRepetiu = false;
+const pzPara = () => { clearTimeout(pzRep); clearInterval(pzRep); pzRep = null; };
+view.addEventListener("pointerdown", e => { const b = e.target.closest("[data-pstep]"); if (!b || futuro()) return; pzRepetiu = false; pzPara(); pzRep = setTimeout(() => { pzRepetiu = true; pzRep = setInterval(() => pesoPasso(+b.dataset.pstep), 90); }, 400); });
+for (const ev of ["pointerup", "pointercancel", "pointerleave"]) view.addEventListener(ev, pzPara);
 view.addEventListener("input", e => {
   if (e.target.closest(".lg")) onLogInput(e.target);
   const form = e.target.closest("[data-sup-form]"); if (form) form.querySelectorAll("input").forEach(el => el.setCustomValidity(""));
@@ -3303,7 +3326,7 @@ view.addEventListener("change", e => {
     if (!e.target.reportValidity()) return;
     registraSuplemento(sd, e.target.value === "" ? null : Math.round(e.target.valueAsNumber * 10) / 10);
     return; }
-  if (e.target.id === "peso") { salvaPeso(e.target); return; } if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); } });
+  if (e.target.id === "peso") return; if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); } });
 who.addEventListener("click", e=>{
   const btn = e.target.closest("[data-person]"); if(!btn) return;
   person = PEOPLE.find(p=>p.id===btn.dataset.person); store.set("person", person.id);
@@ -3361,7 +3384,8 @@ view.addEventListener("click", e=>{
   if (e.target.closest("[data-shareapp]")){ compartilhar({title: "Ficha de Treino", text: "Nosso app de treino: " + location.href.split("?")[0]}); return; }
   if (e.target.closest("[data-irpeso]")){ const pi = document.getElementById("peso"); if (pi) { pi.scrollIntoView({block: "center"}); pi.focus({preventScroll: true}); } return; }
   if (e.target.closest("[data-pesoedit]")){ pesoEditando = true; refreshExtras(); const pi = document.getElementById("peso"); if (pi) { pi.focus(); pi.select(); } return; }
-  if (e.target.closest("[data-pesosave]")){ const pi = document.getElementById("peso"); if (pi) salvaPeso(pi); return; }
+  if (e.target.closest("[data-pstep]")){ if (!pzRepetiu) pesoPasso(+e.target.closest("[data-pstep]").dataset.pstep); pzRepetiu = false; return; }
+  if (e.target.closest("[data-pesosave]")){ if (e.target.closest(".fechar")) { pesoEditando = false; refreshExtras(); return; } const pi = document.getElementById("peso"); if (pi) salvaPeso(pi); return; }
   if (e.target.closest("[data-pushon]")){ ativarPush(); return; }
   if (e.target.closest("[data-pushtest]")){ testarPush(); return; }
   if (e.target.closest("[data-pushoff]")){ desativarPush(); return; }
