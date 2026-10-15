@@ -469,6 +469,7 @@ body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-ou
 .cam-shot{width:70px;height:70px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.25);cursor:pointer;flex:none}
 .cam-shot.rec{background:var(--coral);border-color:var(--coral);border-radius:22px;transform:scale(.8)}
 .cam-t{min-width:6.5em;text-align:right;font-size:.82rem;font-weight:800;font-variant-numeric:tabular-nums}
+.sd.feriado i{background:none;border:1.5px dashed var(--line);color:var(--muted);font-size:.7rem}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -865,7 +866,7 @@ const TreinoCore = (() => {
   const timed = p => /\bs\b|seg|min|\//i.test(p.reps);
   const e1 = s => valid(s) && s.kg > 0 && s.reps <= 12 ? s.kg * (1 + s.reps / 30) : null;
   const add = (s,n) => { const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10); };
-  const weekday = s => { const n=new Date(s+'T12:00:00Z').getUTCDay();return n>0&&n<6; };
+  const weekday = s => { const n=new Date(s+'T12:00:00Z').getUTCDay();return n>0&&n<6&&!(typeof ehFeriado==='function'&&ehFeriado(s)); };   // feriado nacional conta como fim de semana
   function history(logs, person, name, before, day) {
     return Object.values(logs).filter(d => d && d.person===person && d.date<before && (!day || d.day===day) && d.ex?.[name]?.sets?.some(s=>s.done||s.kg!==''&&s.kg!=null||s.reps!==''&&s.reps!=null)).sort((a,b)=>a.date.localeCompare(b.date));
   }
@@ -1509,7 +1510,11 @@ try { for (let k = 0; k < localStorage.length; k++) { const key = localStorage.k
 const WD = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 const parseDate = s => new Date(+s.slice(0,4), +s.slice(5,7) - 1, +s.slice(8,10));
 const fmtDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-const dayIdFor = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5 ? "d" + w : null; };
+// Feriados nacionais: contam como fim de semana (sem treino previsto e sem quebrar a ofensiva). Carnaval e Corpus Christi são ponto facultativo e não entram.
+var FERIADOS_BR = new Set(["2026-01-01","2026-04-03","2026-04-21","2026-05-01","2026-09-07","2026-10-12","2026-11-02","2026-11-15","2026-11-20","2026-12-25",
+  "2027-01-01","2027-03-26","2027-04-21","2027-05-01","2027-09-07","2027-10-12","2027-11-02","2027-11-15","2027-11-20","2027-12-25"]);
+function ehFeriado(s){ return FERIADOS_BR.has(s); }
+const dayIdFor = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5 && !ehFeriado(s) ? "d" + w : null; };
 const dayOf = (p, s) => LOGS[docId(p, s)]?.day || dayIdFor(s);   // treino trocado no dia (ex.: fez o de quarta na quinta) vale mais que o calendário
 // Data da semana em que um treino foi feito (ou a data prevista no calendário)
 const dateOfDay = (p, dId, ref = logDate) => { const wk = weekOf(ref), tem = x => LOGS[docId(p, x)]?.day === dId; return wk.find(x => tem(x) && trained(p, x)) || wk.find(tem) || wk[+dId.slice(1) - 1]; };
@@ -1665,7 +1670,7 @@ function refreshToday(){
   const oldStreak = document.querySelector?.("section.streak"); if (oldStreak && treinoPlus()) { oldStreak.outerHTML = renderStreak(); FogoUI.mount(document, calmo()); }
   const t = treinoProg(person.id, logDate), box = document.getElementById("todaytrain");
   box.innerHTML = gymBanner() + (!person.days ? `<div class="panel"><p>A ficha ${person.art} ${person.name} ainda está sendo montada.</p></div>`
-    : !t ? `<div class="panel"><h3>Dia de descanso</h3><p>Sábado e domingo não têm treino. Capriche na água e no sono.</p></div>`
+    : !t ? (ehFeriado(logDate) ? `<div class="panel"><h3>Feriado</h3><p>Feriado nacional: não tem treino previsto e a ofensiva fica guardada, como no fim de semana. Se a academia abrir e vocês treinarem, use "Trocar o treino deste dia" na tela Treino.</p></div>` : `<div class="panel"><h3>Dia de descanso</h3><p>Sábado e domingo não têm treino. Capriche na água e no sono.</p></div>`)
     : (() => { const exs = t.d.ex.filter(e => e[4]), min = Math.round(exs.reduce((a, e) => a + e[1] * (40 + e[4]), 0) / 60), feito = t.total && t.done >= t.total, st = feito ? "feito" : t.done ? "andando" : "afazer", hj = logDate === trainDay();
       const doc = LOGS[docId(person.id, logDate)], kc = doc && trained(person.id, logDate) ? sessionStats(person.id, doc).kcal : null;
       return `<div class="today-training"><button type="button" class="todaycard ${st}" data-screen="treino" style="--pc:var(${t.d.plate})">
@@ -1739,7 +1744,7 @@ function trained(p, s){
   const doc = LOGS[docId(p, s)];
   return !!doc && Object.values(doc.ex || {}).some(e => (e.sets || []).some(x => treinoPlus() ? x.done === true : x.done || filled(x)));
 }
-const isWeekday = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5; };
+const isWeekday = s => { const w = parseDate(s).getDay(); return w >= 1 && w <= 5 && !ehFeriado(s); };
 function streakOf(p){
   if (treinoPlus()) return TreinoCore.streak(addDays(trainDay(), -1), d => estadoDia(p, d), false);
   const today = trainDay(), d = parseDate(today); let n = 0;
@@ -1839,8 +1844,8 @@ function flameSvg(n, event = "", key = ""){ return FogoUI.html(n, event, key); }
 function renderStreak(){
   const p = person.id, n = streakOf(p), best = bestStreak(p), today = trainDay();
   const week = weekOf(today).slice(0, 5).map(s => {
-    const st = trained(p, s) ? "done" : justificado(p, s) ? "excused" : s === today ? "today" : s < today ? "miss" : "future";
-    return `<span class="sd ${st}" aria-label="${WD[parseDate(s).getDay()]}: ${{done: "treinou", excused: "dia justificado", today: "hoje", miss: "faltou", future: "ainda não chegou"}[st]}"><i>${st === "done" ? "✓" : st === "miss" ? "×" : st === "excused" ? "−" : ""}</i><em>${WD[parseDate(s).getDay()]}</em></span>`;
+    const st = trained(p, s) ? "done" : ehFeriado(s) ? "feriado" : justificado(p, s) ? "excused" : s === today ? "today" : s < today ? "miss" : "future";
+    return `<span class="sd ${st}" aria-label="${WD[parseDate(s).getDay()]}: ${{done: "treinou", feriado: "feriado", excused: "dia justificado", today: "hoje", miss: "faltou", future: "ainda não chegou"}[st]}"><i>${st === "done" ? "✓" : st === "miss" ? "×" : st === "excused" ? "−" : st === "feriado" ? "F" : ""}</i><em>${WD[parseDate(s).getDay()]}</em></span>`;
   }).join("");
   const h = nowFn().getHours(), falta = 24 - h, risco = isWeekday(today) && !trained(p, today) && !justificado(p, today) && n > 0;
   const msg = !n ? (trained(p, today) ? (best ? "Treino registrado. Sua chama volta quando o dia terminar." : "Treino registrado. Sua primeira chama acende quando o dia terminar.") : justificado(p, today) ? "Hoje é recuperação. Sua chama espera o próximo treino." : !isWeekday(today) ? "Descanse hoje. Segunda é dia de acender sua chama." : best ? "A brasa ficou. Seu próximo treino começa uma nova ofensiva." : "Sua próxima chama começa com um treino.")
