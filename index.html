@@ -191,8 +191,24 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .clock{font-family:var(--f-mono);font-size:1.5rem;font-weight:600;min-width:4.4ch;font-variant-numeric:tabular-nums}
 .clock.zero{color:var(--lime)}
 .timer button{flex:1 1 0;min-width:0;font:inherit;font-weight:700;font-size:.85rem;background:var(--surface2);color:var(--ink);border:0;border-radius:10px;padding:9px 2px;cursor:pointer}
-.bar{position:absolute;left:0;right:0;bottom:0;height:3px}
-.bar i{display:block;height:100%;width:0;background:var(--lime)}
+.tm-pre-l{font-size:.78rem;font-weight:800;color:var(--muted);padding:0 4px;white-space:nowrap}
+.timer.big{background:none;border:0;box-shadow:none;padding:0;overflow:visible}
+.tm-big{--a:360deg;--tm:#FF9F0A;padding:4px;border-radius:36px;background:conic-gradient(var(--tm) var(--a),rgba(255,255,255,.14) 0);box-shadow:0 10px 30px rgba(0,0,0,.55)}
+.tm-big.zero{--tm:var(--lime);--a:360deg}
+.tm-in{display:flex;align-items:center;gap:12px;background:#000;border-radius:32px;padding:14px 16px}
+.timer .tm-b{flex:none;width:58px;height:58px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;padding:0}
+.tm-b svg{width:24px;height:24px}
+.timer .tm-pause{background:#3A3A3C;color:#fff}
+.timer .tm-x{background:#5C1D1B;color:#FF453A}
+.tm-mid{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;line-height:1.05}
+.tm-mid small{display:flex;align-items:center;gap:4px;font-size:.8rem;font-weight:700;color:#8E8E93}
+.tm-mid small svg{width:13px;height:13px}
+.tm-mid .clock{font-family:var(--f-display,inherit);font-size:2.7rem;font-weight:800;color:#fff;letter-spacing:-.02em;min-width:0}
+.tm-big.zero .clock{color:var(--lime)}
+.tm-mid span{font-size:.8rem;font-weight:700;color:#8E8E93;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-big.pausado .clock{opacity:.55}
+body.mov .tm-big.zero{animation:tmPulse 1s ease-in-out 3}
+@keyframes tmPulse{50%{transform:scale(1.03)}}
 footer{color:var(--muted);font-size:.78rem;text-align:center}
 /* Animações: entrada de tela, crescimento de barras e linhas, toques */
 @keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
@@ -924,16 +940,20 @@ body.mov .fogo-visual[data-fogo="brasa"]:not([data-fogo-playing]) .brasa-faisca{
 </div>
 
 <div class="timer" id="timer" role="region" aria-label="Timer de descanso" hidden>
-  <div class="timer-in">
-    <span class="lbl">Descanso</span>
-    <span class="clock" id="clock">0:00</span>
+  <div class="tm-big" id="tmbig" hidden>
+    <div class="tm-in">
+      <button type="button" class="tm-b tm-pause" id="tmpause" aria-label="Pausar descanso"></button>
+      <div class="tm-mid" aria-live="off"><small id="tmfim"></small><b class="clock" id="clock">0:00</b><span id="tmlbl">Descanso</span></div>
+      <button type="button" class="tm-b tm-x" id="stop" aria-label="Encerrar descanso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+  <div class="timer-in" id="tmpre">
+    <span class="tm-pre-l">Descanso</span>
     <button type="button" data-t="60">60s</button>
     <button type="button" data-t="90">90s</button>
     <button type="button" data-t="120">2min</button>
     <button type="button" data-t="180">3min</button>
-    <button type="button" id="stop">Parar</button>
   </div>
-  <div class="bar"><i id="barfill"></i></div>
 </div>
 
 <nav class="dock" id="dock" aria-label="Menu">
@@ -1683,6 +1703,7 @@ const GOALS = {
   rafael: {aguaTreino: 3250, aguaDescanso: 2250, sono: 8, sonoMin: 7},
   laura:  {aguaTreino: 3250, aguaDescanso: 2250, sono: 8, sonoMin: 7},
   laysa:  {aguaTreino: 3000, aguaDescanso: 2000, sono: 8, sonoMin: 7},
+  davy:   {aguaTreino:3000, aguaDescanso:2500, sono:8, sonoMin:7},
   a3:     {aguaTreino: 3000, aguaDescanso: 2000, sono: 8, sonoMin: 7}
 };
 const CHK = {}, chkPending = {}, chkTimers = {}, chkChains = {}, chkStatus = {};
@@ -2261,10 +2282,12 @@ function registraSuplemento(campo, valor){
 // Média das pesagens de seg a sex da semana anterior (mín. 3; senão das 2 semanas anteriores; senão o da avaliação), recalculada toda segunda.
 const DESCONTO_PESO = 1.5;
 const METAS_REGRA = {
-  ref: {rafael: 63, laura: 64, laysa: 55, a3: null},
+  ref: {rafael: 63, laura: 64, laysa: 55, davy: 92, a3: null},
+  desconto: {davy: 0},   // Davy se pesa em casa, de manhã, em jejum e sem roupa: sem o desconto da balança da academia
   rafael: {gkg: 2.2, faixa: [2.0, 2.2], base: [1860, 1960], fator: 16.5, peso: [59.2, 66.8], protMax: 150, kcal: [2800, 3100]},
   laura:  {gkg: 2.2, faixa: [2.0, 2.3], base: [890, 990],   fator: 16.5, peso: [60.2, 67.8], protMax: 160, kcal: [1900, 2150]},
   laysa:  {gkg: 2.0, faixa: [1.8, 2.2], base: [1240, 1340], fator: 16.5, peso: [51.7, 58.3], protMax: 130, kcal: [2050, 2350]},
+  davy:   {gkg:1.5, faixa:[1.3, 1.7], base:[580, 780], fator:16.5, peso:[80, 96], protMax:150, kcal:[1900, 2300]},
   a3:     {gkg: 1.8, faixa: [1.6, 2.2], base: null,         fator: null, peso: [40, 100],     protMax: 160, kcal: null}
 };
 const r5 = v => Math.round(v / 5) * 5, r50 = v => Math.round(v / 50) * 50, clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -2272,7 +2295,7 @@ function pesoMeta(p, s = logDate){
   const R = METAS_REGRA[p] || METAS_REGRA.a3, ref = METAS_REGRA.ref[p] ?? null, seg = weekOf(s)[0];
   const ok = v => v >= 35 && v <= 150 && (ref == null || Math.abs(v - ref) / ref <= 0.15);
   const uteis = sem => weekOf(addDays(seg, -7 * sem)).slice(0, 5);
-  const janela = sems => sems.flatMap(uteis).map(d => pesoAt(p, d)).filter(v => v).map(v => v - DESCONTO_PESO).filter(ok);
+  const janela = sems => sems.flatMap(uteis).map(d => pesoAt(p, d)).filter(v => v).map(v => v - (METAS_REGRA.desconto[p] ?? DESCONTO_PESO)).filter(ok);
   let w = janela([1]), fonte = "7";
   if (w.length < 3) { w = janela([1, 2]); fonte = "14"; }
   if (w.length < 3) { if (ref == null && !w.length) return null; w = ref != null ? [ref] : w; fonte = ref != null ? "ref" : "14"; }
@@ -2290,7 +2313,7 @@ function metas(p, s = logDate){
 // PROT[p] e KCAL[p] continuam funcionando como antes, agora calculados
 const PROT = new Proxy({}, {get: (_, p) => { const m = metas(p); return m.faixa ? `${m.faixa[0]}–${m.faixa[1]} g` : undefined; }});
 const KCAL = new Proxy({}, {get: (_, p) => { const m = metas(p); return m.kcal ? `${m.kcal[0].toLocaleString("pt-BR")}–${m.kcal[1].toLocaleString("pt-BR")} kcal` : undefined; }});
-const META_PESO = {rafael: {txt: "+0,16 a +0,32 kg por semana", lo: 0.16, hi: 0.32}, laura: {txt: "−0,15 a −0,3 kg por semana", lo: -0.3, hi: -0.15}, laysa: {txt: "estável (reagir só se a média andar 2–3 semanas)", lo: -0.15, hi: 0.15}};
+const META_PESO = {davy: {"txt":"−0,4 a −0,8 kg por semana","lo":-0.8,"hi":-0.4}, rafael: {txt: "+0,16 a +0,32 kg por semana", lo: 0.16, hi: 0.32}, laura: {txt: "−0,15 a −0,3 kg por semana", lo: -0.3, hi: -0.15}, laysa: {txt: "estável (reagir só se a média andar 2–3 semanas)", lo: -0.15, hi: 0.15}};
 function setChk(patch){
   if (futuro()) return avisaFuturo();
   const id = docId(person.id, logDate);
@@ -2312,10 +2335,10 @@ const DIETA_DESC = {1: "comi o que estava previsto", 0.5: "uma refeição fora d
 // Proteína por refeição e comida em volta do treino das 21h — conteúdo do agente de nutrição (2026-10-09)
 const NUTRI = {
   antes: {titulo: "Antes do treino", tag: "coma até 19h30", itens: ["Até 19h30: prato normal — arroz, feijão, frango ou carne, salada", "Até 20h30, se bater fome: banana + pão com queijo, ou iogurte com aveia", "Cafeína só até 18h: depois atrapalha o sono"], porque: "Treino de 2 h pede energia; comer 1h30 a 3 h antes dá tempo de digerir.",
-    pessoa: {rafael: "Prato cheio e faça o lanche das 20h30: você precisa comer mais.", laura: "Prato normal, sem exagero. Guarde calorias para o pós-treino.", laysa: "Não pule o pré: treinar de estômago vazio derruba a força.", a3: "Prato normal até 19h30."}},
+    pessoa: {rafael: "Prato cheio e faça o lanche das 20h30: você precisa comer mais.", laura: "Prato normal, sem exagero. Guarde calorias para o pós-treino.", laysa: "Não pule o pré: treinar de estômago vazio derruba a força.", davy: "Não treine em jejum: 1 a 2 h antes, algo leve (1 fruta, iogurte ou pão com ovo) e 1 copo de água. Com enjoo, só um pouco.", a3: "Prato normal até 19h30."}},
   durante: {titulo: "Durante o treino", tag: "água", itens: ["Leve 500 ml a 1 L de água e beba aos goles entre as séries", "Suou muito ou está calor: isotônico ou eletrólito"]},
   depois: {titulo: "Depois do treino", tag: "ao chegar em casa", itens: ["Leite ou iogurte + 1 scoop de whey + banana ou aveia", "Pão com ovos mexidos ou queijo + 1 copo de leite", "Prato menor: arroz, feijão e frango"], evitar: "Evite cafeína, álcool (corta o ganho de músculo e piora o sono), fritura, prato pesado e muito líquido de uma vez.",
-    pessoa: {rafael: "1 bolinha (~35 g) + carboidrato à vontade (2 pães ou 1 prato de arroz).", laura: "1 bolinha (~35 g) + carboidrato pequeno (1 fruta ou 1 pão).", laysa: "1 bolinha (~28 g) + carboidrato médio (1 pão ou 1 banana com aveia).", a3: "1 bolinha (~25 g) + 1 fruta ou 1 pão."}},
+    pessoa: {rafael: "1 bolinha (~35 g) + carboidrato à vontade (2 pães ou 1 prato de arroz).", laura: "1 bolinha (~35 g) + carboidrato pequeno (1 fruta ou 1 pão).", laysa: "1 bolinha (~28 g) + carboidrato médio (1 pão ou 1 banana com aveia).", davy: "1 bolinha (~35 g) na próxima refeição do cardápio, proteína primeiro. Treino de 30 min não pede lanche a mais.", a3: "1 bolinha (~25 g) + 1 fruta ou 1 pão."}},
   creatina: "Creatina 3–5 g por dia, em qualquer horário, inclusive no fim de semana."
 };
 // Refeições do dia = cardápio do agente de nutrição ajustado à meta calculada pelo peso
@@ -2468,7 +2491,7 @@ function refreshExtras(){
     pzSync();
     const media = t ? `Média 7 dias <b>${num(t.avg.toFixed(1))} kg</b>` + (t.delta != null && Math.abs(t.delta) >= 0.05 ? ` · ${t.delta > 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))} kg na semana` : "") : "";
     const perto = !c.peso && naAcademia && gymPerson === person.id && academiaSalva() && hoje0;
-    const linhas = tem ? [media] : [perto ? "Perto da academia que você configurou. Registre seu peso." : ult ? `Última: <b>${num(ult.v.toFixed(1))} kg</b> ${ult.quando}` : "", futuro() ? "" : "Ao chegar, antes do treino e sem tênis."];
+    const linhas = tem ? [media] : [perto ? "Perto da academia que você configurou. Registre seu peso." : ult ? `Última: <b>${num(ult.v.toFixed(1))} kg</b> ${ult.quando}` : "", futuro() ? "" : person.casa ? "De manhã, em jejum, depois do banheiro e sem roupa." : "Ao chegar, antes do treino e sem tênis."];
     if (h) h.innerHTML = linhas.filter(Boolean).map(x => `<span>${x}</span>`).join("");
   }
   else if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
@@ -2961,7 +2984,7 @@ function metaPeso(p){
   return t.endsWith(" por semana") ? [t.replace(" por semana", ""), "por semana"] : m ? [m[1], m[2]] : [t, ""];
 }
 // Cardápio de exemplo — conteúdo do agente de nutrição (2026-10-09)
-const CARDAPIO = {"pessoas":{"rafael":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["2 pães franceses com 1 col. de chá de manteiga em cada","2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (250 ml) com café","1 banana (pode comer às 10h)"],"kcal":790,"prot":34},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["8 col. de sopa de arroz + 1 concha de feijão","1 filé pequeno de frango grelhado (~70 g)","Salada à vontade + 1 col. de sopa de azeite"],"kcal":540,"prot":32},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 pão francês com 1 col. de sopa cheia de pasta de amendoim","1 banana ou outra fruta","1 copo grande de suco de uva integral (300 ml)"],"kcal":540,"prot":10},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["7 col. de sopa de arroz + 1 concha de feijão","3 col. de sopa cheias de carne moída (~70 g)","Legumes refogados à vontade"],"kcal":490,"prot":32},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + 2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (300 ml)","1 banana"],"kcal":580,"prot":32}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["2 xícaras de cuscuz de milho com 1 col. de chá de manteiga","3 ovos mexidos","Café com leite integral (250 ml)","1 banana"],"kcal":730,"prot":32},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["8 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno de patinho (~60 g)","2 col. de sopa de farofa + salada com 1 col. de sopa de azeite","1 copo de suco de laranja natural (250 ml)"],"kcal":780,"prot":33},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + ½ lata de atum + 1 col. de sopa de requeijão","Vitamina: 250 ml de leite integral + 1 banana + 1 col. de sopa de mel"],"kcal":555,"prot":32},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["2 pegadores de macarrão (~250 g cozido) com molho de tomate","3 col. de sopa de carne moída (~60 g) no molho"],"kcal":535,"prot":33},{"hora":"22h30","nome":"Ceia (opcional)","bolinha":false,"itens":["1 copo de leite integral (250 ml) com 2 col. de sopa de achocolatado","4 biscoitos maisena"],"kcal":310,"prot":10}],"total_treino":{"kcal":2940,"prot":140},"total_descanso":{"kcal":2910,"prot":140},"dicas":["Você come pouco: beba calorias. Leite integral, suco de uva integral e vitamina entram fácil e não enchem.","Pese-se de manhã, 1–2 vezes por semana. Se não subir uns 0,2 kg por semana em 2–3 semanas, some 1 copo de leite integral + 1 banana por dia.","Pós-treino rápido e cama. Dormir 5–6 h segura seu ganho. Tente chegar a 7–8 h."]},"laura":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["3 ovos mexidos","1 pão francês","1 fatia de queijo minas frescal","1 copo de leite desnatado (250 ml) com café"],"kcal":520,"prot":35},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","1 filé médio de frango grelhado (~90 g)","Salada à vontade + 1 col. de chá de azeite"],"kcal":430,"prot":35},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 banana amassada com 2 col. de sopa de aveia e canela","1 laranja"],"kcal":250,"prot":5},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["4 col. de sopa de arroz (ou 1 batata-doce média) + 1 concha de feijão","1 filé médio de tilápia (~120 g)","Legumes com 1 col. de chá de azeite"],"kcal":435,"prot":35},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + ½ lata de atum bem servida + 1 col. de sopa de requeijão light","1 copo de leite desnatado (250 ml)"],"kcal":340,"prot":35}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["Crepioca (2 ovos + 2 col. de sopa de goma) com 2 col. de frango desfiado e 1 fatia de queijo minas","1 fatia de mamão com 1 col. de sopa de aveia","Café preto ou pingado"],"kcal":475,"prot":35},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["6 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno de patinho (~70 g)","Salada à vontade + 1 col. de sopa de azeite","1 fruta de sobremesa"],"kcal":585,"prot":35},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + 4 col. de sopa de frango desfiado + 1 col. de sopa de requeijão light","1 copo de suco de laranja natural (250 ml)"],"kcal":410,"prot":35},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["1 batata-doce grande (~200 g) ou 5 col. de sopa de arroz","1 filé médio de tilápia + 1 concha de feijão","Legumes ou salada + 1 col. de sopa de azeite"],"kcal":480,"prot":35}],"total_treino":{"kcal":1975,"prot":145},"total_descanso":{"kcal":1950,"prot":140},"dicas":["Proteína primeiro e metade do prato de salada ou legumes. Enche, tem poucas calorias e protege o músculo no déficit.","O peso oscila. Olhe a média de 2–3 semanas e a cintura. Perder de 0,15 a 0,3 kg por semana está ótimo.","Se a menstruação falhar ou o cansaço ficar forte e não passar, avise e procure um médico. Não é só \"comer mais\"."]},"laysa":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["1 pão francês com 1 col. de chá de manteiga","2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (250 ml) com café"],"kcal":535,"prot":28},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["6 col. de sopa de arroz + 1 concha de feijão","1 filé pequeno de frango (~60 g, palma da mão)","Salada à vontade + 1 col. de sopa de azeite"],"kcal":460,"prot":28},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 banana amassada com 2 col. de sopa de aveia e 1 col. de chá de mel","1 punhado pequeno de amendoim (15 g)"],"kcal":280,"prot":8},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","2 col. de sopa cheias de carne moída (~60 g)","Legumes com 1 col. de chá de azeite"],"kcal":430,"prot":28},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + 2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (200 ml)"],"kcal":450,"prot":28}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["1½ xícara de cuscuz de milho com 1 col. de chá de manteiga","2 ovos mexidos + 1 fatia de muçarela","Café com leite integral (200 ml)","1 laranja"],"kcal":625,"prot":28},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["7 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno (~50 g)","2 col. de sopa de farofa + salada com 1 col. de sopa de azeite"],"kcal":610,"prot":28},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + ½ lata de atum + 1 col. de sopa de requeijão","Vitamina: 200 ml de leite integral + 1 banana"],"kcal":465,"prot":30},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["1 pegador e meio de macarrão (~200 g cozido) com molho de tomate","2 col. de sopa de carne moída (~50 g) no molho","1 col. de sopa de queijo ralado"],"kcal":465,"prot":28}],"total_treino":{"kcal":2155,"prot":120},"total_descanso":{"kcal":2165,"prot":114},"dicas":["Você já é magra: definir = ganhar músculo. Não corte comida e não pule o lanche da tarde.","A balança subindo devagar (0,1 a 0,25 kg por semana) está certo. Se ficar parada por 3 semanas, some 1 banana com 1 col. de pasta de amendoim.","Se a menstruação falhar ou o cansaço ficar forte e não passar, avise e procure um médico."]},"a3":{"texto":"Em breve! Seu cardápio sai depois da sua avaliação (peso, altura e objetivo). Até lá, siga o básico: proteína em toda refeição, água e sono."}},"trocas":[{"grupo":"Carboidrato","base":"4 col. de sopa de arroz (~100 g, ~130 kcal)","itens":["1 pão francês","2 fatias de pão de forma","1 pegador de macarrão (~90 g cozido)","1 batata-doce média (~150 g)","1 xícara de cuscuz de milho","1 tapioca pequena (3 col. de goma) ou 1 pedaço médio de mandioca (~100 g)"]},{"grupo":"Proteína","base":"1 filé de frango grelhado (~100 g, ~30 g de proteína)","itens":["3–4 col. de sopa cheias de carne moída magra (~100 g)","1 lata de atum em água, escorrido","1 filé médio de tilápia (~120 g)","5 col. de sopa de frango desfiado","2 sobrecoxas sem pele","4 ovos inteiros (~25 g, com mais gordura)"]},{"grupo":"Gordura / lanche","base":"1 col. de sopa de pasta de amendoim (~90 kcal)","itens":["1 punhado pequeno de amendoim (15 g)","1 col. de sopa de azeite","3 col. de sopa de abacate","3 castanhas-do-pará","2 col. de chá de manteiga","1½ fatia de muçarela"]},{"grupo":"Fruta","base":"1 banana prata (~70 kcal)","itens":["1 maçã média","1 laranja média","1 fatia média de mamão","1 fatia média de melancia","½ manga"]}],"aviso":"Cardápio de exemplo, com valores aproximados. Não é orientação médica individual: em caso de doença, remédio ou sintoma, procure um médico ou nutricionista."};
+const CARDAPIO = {"pessoas":{"rafael":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["2 pães franceses com 1 col. de chá de manteiga em cada","2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (250 ml) com café","1 banana (pode comer às 10h)"],"kcal":790,"prot":34},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["8 col. de sopa de arroz + 1 concha de feijão","1 filé pequeno de frango grelhado (~70 g)","Salada à vontade + 1 col. de sopa de azeite"],"kcal":540,"prot":32},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 pão francês com 1 col. de sopa cheia de pasta de amendoim","1 banana ou outra fruta","1 copo grande de suco de uva integral (300 ml)"],"kcal":540,"prot":10},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["7 col. de sopa de arroz + 1 concha de feijão","3 col. de sopa cheias de carne moída (~70 g)","Legumes refogados à vontade"],"kcal":490,"prot":32},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + 2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (300 ml)","1 banana"],"kcal":580,"prot":32}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["2 xícaras de cuscuz de milho com 1 col. de chá de manteiga","3 ovos mexidos","Café com leite integral (250 ml)","1 banana"],"kcal":730,"prot":32},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["8 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno de patinho (~60 g)","2 col. de sopa de farofa + salada com 1 col. de sopa de azeite","1 copo de suco de laranja natural (250 ml)"],"kcal":780,"prot":33},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + ½ lata de atum + 1 col. de sopa de requeijão","Vitamina: 250 ml de leite integral + 1 banana + 1 col. de sopa de mel"],"kcal":555,"prot":32},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["2 pegadores de macarrão (~250 g cozido) com molho de tomate","3 col. de sopa de carne moída (~60 g) no molho"],"kcal":535,"prot":33},{"hora":"22h30","nome":"Ceia (opcional)","bolinha":false,"itens":["1 copo de leite integral (250 ml) com 2 col. de sopa de achocolatado","4 biscoitos maisena"],"kcal":310,"prot":10}],"total_treino":{"kcal":2940,"prot":140},"total_descanso":{"kcal":2910,"prot":140},"dicas":["Você come pouco: beba calorias. Leite integral, suco de uva integral e vitamina entram fácil e não enchem.","Pese-se de manhã, 1–2 vezes por semana. Se não subir uns 0,2 kg por semana em 2–3 semanas, some 1 copo de leite integral + 1 banana por dia.","Pós-treino rápido e cama. Dormir 5–6 h segura seu ganho. Tente chegar a 7–8 h."]},"laura":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["3 ovos mexidos","1 pão francês","1 fatia de queijo minas frescal","1 copo de leite desnatado (250 ml) com café"],"kcal":520,"prot":35},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","1 filé médio de frango grelhado (~90 g)","Salada à vontade + 1 col. de chá de azeite"],"kcal":430,"prot":35},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 banana amassada com 2 col. de sopa de aveia e canela","1 laranja"],"kcal":250,"prot":5},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["4 col. de sopa de arroz (ou 1 batata-doce média) + 1 concha de feijão","1 filé médio de tilápia (~120 g)","Legumes com 1 col. de chá de azeite"],"kcal":435,"prot":35},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + ½ lata de atum bem servida + 1 col. de sopa de requeijão light","1 copo de leite desnatado (250 ml)"],"kcal":340,"prot":35}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["Crepioca (2 ovos + 2 col. de sopa de goma) com 2 col. de frango desfiado e 1 fatia de queijo minas","1 fatia de mamão com 1 col. de sopa de aveia","Café preto ou pingado"],"kcal":475,"prot":35},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["6 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno de patinho (~70 g)","Salada à vontade + 1 col. de sopa de azeite","1 fruta de sobremesa"],"kcal":585,"prot":35},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + 4 col. de sopa de frango desfiado + 1 col. de sopa de requeijão light","1 copo de suco de laranja natural (250 ml)"],"kcal":410,"prot":35},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["1 batata-doce grande (~200 g) ou 5 col. de sopa de arroz","1 filé médio de tilápia + 1 concha de feijão","Legumes ou salada + 1 col. de sopa de azeite"],"kcal":480,"prot":35}],"total_treino":{"kcal":1975,"prot":145},"total_descanso":{"kcal":1950,"prot":140},"dicas":["Proteína primeiro e metade do prato de salada ou legumes. Enche, tem poucas calorias e protege o músculo no déficit.","O peso oscila. Olhe a média de 2–3 semanas e a cintura. Perder de 0,15 a 0,3 kg por semana está ótimo.","Se a menstruação falhar ou o cansaço ficar forte e não passar, avise e procure um médico. Não é só \"comer mais\"."]},"laysa":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["1 pão francês com 1 col. de chá de manteiga","2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (250 ml) com café"],"kcal":535,"prot":28},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["6 col. de sopa de arroz + 1 concha de feijão","1 filé pequeno de frango (~60 g, palma da mão)","Salada à vontade + 1 col. de sopa de azeite"],"kcal":460,"prot":28},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 banana amassada com 2 col. de sopa de aveia e 1 col. de chá de mel","1 punhado pequeno de amendoim (15 g)"],"kcal":280,"prot":8},{"hora":"19h30","nome":"Pré-treino (jantar)","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","2 col. de sopa cheias de carne moída (~60 g)","Legumes com 1 col. de chá de azeite"],"kcal":430,"prot":28},{"hora":"00h15","nome":"Pós-treino","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + 2 ovos mexidos + 1 fatia de muçarela","1 copo de leite integral (200 ml)"],"kcal":450,"prot":28}],"descanso":[{"hora":"09h","nome":"Café","bolinha":true,"itens":["1½ xícara de cuscuz de milho com 1 col. de chá de manteiga","2 ovos mexidos + 1 fatia de muçarela","Café com leite integral (200 ml)","1 laranja"],"kcal":625,"prot":28},{"hora":"13h","nome":"Almoço","bolinha":true,"itens":["7 col. de sopa de arroz + 1 concha de feijão","1 bife pequeno (~50 g)","2 col. de sopa de farofa + salada com 1 col. de sopa de azeite"],"kcal":610,"prot":28},{"hora":"17h","nome":"Lanche","bolinha":true,"itens":["Sanduíche: 2 fatias de pão de forma + ½ lata de atum + 1 col. de sopa de requeijão","Vitamina: 200 ml de leite integral + 1 banana"],"kcal":465,"prot":30},{"hora":"20h","nome":"Jantar","bolinha":true,"itens":["1 pegador e meio de macarrão (~200 g cozido) com molho de tomate","2 col. de sopa de carne moída (~50 g) no molho","1 col. de sopa de queijo ralado"],"kcal":465,"prot":28}],"total_treino":{"kcal":2155,"prot":120},"total_descanso":{"kcal":2165,"prot":114},"dicas":["Você já é magra: definir = ganhar músculo. Não corte comida e não pule o lanche da tarde.","A balança subindo devagar (0,1 a 0,25 kg por semana) está certo. Se ficar parada por 3 semanas, some 1 banana com 1 col. de pasta de amendoim.","Se a menstruação falhar ou o cansaço ficar forte e não passar, avise e procure um médico."]},"a3":{"texto":"Em breve! Seu cardápio sai depois da sua avaliação (peso, altura e objetivo). Até lá, siga o básico: proteína em toda refeição, água e sono."},"davy":{"treino":[{"hora":"07h30","nome":"Café","bolinha":true,"itens":["3 ovos mexidos com 1 col. de chá de óleo","1 pão francês (ou 2 fatias de pão integral)","Café com 150 ml de leite, sem açúcar","1 banana"],"kcal":575,"prot":28},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["5 col. de sopa de arroz + 1 concha de feijão","1 filé de frango do tamanho da palma da mão (~100 g)","Salada e legumes cozidos à vontade + 1 col. de chá de azeite ou óleo"],"kcal":535,"prot":43},{"hora":"16h","nome":"Lanche da tarde","bolinha":true,"itens":["Sanduíche: 2 fatias de pão integral + ½ lata de sardinha amassada com tomate e cebola","1 fruta (laranja, maçã ou banana)"],"kcal":315,"prot":18},{"hora":"19h30","nome":"Jantar","bolinha":true,"itens":["4 col. de sopa de arroz (ou 1 batata média cozida) + 1 concha de feijão","4 col. de sopa cheias de carne moída (~100 g)","Legumes refogados à vontade (abobrinha, cenoura, repolho ou chuchu) com 1 col. de chá de óleo"],"kcal":535,"prot":39},{"hora":"21h30","nome":"Ceia (leve)","bolinha":false,"itens":["Mingau rápido: 200 ml de leite + 2 col. de sopa de aveia + canela, sem açúcar"],"kcal":240,"prot":10}],"descanso":[{"hora":"08h","nome":"Café","bolinha":true,"itens":["1 xícara de cuscuz de milho","3 ovos mexidos com 1 col. de chá de óleo + 1 fatia de muçarela","Café com 200 ml de leite, sem açúcar"],"kcal":585,"prot":32},{"hora":"12h30","nome":"Almoço","bolinha":true,"itens":["4 col. de sopa de arroz + 1 concha de feijão","1 sobrecoxa de frango assada, sem pele (~100 g de carne)","Salada e legumes à vontade + 1 col. de chá de azeite ou óleo"],"kcal":585,"prot":41},{"hora":"16h","nome":"Lanche da tarde","bolinha":false,"itens":["1 pote de iogurte natural (170 g) com 2 col. de sopa de aveia e 1 fruta picada","1 punhado pequeno de amendoim torrado (~20 g)"],"kcal":400,"prot":17},{"hora":"19h30","nome":"Jantar","bolinha":true,"itens":["Macarrão com atum: 1 pegador e meio de macarrão (~160 g cozido) + 1 lata de atum em água, escorrido","Molho de tomate caseiro com abobrinha ou cenoura ralada + 1 col. de chá de azeite"],"kcal":480,"prot":40},{"hora":"21h30","nome":"Ceia (leve)","bolinha":false,"itens":["1 copo de leite (250 ml), morno se preferir"],"kcal":150,"prot":8}],"total_treino":{"kcal":2200,"prot":138},"total_descanso":{"kcal":2200,"prot":138},"dicas":["Proteína primeiro: comece pelo ovo, frango, carne ou peixe. Se a fome acabar, o que sobra é o arroz, não a carne.","Sem fome ou com enjoo: refeições pequenas, comidas devagar, sem pular nenhuma. Água aos goles o dia todo.","Nada de refrigerante nem suco de caixinha. Fruta inteira e feijão todo dia, e sal normal na comida."]}},"trocas":[{"grupo":"Carboidrato","base":"4 col. de sopa de arroz (~100 g, ~130 kcal)","itens":["1 pão francês","2 fatias de pão de forma","1 pegador de macarrão (~90 g cozido)","1 batata-doce média (~150 g)","1 xícara de cuscuz de milho","1 tapioca pequena (3 col. de goma) ou 1 pedaço médio de mandioca (~100 g)"]},{"grupo":"Proteína","base":"1 filé de frango grelhado (~100 g, ~30 g de proteína)","itens":["3–4 col. de sopa cheias de carne moída magra (~100 g)","1 lata de atum em água, escorrido","1 filé médio de tilápia (~120 g)","5 col. de sopa de frango desfiado","2 sobrecoxas sem pele","4 ovos inteiros (~25 g, com mais gordura)"]},{"grupo":"Gordura / lanche","base":"1 col. de sopa de pasta de amendoim (~90 kcal)","itens":["1 punhado pequeno de amendoim (15 g)","1 col. de sopa de azeite","3 col. de sopa de abacate","3 castanhas-do-pará","2 col. de chá de manteiga","1½ fatia de muçarela"]},{"grupo":"Fruta","base":"1 banana prata (~70 kcal)","itens":["1 maçã média","1 laranja média","1 fatia média de mamão","1 fatia média de melancia","½ manga"]}],"aviso":"Cardápio de exemplo, com valores aproximados. Não é orientação médica individual: em caso de doença, remédio ou sintoma, procure um médico ou nutricionista."};
 let cardTipo = null;   // "treino" | "descanso"; começa pelo tipo do dia escolhido
 function renderCardapio(){
   const c = CARDAPIO.pessoas[person.id];
@@ -3618,9 +3641,12 @@ view.addEventListener("click", e=>{
   if (e.target.id==="reset"){ const k = markKey(current); MARKS[k] = {}; store.set(k, {}); draw(); }
 });
 
-// Timer
-const clock = document.getElementById("clock"), fill = document.getElementById("barfill");
-let endAt = 0, total = 0, tick = null, actx = null;
+// Timer de descanso: barra de atalhos quando parado; contador grande (estilo cronômetro do iPhone) quando rodando
+const clock = document.getElementById("clock"), tmBig = document.getElementById("tmbig"), tmPre = document.getElementById("tmpre"), tmFim = document.getElementById("tmfim"), tmPause = document.getElementById("tmpause"), tmLbl = document.getElementById("tmlbl");
+const ICO_PAUSA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
+const ICO_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+const ICO_SINO_P = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5.5-6.84V3.5a1.5 1.5 0 0 0-3 0v.66A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg>';
+let endAt = 0, total = 0, tick = null, actx = null, pausa = 0, tmInfo = "", fimTm = null;
 function beep(){
   try{
     actx = actx || new (window.AudioContext||window.webkitAudioContext)();
@@ -3633,20 +3659,36 @@ function beep(){
   }catch(e){}
   try{ navigator.vibrate && navigator.vibrate([200,100,200]); }catch(e){}
 }
+function tmModo(grande){ tmBig.hidden = !grande; tmPre.hidden = grande; timerEl.classList.toggle("big", grande); }
 function startTimer(sec, info){
-  agendaDescanso(sec, info);
+  agendaDescanso(sec, info); tmInfo = info || "";
   try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); actx.resume && actx.resume(); }catch(e){}
-  total = sec; endAt = Date.now() + sec*1000; clock.classList.remove("zero");
-  clearInterval(tick); update(); tick = setInterval(update, 250);
+  total = sec; endAt = Date.now() + sec*1000; pausa = 0; clearTimeout(fimTm);
+  tmBig.classList.remove("zero", "pausado"); tmLbl.textContent = info ? info.replace(/\.$/, "") : "Descanso";
+  tmPause.innerHTML = ICO_PAUSA; tmPause.setAttribute("aria-label", "Pausar descanso");
+  tmModo(true); clearInterval(tick); update(); tick = setInterval(update, 250);
 }
 function update(){
-  const left = Math.max(0, Math.ceil((endAt - Date.now())/1000));
+  const ms = pausa || Math.max(0, endAt - Date.now()), left = Math.ceil(ms/1000);
   clock.textContent = fmt(left);
-  fill.style.width = total ? ((total-left)/total*100)+"%" : "0";
-  if (left===0 && tick){ clearInterval(tick); tick=null; clock.classList.add("zero"); clock.textContent="Vai!"; beep(); if (!document.hidden) cancelaDescanso(); else descansoAgendado = false; }   // app aberto: o bip basta; em segundo plano chega a notificação
+  tmBig.style.setProperty("--a", (total ? Math.min(1, ms / (total*1000)) : 0) * 360 + "deg");
+  const f = new Date(Date.now() + ms);
+  tmFim.innerHTML = pausa ? "pausado" : ICO_SINO_P + String(f.getHours()).padStart(2, "0") + ":" + String(f.getMinutes()).padStart(2, "0");
+  if (!pausa && left === 0 && tick){
+    clearInterval(tick); tick = null; tmBig.classList.add("zero"); clock.textContent = "Vai!"; tmLbl.textContent = "Descanso acabou"; tmFim.textContent = "";
+    beep(); if (!document.hidden) cancelaDescanso(); else descansoAgendado = false;   // app aberto: o bip basta; em segundo plano chega a notificação
+    fimTm = setTimeout(fechaTimer, 8000);
+  }
 }
+function fechaTimer(){ cancelaDescanso(); clearInterval(tick); tick = null; total = 0; pausa = 0; clearTimeout(fimTm); tmBig.classList.remove("zero", "pausado"); tmModo(false); }
 document.querySelectorAll(".timer [data-t]").forEach(bt=>bt.addEventListener("click",()=>startTimer(+bt.dataset.t)));
-document.getElementById("stop").addEventListener("click",()=>{ cancelaDescanso(); clearInterval(tick); tick=null; total=0; clock.textContent="0:00"; clock.classList.remove("zero"); fill.style.width="0"; });
+document.getElementById("stop").addEventListener("click", fechaTimer);
+tmPause.addEventListener("click", () => {
+  if (!tick) return fechaTimer();
+  if (pausa) { endAt = Date.now() + pausa; agendaDescanso(Math.max(5, Math.ceil(pausa/1000)), tmInfo); pausa = 0; tmPause.innerHTML = ICO_PAUSA; tmPause.setAttribute("aria-label", "Pausar descanso"); tmBig.classList.remove("pausado"); }
+  else { pausa = Math.max(1, endAt - Date.now()); cancelaDescanso(); tmPause.innerHTML = ICO_PLAY; tmPause.setAttribute("aria-label", "Continuar descanso"); tmBig.classList.add("pausado"); }
+  update();
+});
 
 draw();
 </script>
