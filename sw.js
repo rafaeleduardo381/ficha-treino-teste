@@ -14,7 +14,7 @@ self.addEventListener("fetch", e => {
 self.addEventListener("push", e => {
   let d = {};
   try { d = e.data.json(); } catch (_) { d = {title: "Treino", body: e.data ? e.data.text() : ""}; }
-  e.waitUntil(self.registration.showNotification(d.title || "Treino", {body: d.body || "", tag: d.tag || "treino", icon: "icon-192.png", badge: "badge-96.png", data: {url: d.url || "./"}}));
+  e.waitUntil(self.registration.showNotification(d.title || "Treino", {body: d.body || "", tag: d.tag || "treino", renotify: d.tag === "descanso", icon: "icon-192.png", badge: "badge-96.png", data: {url: d.url || "./"}}));
 });
 self.addEventListener("notificationclick", e => {
   e.notification.close();

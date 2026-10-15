@@ -535,6 +535,38 @@ body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-ou
 .pz-note:empty{display:none}
 .pz-note b{color:var(--soft);font-weight:700}
 @media (max-width:380px){.pz-step button{width:42px}.pz-save{padding:0 14px}}
+.aq{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px dashed var(--line);border-radius:14px;background:color-mix(in srgb,var(--surface2) 45%,transparent)}
+.aq-h{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
+.aq-h b{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.aq-h small{flex:1;min-width:8em;font-size:.75rem;color:var(--muted)}
+.aq-add{margin-left:auto;font:inherit;font-size:.8rem;font-weight:800;color:var(--lime);background:var(--surface2);border:0;border-radius:999px;padding:0 12px;min-height:36px;cursor:pointer}
+.aq-add:disabled{opacity:.4;cursor:default}
+.aq-lg{display:grid;grid-template-columns:2rem minmax(0,1fr) minmax(0,1fr) 3.2rem;gap:8px;align-items:center}
+.aq-n{font-family:var(--f-mono);font-weight:600;font-size:.95rem;color:var(--muted)}
+.aq-lg input{width:100%;min-width:0;height:42px;font:inherit;font-size:1rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--soft);background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:0 6px;text-align:center}
+.aq-lg input::placeholder{color:var(--muted);opacity:.6;font-weight:600}
+.aq-lg input:focus{border-color:var(--lime);border-style:solid;outline:none}
+.aq-del{height:42px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--muted);font-size:1.15rem;cursor:pointer}
+.extra-h{margin:0;font-size:.78rem;color:var(--muted);line-height:1.45}
+.of-lbl{margin:-4px 0 0;font-size:.8rem;font-weight:700;color:var(--muted)}
+.ofmodal.perdeu .of-n{font-size:4.2rem;color:var(--ink);transition:color .3s}
+.ofmodal.perdeu.zerou .of-n{color:var(--coral)}
+.of-perdas{list-style:none;margin:4px 0 6px;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left;font-size:.86rem;color:var(--soft);line-height:1.4}
+.of-perdas li{padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--coral) 9%,var(--surface2))}
+.of-perdas b{color:var(--ink)}
+.of-hold{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+.of-hold:disabled{opacity:.35}
+.of-hold-fill{position:absolute;inset:0;width:0;background:rgba(0,0,0,.28)}
+.of-hold.segurando .of-hold-fill{width:100%;transition:width 1.3s linear}
+.of-hold-t{position:relative}
+body.mov .ofmodal.perdeu.zerou .of-box{animation:of-treme .5s ease}
+.st-perda{margin:0;font-size:.8rem;font-weight:700;color:var(--coral)}
+.ap-prefs{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.ap-pref{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.ap-pref span:last-child{display:flex;flex-direction:column;gap:1px;min-width:0}
+.ap-pref small{font-size:.75rem;color:var(--muted)}
+.ap-ck{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;border:2px solid var(--line);color:transparent;font-weight:900;font-size:.8rem}
+.ap-pref[aria-pressed="true"] .ap-ck{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
 .ph-t{display:flex;align-items:center;gap:10px;min-width:0}
 .dc-stats svg{color:var(--pc)}
 .dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -937,10 +969,10 @@ const TreinoCore = (() => {
     const tl=trabalho(last),mixed=ss.some(s=>s.kg!==ss[0].kg),series=n+' '+(n===1?'série':'séries');
     if(mixed&&!(tl&&tl.sets.every(s=>s.reps>=hi))){
       const boas=ss.filter(s=>s.reps>=lo),ref=boas.length?pesada(boas):(A?Math.max(...ss.map(s=>s.kg)):Math.min(...ss.map(s=>s.kg)));
-      return {...base,kind:'hold',mixed:true,explain:true,kg:ref,reason:'A carga variou entre as séries. Mantenha '+kgTx(ref)+' kg nas '+series+'. Aqueça antes, sem anotar.'};
+      return {...base,kind:'hold',mixed:true,explain:true,kg:ref,reason:'A carga variou entre as séries. Mantenha '+kgTx(ref)+' kg nas '+series+'. Aquecimento vai na área Aquecimento, não nas séries.'};
     }
     const kg=mixed?tl.kg:ss[0].kg,warm=mixed?tl.warm:[];
-    const aviso=warm.length?' '+(warm.length===1?'A de ':'As de ')+warm.map(kgTx).join(' e ')+' kg '+(warm.length===1?'foi':'foram')+' aquecimento: aqueça antes, sem anotar.':'';
+    const aviso=warm.length?' '+(warm.length===1?'A de ':'As de ')+warm.map(kgTx).join(' e ')+' kg '+(warm.length===1?'foi':'foram')+' aquecimento: da próxima vez, anote na área Aquecimento.':'';
     const full=all.length===n&&all.every(valid)&&(!mixed||!!tl);
     const recent=hist.slice(-3),mins=recent.map(d=>check(d,lo,kg)?Math.min(...trabalho(d).sets.map(s=>s.reps)):null);
     const stalled=mins.length===3&&mins.every(v=>v!=null)&&mins[1]<=mins[0]&&mins[2]<=mins[1];
@@ -1382,8 +1414,73 @@ function setRows(d, i, name, sets, marks, reps){
       <button type="button" class="set" data-ex="${i}" data-s="${s}" aria-pressed="${on}" aria-label="Marcar série ${s+1} de ${esc(name)} como feita">✓</button>`;
   }).join("");
   const leg = d.id === "d2" || d.id === "d4";
-  return `<div class="rows" id="rows-${d.id}-${i}"><div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
-    <div class="setctl"><button type="button" class="sbtn" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="sbtn" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button>${treinoPlus() && SUPA ? `<button type="button" class="link-action dictate-action" data-ditar="${i}" aria-pressed="false" aria-label="Ditar série de ${esc(name)}">Ditar</button>` : ""}</div></div>`;
+  return `<div class="rows" id="rows-${d.id}-${i}">${aquecBloco(d, i, name)}<div class="lg" data-name="${esc(name)}" data-reps="${esc(reps)}" data-sets="${sets}" data-leg="${leg}" data-kg="${kgLbl}"><span class="h">Série</span><span class="h">${kgLbl}</span><span class="h">Reps</span><span class="h">Feita</span>${rows}</div>
+    <div class="setctl"><button type="button" class="sbtn" data-setctl="-1" data-ex="${i}" aria-label="Uma série a menos"${total <= 1 ? " disabled" : ""}>−</button><span class="num">${total} ${total === 1 ? "série" : "séries"}</span><button type="button" class="sbtn" data-setctl="1" data-ex="${i}" aria-label="Uma série a mais">+</button>${treinoPlus() && SUPA ? `<button type="button" class="link-action dictate-action" data-ditar="${i}" aria-pressed="false" aria-label="Ditar série de ${esc(name)}">Ditar</button>` : ""}</div>${treinoPlus() && total > sets ? `<p class="extra-h">Série extra: entra no volume da semana e nos recordes. A meta da próxima vez usa só as ${sets} ${sets === 1 ? "série" : "séries"} da ficha.</p>` : ""}</div>`;
+}
+// Aquecimento: séries leves anotadas à parte (ex.warm). Não entram na meta, no volume, nos recordes nem na ofensiva.
+function aquecSugestao(d, i, name){
+  const e = d.ex[i]; if (!e || /graviton/i.test(name) || e[3] === "—") return [];
+  const t = treinoPlus() ? metaTreino(e) : null, ult = historicoEx(name).at(-1)?.ex?.[name]?.sets || [];
+  const kg = t && Number.isFinite(t.kg) && t.kg > 0 ? t.kg : Math.max(0, ...ult.filter(s => TreinoCore.valid(s)).map(s => s.kg));
+  if (!(kg > 0)) return [];
+  const passo = /halter|búlgaro|martelo/i.test(name) ? (kg < 10 ? 1 : 2) : 5, r = v => Math.max(passo, Math.round(v / passo) * passo);
+  const a = r(kg * .5), b = r(kg * .75);
+  return b < kg && b > a ? [[a, 10], [b, 5]] : a < kg ? [[a, 10]] : [];
+}
+function aquecBloco(d, i, name){
+  if (!treinoPlus() || d.ex[i][3] === "—") return "";
+  const w = LOGS[docId(person.id, logDate)]?.ex?.[name]?.warm || [], sug = aquecSugestao(d, i, name), ult = historicoEx(name).at(-1)?.ex?.[name]?.warm || [];
+  const kgLbl = /halter|búlgaro|martelo/i.test(name) ? "kg/halter" : "kg", ph = (k, f) => { const v = ult[k]?.[f]; return v === "" || v == null ? (f === "kg" ? kgLbl : "reps") : (f === "kg" ? num(v) : String(v)); };
+  const rows = w.map((v, k) => `<span class="aq-n">A${k + 1}</span>
+      <input class="aq-in" inputmode="decimal" autocomplete="off" placeholder="${esc(ph(k, "kg"))}" aria-label="Aquecimento ${k + 1}: carga em ${kgLbl}" data-aqn="${esc(name)}" data-w="${k}" data-field="kg" value="${esc(num(v.kg))}">
+      <input class="aq-in" inputmode="numeric" autocomplete="off" placeholder="${esc(ph(k, "reps"))}" aria-label="Aquecimento ${k + 1}: repetições" data-aqn="${esc(name)}" data-w="${k}" data-field="reps" value="${esc(v.reps ?? "")}">
+      <button type="button" class="aq-del" data-aqdel="${i}" data-w="${k}" aria-label="Tirar o aquecimento ${k + 1}">×</button>`).join("");
+  const dica = sug.length ? "sugestão " + sug.map(([kg, r]) => `${num(kg)} × ${r}`).join(" · ") : "séries leves antes das de trabalho";
+  return `<div class="aq${w.length ? " on" : ""}"><div class="aq-h"><b>Aquecimento</b><small>${dica} · não conta na meta</small><button type="button" class="aq-add" data-aqadd="${i}"${futuro() ? " disabled" : ""}>+ Aquecimento</button></div>${w.length ? `<div class="aq-lg">${rows}</div>` : ""}</div>`;
+}
+function writeWarm(name, w, patch){
+  if (futuro()) return avisaFuturo();
+  const id = docId(person.id, logDate);
+  const doc = LOGS[id] ? JSON.parse(JSON.stringify(LOGS[id])) : {person:person.id, date:logDate, day:current, ex:{}};
+  const e = doc.ex[name] || (doc.ex[name] = {sets:[]}), a = e.warm || (e.warm = []);
+  if (patch === null) a.splice(w, 1); else { while (a.length <= w) a.push({kg:"", reps:""}); Object.assign(a[w], patch); }
+  if (!a.length) delete e.warm;
+  doc.updated = new Date().toISOString();
+  LOGS[id] = doc; pending[id] = true; refreshSend(); keepDate(logDate);
+  setStatus("Salvando…"); clearTimeout(timers[id]); timers[id] = setTimeout(() => saveLog(id), 700);
+}
+function redesenhaRows(i){
+  const d = person.days.find(x => x.id === current), [name, sets, reps] = d.ex[i], el = document.getElementById(`rows-${d.id}-${i}`);
+  if (el) el.outerHTML = setRows(d, i, name, sets, getMarks(markKey(d.id)), reps);
+  refreshCarga();
+}
+function aquecAdd(i){
+  const d = person.days.find(x => x.id === current), name = d.ex[i][0], w = (LOGS[docId(person.id, logDate)]?.ex?.[name]?.warm || []).length, s = aquecSugestao(d, i, name)[w];
+  writeWarm(name, w, s ? {kg: s[0], reps: s[1]} : {kg: "", reps: ""});
+  redesenhaRows(i);
+  if (!s) document.querySelector(`#rows-${d.id}-${i} .aq-in[data-w="${w}"][data-field="kg"]`)?.focus({preventScroll: true});
+}
+// Preferências das notificações deste aparelho (água, sono e descanso; a ofensiva fica sempre ligada)
+const PUSH_TIPOS = [["agua", "Água", "12h, 16h e 20h se estiver atrasado na meta"], ["sono", "Sono", "10h se ainda não anotou como dormiu"], ["descanso", "Descanso", "quando o tempo de descanso acabar"]];
+const pushPrefs = () => ({agua: true, sono: true, descanso: true, ...(store.get("pushprefs") || {})});
+function pushPref(k){
+  const p = pushPrefs(); p[k] = !p[k]; store.set("pushprefs", p);
+  if (pushSub) pushApi({action: "prefs", endpoint: pushSub.endpoint, prefs: p}).catch(() => {});
+  redesenhaPerfil();
+}
+// Descanso: o servidor manda a notificação quando o tempo acaba (funciona com a tela bloqueada)
+let descansoAgendado = false;
+function agendaDescanso(sec, info){
+  if (!pushSub || !pushPrefs().descanso || !(sec > 0)) return;
+  descansoAgendado = true;
+  pushApi({action: "timer", endpoint: pushSub.endpoint, seconds: sec, title: "Descanso acabou", body: info || "Bora para a próxima série."}).catch(() => { descansoAgendado = false; });
+}
+function cancelaDescanso(){ if (!descansoAgendado || !pushSub) return; descansoAgendado = false; pushApi({action: "timer_cancel", endpoint: pushSub.endpoint}).catch(() => {}); }
+function descansoInfo(d, i, s, n){
+  const name = d.ex[i][0];
+  if (s + 1 < n) return `${name}: série ${s + 2} de ${n}.`;
+  const prox = d.ex.slice(i + 1).find(e => e[3] !== "—" || e[1]);
+  return prox ? `Próximo: ${prox[0]}.` : "Último exercício feito. Fecha o treino!";
 }
 function changeSets(i, dir){
   const d = person.days.find(x => x.id === current), [name, sets, reps] = d.ex[i];
@@ -1928,7 +2025,7 @@ function renderStreak(){
     : `Treine hoje para manter os ${n} ${n === 1 ? "dia" : "dias"}.`;
   return `<section class="streak${n ? "" : " dormant"}${risco && h >= 17 ? " risco" : ""}${risco && h >= 21 ? " urgente" : ""}" style="--fa:${flameOf(n).a};--fb:${flameOf(n).b}" aria-label="Ofensiva">
     <div class="fl${n ? " lit" : ""}">${flameSvg(n, "", p)}<b class="num">${n}</b><span>${n ? (n === 1 ? "dia" : "dias") + " de ofensiva" : "pronta para acender"}</span></div>
-    <div class="st-r"><p class="st-t">${msg}</p><div class="st-week">${week}</div><p class="st-best">Maior ofensiva: <b class="num">${best}</b> ${best === 1 ? "dia" : "dias"}</p></div>
+    <div class="st-r"><p class="st-t">${msg}</p><div class="st-week">${week}</div><p class="st-best">Maior ofensiva: <b class="num">${best}</b> ${best === 1 ? "dia" : "dias"}</p>${(() => { const o = store.get("ofensiva:" + p); return o?.perdeu && o.dia === diaUtilAntes(today) && !trained(p, today) ? `<p class="st-perda">Você perdeu ${o.perdeu} ${o.perdeu === 1 ? "dia" : "dias"} de ofensiva ${o.dia === addDays(today, -1) ? "ontem" : "na " + WD[parseDate(o.dia).getDay()].toLowerCase()}. Hoje começa do zero.</p>` : ""; })()}</div>
   </section>`;
 }
 // ── Virada do dia: ganhou mais um dia (mensagem que anima) ou perdeu a ofensiva (tem que doer) ──
@@ -1967,13 +2064,33 @@ function checkOfensiva(){
   const p = person.id, hoje = trainDay(), ult = diaUtilAntes(hoje), k = "ofensiva:" + p, st = store.get(k), n = streakOf(p);
   if (st?.dia === ult && st.avisado) { if (n > (st.n || 0)) store.set(k, {dia: ult, n, avisado: true}); return; }
   const perdeu = !trained(p, ult) && !justificado(p, ult) ? ofensivaAte(p, diaUtilAntes(ult)) : 0;
-  store.set(k, {dia: ult, n, avisado: true});
+  store.set(k, {dia: ult, n, avisado: true, perdeu});
   if (perdeu) showOfensiva("perdeu", perdeu, ult);
   else if (st && st.dia !== ult && trained(p, ult)) showOfensiva("ganhou", n, ult);
 }
+// Perdeu: o número desce até zero na frente da pessoa, e o botão só fecha segurando (tem que doer)
+function ofContagem(el, n){
+  const c = el.querySelector("#of-cont"), b = el.querySelector("[data-ofhold]"); if (!c || !b) return;
+  const dur = Math.min(2200, 180 * Math.max(1, n) + 400), t0 = Date.now();   // relógio comum: anda mesmo se a animação estiver pausada
+  const fim = () => { clearInterval(tm); c.textContent = "0"; el.classList.add("zerou"); b.disabled = false; };
+  const tm = setInterval(() => {
+    const k = Math.min(1, (Date.now() - t0) / dur), v = Math.round(n * (1 - k * k));
+    if (c.textContent !== String(v)) { c.textContent = v; try { navigator.vibrate && navigator.vibrate(v ? 12 : [160, 60, 260]); } catch(e) {} }
+    if (k >= 1) fim();
+  }, 50);
+  setTimeout(fim, dur + 600);   // garantia: o botão nunca fica travado
+}
+function ofSegura(el){
+  let tm = null;
+  const fecha = () => { el.classList.remove("open"); setTimeout(() => { el.hidden = true; FogoUI.mount(document, calmo()); }, 250); };
+  const comeca = e => { const b = e.target.closest("[data-ofhold]"); if (!b || b.disabled || tm) return; if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return; e.preventDefault(); b.classList.add("segurando"); tm = setTimeout(() => { tm = null; b.classList.remove("segurando"); fecha(); }, 1300); };
+  const solta = () => { if (!tm) return; clearTimeout(tm); tm = null; el.querySelector("[data-ofhold]")?.classList.remove("segurando"); };
+  el.addEventListener("pointerdown", comeca); el.addEventListener("keydown", comeca);
+  for (const ev of ["pointerup", "pointercancel", "pointerleave", "keyup"]) el.addEventListener(ev, solta);
+}
 function showOfensiva(tipo, n, dia){
   let el = document.getElementById("ofmodal");
-  if (!el) { el = document.createElement("div"); el.id = "ofmodal"; el.className = "ofmodal"; document.body.appendChild(el); el.addEventListener("click", e => { const os = e.target.closest("[data-ofshare]"); if (os) { compartilhar({title: "Ofensiva", text: `🔥 ${os.dataset.ofshare} ${+os.dataset.ofshare === 1 ? "dia" : "dias"} de ofensiva no treino. Sem faltar um dia útil.`}); return; } if (e.target.closest("[data-ofclose]")) { el.classList.remove("open"); setTimeout(() => { el.hidden = true; FogoUI.mount(document, calmo()); }, 250); } }); }
+  if (!el) { el = document.createElement("div"); el.id = "ofmodal"; el.className = "ofmodal"; document.body.appendChild(el); ofSegura(el); el.addEventListener("click", e => { const os = e.target.closest("[data-ofshare]"); if (os) { compartilhar({title: "Ofensiva", text: `🔥 ${os.dataset.ofshare} ${+os.dataset.ofshare === 1 ? "dia" : "dias"} de ofensiva no treino. Sem faltar um dia útil.`}); return; } if (e.target.closest("[data-ofclose]")) { el.classList.remove("open"); setTimeout(() => { el.hidden = true; FogoUI.mount(document, calmo()); }, 250); } }); }
   const dias = n === 1 ? "dia" : "dias", best = Math.max(n, bestStreak(person.id)), quando = dia === addDays(trainDay(), -1) ? "ontem" : WD[parseDate(dia).getDay()].toLowerCase() + ", " + brDate(dia);
   const ganhou = tipo === "ganhou", f = flameOf(ganhou ? n : 0);
   el.className = "ofmodal " + tipo; el.style.setProperty("--fa", f.a); el.style.setProperty("--fb", f.b);
@@ -1981,10 +2098,15 @@ function showOfensiva(tipo, n, dia){
     ? `<div class="of-box" role="dialog" aria-modal="true" aria-label="Ofensiva"><div class="of-fl">${flameSvg(n, "acendendo")}</div><p class="of-n num">${n}</p><h2>${dias} de ofensiva</h2>
        <p class="of-f">${FRASES_MARCO[n] || fraseDoDia(FRASES_GANHOU, person.id + dia)}</p><p class="of-s">Você treinou ${quando}.${n >= best && n > 1 ? " É o seu recorde." : ` Recorde: ${best} ${best === 1 ? "dia" : "dias"}.`}</p>
        <button type="button" class="done-btn" data-ofclose>Bora para hoje</button><button type="button" class="linkbtn" data-ofshare="${n}">Compartilhar a ofensiva</button></div>`
-    : `<div class="of-box" role="alertdialog" aria-modal="true" aria-label="Ofensiva perdida"><div class="of-fl apagada">${flameSvg(0, "apagando")}</div><p class="of-n num"><s>${n}</s> → 0</p><h2>Você perdeu ${n === 1 ? "sua ofensiva" : `${n} ${dias} de ofensiva`}</h2>
-       <p class="of-f">${fraseDoDia(FRASES_PERDEU, person.id + dia)}</p><p class="of-s">Sem treino ${quando}. Recorde que continua de pé: ${best} ${best === 1 ? "dia" : "dias"}.</p>
-       <button type="button" class="done-btn" data-ofclose>Recomeçar hoje</button></div>`;
-  el.hidden = false; FogoUI.mount(el, calmo()); const abre = () => el.classList.add("open"); requestAnimationFrame(abre); setTimeout(abre, 60);   // o timeout garante a abertura com a aba em segundo plano
+    : `<div class="of-box" role="alertdialog" aria-modal="true" aria-label="Ofensiva perdida"><div class="of-fl apagada">${flameSvg(0, "apagando")}</div>
+       <p class="of-n num" id="of-cont">${n}</p><p class="of-lbl">${n === 1 ? "dia" : "dias"} de ofensiva</p>
+       <h2>Você perdeu ${n === 1 ? "sua ofensiva" : `${n} dias de ofensiva`}</h2>
+       <p class="of-f">${fraseDoDia(FRASES_PERDEU, person.id + dia)}</p>
+       <ul class="of-perdas"><li><b>${n}</b> ${n === 1 ? "treino seguido jogado fora" : "treinos seguidos jogados fora"} por um dia sem treino ${quando}.</li>
+         <li>Para voltar a <b>${n}</b>: ${n} ${n === 1 ? "dia útil" : "dias úteis"} sem falhar nenhum${n >= 5 ? ` (${Math.ceil(n / 5)} ${Math.ceil(n / 5) === 1 ? "semana" : "semanas"})` : ""}.</li>
+         <li>Recorde: <b>${best}</b>. Hoje: <b>0</b>.</li></ul>
+       <button type="button" class="done-btn of-hold" data-ofhold disabled><span class="of-hold-fill" aria-hidden="true"></span><span class="of-hold-t">Segure para recomeçar</span></button></div>`;
+  el.hidden = false; FogoUI.mount(el, calmo()); if (!ganhou) ofContagem(el, n); const abre = () => el.classList.add("open"); requestAnimationFrame(abre); setTimeout(abre, 60);   // o timeout garante a abertura com a aba em segundo plano
   try { navigator.vibrate && navigator.vibrate(ganhou ? [30, 40, 30] : [120, 60, 120, 60, 200]); } catch(e) {}
 }
 // Dia virou com o site aberto: atualiza a tela sozinho (sem tirar quem ainda está anotando o treino de ontem)
@@ -3062,7 +3184,7 @@ async function ativarPush(){
     await navigator.serviceWorker.ready;
     const {key} = await pushApi({action: "key"});
     pushSub = await swReg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: b64Bytes(key)});
-    const r = await pushApi({action: "subscribe", person: person.id, env: SUPA.env, sub: pushSub.toJSON(), ua: navigator.userAgent});
+    const r = await pushApi({action: "subscribe", person: person.id, env: SUPA.env, sub: pushSub.toJSON(), ua: navigator.userAgent, prefs: pushPrefs()});
     if (!r.ok) throw new Error(r.erro || "falhou");
     pushMsg = ""; redesenhaPerfil(); testarPush();
   } catch(e) { pushMsg = "Não consegui ativar agora: " + (e.message || e); redesenhaPerfil(); }
@@ -3080,7 +3202,7 @@ async function desativarPush(){
   pushSub = null; pushMsg = "Notificações desligadas neste aparelho."; redesenhaPerfil();
 }
 // Trocou de perfil neste aparelho: as notificações passam a seguir a pessoa escolhida
-function pushSegue(){ if (pushSub) pushApi({action: "subscribe", person: person.id, env: SUPA.env, sub: pushSub.toJSON(), ua: navigator.userAgent}).catch(() => {}); }
+function pushSegue(){ if (pushSub) pushApi({action: "subscribe", person: person.id, env: SUPA.env, sub: pushSub.toJSON(), ua: navigator.userAgent, prefs: pushPrefs()}).catch(() => {}); }
 function appPanel(){
   if (!SUPA) return "";
   const ios = ehIOS(), inst = instalado();
@@ -3096,7 +3218,7 @@ function appPanel(){
     : `<button type="button" class="done-btn" data-pushon>Ativar notificações</button>`;
   return `<article class="panel tinted app-p" style="--c:var(--lime)">${phd(ICON_SINO, "App e notificações")}
     ${instalar}${notif}${pushMsg ? `<p class="ap-msg" role="status">${esc(pushMsg)}</p>` : ""}
-    ${temPush() || (ios && !inst) ? `<ul class="ap-lista"><li><b>17h</b> o treino do dia e quantos dias de ofensiva estão em jogo</li><li><b>22h</b> se ainda não treinou: a ofensiva morre à meia-noite</li><li><b>8h</b> ganhou mais um dia ou perdeu a ofensiva</li></ul><p class="hint">Só em dia útil e só quando faz sentido (quem já treinou não recebe cobrança).</p>` : ""}</article>`;
+    ${temPush() || (ios && !inst) ? `<ul class="ap-lista"><li><b>17h</b> o treino do dia e quantos dias de ofensiva estão em jogo</li><li><b>22h</b> e <b>23h30</b> se ainda não treinou: a ofensiva morre à meia-noite</li><li><b>8h</b> ganhou mais um dia ou perdeu a ofensiva</li></ul><p class="hint">A ofensiva só cobra em dia útil e só quem ainda não treinou.</p>${pushSub ? `<div class="ap-prefs" role="group" aria-label="Outros avisos">${PUSH_TIPOS.map(([k, t, d]) => `<button type="button" class="ap-pref" data-pushpref="${k}" aria-pressed="${pushPrefs()[k]}"><span class="ap-ck" aria-hidden="true">✓</span><span><b>${t}</b><small>${d}</small></span></button>`).join("")}</div>` : ""}` : ""}</article>`;
 }
 // Tela ligada durante o treino (o celular não apaga com o timer de descanso rodando)
 let telaLigada = null;
@@ -3340,7 +3462,7 @@ view.addEventListener("touchstart", e => { const w = e.target.closest("#weekstri
 view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y; swipe = null;
   if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); goDate(addDays(logDate, dx > 0 ? -7 : 7), dx > 0 ? "l" : "r"); } });
 // Dia futuro: dá para ver o treino previsto, mas não registrar
-view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep], [data-sp-creat], [data-sp-whey]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
+view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep], [data-sp-creat], [data-sp-whey], [data-aqadd], [data-aqdel]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "peso") { e.preventDefault(); salvaPeso(e.target); } });
 view.addEventListener("input", e => { if (e.target.id === "peso") pzSync(); });
 let pzRep = null, pzRepetiu = false;
@@ -3349,6 +3471,7 @@ view.addEventListener("pointerdown", e => { const b = e.target.closest("[data-ps
 for (const ev of ["pointerup", "pointercancel", "pointerleave"]) view.addEventListener(ev, pzPara);
 view.addEventListener("input", e => {
   if (e.target.closest(".lg")) onLogInput(e.target);
+  if (e.target.classList?.contains("aq-in")) { const raw = e.target.value.trim().replace(",", "."), v = Number(raw); writeWarm(e.target.dataset.aqn, +e.target.dataset.w, {[e.target.dataset.field]: raw === "" || isNaN(v) ? "" : v}); }
   const form = e.target.closest("[data-sup-form]"); if (form) form.querySelectorAll("input").forEach(el => el.setCustomValidity(""));
 });
 view.addEventListener("submit", e => { const form = e.target.closest("[data-sup-form]"); if (form) { e.preventDefault(); salvaProduto(form); } });
@@ -3417,6 +3540,9 @@ view.addEventListener("click", e=>{
   if (e.target.closest("[data-instalar]")){ if (instalaEv) { instalaEv.prompt(); instalaEv = null; } return; }
   const pick = e.target.closest("[data-person]");
   if (pick){ person = PEOPLE.find(x => x.id === pick.dataset.person); store.set("person", person.id); current = dayOf(person.id, logDate) || "d1"; goScreen("hoje"); checkOfensiva(); pushSegue(); FOTOS = []; return; }
+  const aqa = e.target.closest("[data-aqadd]"); if (aqa) { aquecAdd(+aqa.dataset.aqadd); return; }
+  const aqd = e.target.closest("[data-aqdel]"); if (aqd) { const d = person.days.find(x => x.id === current); writeWarm(d.ex[+aqd.dataset.aqdel][0], +aqd.dataset.w, null); redesenhaRows(+aqd.dataset.aqdel); return; }
+  const ppf = e.target.closest("[data-pushpref]"); if (ppf) { pushPref(ppf.dataset.pushpref); return; }
   const sc = e.target.closest("[data-setctl]");
   if (sc){ changeSets(+sc.dataset.ex, +sc.dataset.setctl); return; }
   const sheetBtn = e.target.closest("[data-sheet]");
@@ -3462,7 +3588,7 @@ view.addEventListener("click", e=>{
     set.closest(".ex").classList.toggle("done", Array.from({length:n}).every((_, s) => m[i+"-"+s]));
     if (m[key] && set.closest(".lg")) autofill(set);
     if (set.closest(".lg")) writeSet(d.ex[i][0], n, +set.dataset.s, {done: m[key]});
-    if (m[key] && rest) startTimer(rest);
+    if (m[key] && rest) startTimer(rest, descansoInfo(d, i, +set.dataset.s, n));
     return;
   }
   if (e.target.id==="reset"){ const k = markKey(current); MARKS[k] = {}; store.set(k, {}); draw(); }
@@ -3483,7 +3609,8 @@ function beep(){
   }catch(e){}
   try{ navigator.vibrate && navigator.vibrate([200,100,200]); }catch(e){}
 }
-function startTimer(sec){
+function startTimer(sec, info){
+  agendaDescanso(sec, info);
   try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); actx.resume && actx.resume(); }catch(e){}
   total = sec; endAt = Date.now() + sec*1000; clock.classList.remove("zero");
   clearInterval(tick); update(); tick = setInterval(update, 250);
@@ -3492,10 +3619,10 @@ function update(){
   const left = Math.max(0, Math.ceil((endAt - Date.now())/1000));
   clock.textContent = fmt(left);
   fill.style.width = total ? ((total-left)/total*100)+"%" : "0";
-  if (left===0 && tick){ clearInterval(tick); tick=null; clock.classList.add("zero"); clock.textContent="Vai!"; beep(); }
+  if (left===0 && tick){ clearInterval(tick); tick=null; clock.classList.add("zero"); clock.textContent="Vai!"; beep(); if (!document.hidden) cancelaDescanso(); else descansoAgendado = false; }   // app aberto: o bip basta; em segundo plano chega a notificação
 }
 document.querySelectorAll(".timer [data-t]").forEach(bt=>bt.addEventListener("click",()=>startTimer(+bt.dataset.t)));
-document.getElementById("stop").addEventListener("click",()=>{ clearInterval(tick); tick=null; total=0; clock.textContent="0:00"; clock.classList.remove("zero"); fill.style.width="0"; });
+document.getElementById("stop").addEventListener("click",()=>{ cancelaDescanso(); clearInterval(tick); tick=null; total=0; clock.textContent="0:00"; clock.classList.remove("zero"); fill.style.width="0"; });
 
 draw();
 </script>
