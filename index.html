@@ -929,7 +929,7 @@ const TreinoCore = (() => {
     const condition=reserve==='0'?'Se completou as repetições com boa execução':reserve==='0–1'||reserve==='0-1'?'Se manteve o esforço da ficha com boa execução':'Se ainda faria mais '+reserve+' '+(singular?'repetição':'repetições')+' com boa execução';
     if(salto(kg)){   // salto passa de 15% da carga: primeiro topo +2 reps em todas as séries por 2 sessões
       if(!(hist.length>1&&check(last,hi+2,kg)&&check(hist.at(-2),hi+2,kg)))
-        return {...held,bridge:true,explain:true,reps:String(hi+2),reason:'Salto grande ('+(A?'−':'+')+step+' kg). Antes de subir, mantenha '+kgTx(kg)+' kg e faça '+(hi+2)+' reps em todas as séries por 2 sessões.'+aviso};
+        return {...held,bridge:true,explain:true,reps:String(hi+2),reason:(A?'Salto grande (−'+step+' kg de assistência). Antes de tirar, mantenha '+kgTx(kg)+' kg de assistência':'Salto grande (+'+step+' kg). Antes de subir, mantenha '+kgTx(kg)+' kg')+' e faça '+(hi+2)+' reps em todas as séries por 2 sessões.'+aviso};
       return {...base,kind:'up',kg:next,previousKg:kg,big:true,explain:true,reps:String(lo),reason:condition+': '+(A?'tire 5 kg de assistência: use '+kgTx(next)+' kg':'suba para '+kgTx(next)+' kg')+' e comece com '+lo+' reps; volte a subir as reps antes de aumentar de novo.'+aviso};
     }
     return {...base,kind:'up',kg:next,previousKg:kg,explain:true,reason:condition+': '+(A?'tire 5 kg de assistência: use '+kgTx(next)+' kg e comece com '+lo+' reps.':'suba para '+kgTx(next)+' kg e volte para '+lo+' reps.')+aviso};
