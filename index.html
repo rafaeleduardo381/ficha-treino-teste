@@ -377,6 +377,13 @@ body.mov .sp-main.on .sp-ck{animation:spPop .45s cubic-bezier(.3,1.6,.5,1)}
 .al-r[aria-pressed="true"]{background:color-mix(in srgb,var(--kcal) 12%,var(--surface2));border-color:color-mix(in srgb,var(--kcal) 45%,var(--line))}
 .al-r[aria-pressed="true"] .al-c{background:var(--kcal);border-color:var(--kcal);color:#1A0D05}
 body.mov .al-r[aria-pressed="true"] .al-c{animation:check .4s cubic-bezier(.3,1.6,.5,1)}
+/* itens avulsos: fora do cardápio, sempre contam (sem marcar); × tira */
+.al-av:empty{display:none}
+.al-av li{display:grid;grid-template-columns:minmax(0,1fr) auto 42px;align-items:center;gap:10px;background:color-mix(in srgb,var(--kcal) 12%,var(--surface2));border:1px solid color-mix(in srgb,var(--kcal) 45%,var(--line));border-radius:14px;padding:8px 8px 8px 12px}
+.al-av .al-n b{overflow-wrap:anywhere}
+.al-av .aq-del{height:38px}
+.al-avf{padding-top:0}
+.al-avb{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .swap{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface)}
 .swap summary{font-size:.85rem}
 .swap .hint{margin:8px 0}
@@ -1940,7 +1947,7 @@ function refreshToday(){
   setRing("sono", +c.sono || 0, g.sono, "horas");
   document.getElementById("card-agua").classList.toggle("met", (+c.agua || 0) >= g.agua);
   document.getElementById("card-sono").classList.toggle("met", (+c.sono || 0) >= g.sono);
-  const checks = [+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0, !!c.peso];
+  const checks = [+c.agua > 0, +c.sono > 0, feitasDe(person.id, logDate).length > 0 || extrasDe(person.id, logDate).length > 0, !!c.peso];
   if (!treinoPlus()) checks.push(c.dieta != null);
   document.getElementById("ck-count").textContent = `${checks.filter(Boolean).length}/${checks.length}`;
   refreshExtras(); refreshProt(); refreshAlc();
@@ -2433,12 +2440,17 @@ function refeicoesDe(p, s = logDate, tipo = dayIdFor(s) ? "treino" : "descanso")
 }
 const metaKcal = (p, s = logDate) => { const m = metas(p, s); return m.kcal ? Math.round((m.kcal[0] + m.kcal[1]) / 2 / 10) * 10 : 0; };
 const feitasDe = (p, s) => { const r = chkOf(p, s).refeicoes; return Array.isArray(r) ? r : []; };
-const regAlim = (p, s) => Array.isArray(chkOf(p, s).refeicoes);
-// Total comido no dia: usa o que foi gravado (kcal e prot_g); se faltar, soma as refeições marcadas
+// Itens avulsos (fora do cardápio): lista {nome, kcal, prot} no campo "extras" do check-in, somada ao dia como o whey
+const extrasDe = (p, s) => { const x = chkOf(p, s).extras; return Array.isArray(x) ? x : []; };
+const avulsoExtra = (p, s) => extrasDe(p, s).reduce((a, x) => ({kcal: a.kcal + (+x.kcal || 0), prot: a.prot + (+x.prot || 0)}), {kcal: 0, prot: 0});
+const regAlim = (p, s) => Array.isArray(chkOf(p, s).refeicoes) || extrasDe(p, s).length > 0;
+// Total comido no dia: usa o que foi gravado (kcal e prot_g, só das refeições do cardápio); se faltar, soma as refeições marcadas.
+// Whey e itens avulsos entram por cima, cada um no seu campo.
 function comidoDe(p, s){
-  const c = chkOf(p, s), w = wheyExtra(p, s); if (c.kcal != null) return {kcal: (+c.kcal || 0) + w.kcal, prot: (+c.prot_g || 0) + w.prot};
+  const c = chkOf(p, s), w = wheyExtra(p, s), av = avulsoExtra(p, s), ex = {kcal: w.kcal + av.kcal, prot: w.prot + av.prot};
+  if (c.kcal != null) return {kcal: (+c.kcal || 0) + ex.kcal, prot: (+c.prot_g || 0) + ex.prot};
   const rs = refeicoesDe(p, s), r = feitasDe(p, s).reduce((a, i) => rs[i] ? {kcal: a.kcal + rs[i].kcal, prot: a.prot + rs[i].prot} : a, {kcal: 0, prot: 0});
-  return {kcal: r.kcal + w.kcal, prot: r.prot + w.prot};
+  return {kcal: r.kcal + ex.kcal, prot: r.prot + ex.prot};
 }
 function metaBatida(p, s){ const m = metas(p, s), c = comidoDe(p, s); return !!m.kcal && c.kcal >= m.kcal[0] && c.prot >= m.faixa[0]; }
 function protCard(){
@@ -2451,7 +2463,12 @@ function protCard(){
     </div>
     <p class="alc-linha" id="al-alc" hidden></p><p class="alc-linha" id="al-whey" hidden></p>
     <ul class="al-list">${rs.map((r, i) => `<li><button type="button" class="al-r" data-ref="${i}" aria-pressed="false"><span class="al-c" aria-hidden="true">✓</span><span class="al-n"><b>${esc(r.nome)}</b><small>${esc(r.hora)}</small>${r.itens.map(x => `<span class="al-i">${esc(x)}</span>`).join("")}</span><span class="al-k num">${r.kcal.toLocaleString("pt-BR")} kcal<small>${r.prot} g proteína</small></span></button></li>`).join("")}</ul>
-    <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio.</p></article>`;
+    <ul class="al-list al-av" id="al-av" aria-label="Itens avulsos"></ul>
+    ${avAberto ? `<form data-av-form class="sp-form al-avf"><label class="sp-f"><span>O que foi</span><span class="sp-in"><input type="text" maxlength="60" name="nome" placeholder="ex.: copo de leite 250 ml" required></span></label>
+      <div class="sp-2">${spCampo("kcal", "Calorias", "kcal", "", 0, 3000)}${spCampo("prot", "Proteína", "g", "", 0, 300)}</div>
+      <div class="al-avb"><button type="button" class="ghost" data-avfecha>Cancelar</button><button type="submit" class="done-btn">Adicionar</button></div></form>`
+    : `<button type="button" class="alc-mais" data-avabre>+ item avulso</button>`}
+    <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio. Algo fora do cardápio (um café com leite, um copo de leite)? Use "+ item avulso".</p></article>`;
 }
 function refreshProt(){
   const card = document.getElementById("card-prot"), k = document.getElementById("al-k"); if (!card || !k) return;
@@ -2462,6 +2479,8 @@ function refreshProt(){
   document.getElementById("al-kb").style.width = Math.min(100, c.kcal / mk * 100) + "%";
   document.getElementById("al-pb").style.width = Math.min(100, c.prot / m.total * 100) + "%";
   card.classList.toggle("met", metaBatida(person.id, logDate));
+  const av = document.getElementById("al-av");
+  if (av) av.innerHTML = extrasDe(person.id, logDate).map((x, i) => `<li><span class="al-n"><b>${esc(x.nome)}</b><small>avulso</small></span><span class="al-k num">${(+x.kcal || 0).toLocaleString("pt-BR")} kcal<small>${+x.prot || 0} g proteína</small></span><button type="button" class="aq-del" data-avdel="${i}" aria-label="Tirar ${esc(x.nome)}">×</button></li>`).join("");
   const wx = wheyExtra(person.id, logDate), we = document.getElementById("al-whey"); if (we) { we.hidden = !wx.prot; we.textContent = wx.prot ? `Inclui whey: +${wx.prot} g de proteína e ${wx.kcal} kcal (aba Suplementos).` : ""; }
   const an = alcDe(person.id, logDate), ae = document.getElementById("al-alc");
   if (ae) { ae.hidden = !an; ae.textContent = an ? `Álcool: +${(an * ALC.kcal).toLocaleString("pt-BR")} kcal (total do dia ${(c.kcal + an * ALC.kcal).toLocaleString("pt-BR")} kcal). A meta se bate só com comida.` : ""; }
@@ -2470,8 +2489,22 @@ function toggleRef(i){
   const f = feitasDe(person.id, logDate), on = f.includes(i), nf = on ? f.filter(x => x !== i) : [...f, i].sort((a, b) => a - b);
   const rs = refeicoesDe(person.id, logDate), tot = nf.reduce((a, j) => rs[j] ? {kcal: a.kcal + rs[j].kcal, prot: a.prot + rs[j].prot} : a, {kcal: 0, prot: 0});
   const antes = metaBatida(person.id, logDate);
-  setChk({refeicoes: nf, kcal: tot.kcal, prot_g: tot.prot, proteina: tot.prot + wheyExtra(person.id, logDate).prot >= metas(person.id, logDate).faixa[0]});
+  setChk({refeicoes: nf, kcal: tot.kcal, prot_g: tot.prot, proteina: tot.prot + wheyExtra(person.id, logDate).prot + avulsoExtra(person.id, logDate).prot >= metas(person.id, logDate).faixa[0]});
   if (!antes && metaBatida(person.id, logDate)) requestAnimationFrame(() => celebrate("prot"));
+}
+let avAberto = false;   // formulário do item avulso aberto no cartão de refeições
+// Grava a lista nova de avulsos e refaz a flag de proteína do dia (refeições + whey + avulsos)
+function setExtras(xs){
+  const antes = metaBatida(person.id, logDate), prot = comidoDe(person.id, logDate).prot - avulsoExtra(person.id, logDate).prot + xs.reduce((a, x) => a + x.prot, 0);
+  setChk({extras: xs, proteina: prot >= metas(person.id, logDate).faixa[0]});
+  if (!antes && metaBatida(person.id, logDate)) requestAnimationFrame(() => celebrate("prot"));
+}
+function addAvulso(form){
+  if (futuro()) return avisaFuturo();
+  const nome = form.nome.value.trim().slice(0, 60), kcal = Math.round(+form.kcal.value), prot = Math.round(+form.prot.value);
+  if (!nome || !Number.isFinite(kcal) || !Number.isFinite(prot) || kcal < 0 || kcal > 3000 || prot < 0 || prot > 300) return;
+  avAberto = false; const y = scrollY; view.innerHTML = renderToday(); refreshToday(); scrollTo(0, y);
+  setExtras([...extrasDe(person.id, logDate), {nome, kcal, prot}]);
 }
 // Cartão da comida em volta do treino: antes (17h–21h), durante (21h–23h30), depois (23h30 em diante); só no dia de treino de hoje
 function nutriCard(){
@@ -3603,7 +3636,7 @@ view.addEventListener("touchstart", e => { const w = e.target.closest("#weekstri
 view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.changedTouches[0].clientX - swipe.x, dy = e.changedTouches[0].clientY - swipe.y; swipe = null;
   if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) { e.preventDefault(); goDate(addDays(logDate, dx > 0 ? -7 : 7), dx > 0 ? "l" : "r"); } });
 // Dia futuro: dá para ver o treino previsto, mas não registrar
-view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep], [data-sp-creat], [data-sp-whey], [data-aqadd], [data-aqdel]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
+view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep], [data-sp-creat], [data-sp-whey], [data-aqadd], [data-aqdel], [data-avabre], [data-avdel]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "peso") { e.preventDefault(); salvaPeso(e.target); } });
 view.addEventListener("input", e => { if (e.target.id === "peso") pzSync(); });
 let pzRep = null, pzRepetiu = false;
@@ -3621,7 +3654,8 @@ view.addEventListener("input", e => {
   }
   const form = e.target.closest("[data-sup-form]"); if (form) form.querySelectorAll("input").forEach(el => el.setCustomValidity(""));
 });
-view.addEventListener("submit", e => { const form = e.target.closest("[data-sup-form]"); if (form) { e.preventDefault(); salvaProduto(form); } });
+view.addEventListener("submit", e => { const form = e.target.closest("[data-sup-form]"); if (form) { e.preventDefault(); salvaProduto(form); return; }
+  const av = e.target.closest("[data-av-form]"); if (av) { e.preventDefault(); addAvulso(av); } });
 view.addEventListener("change", e => {
   if (e.target.id === "peso") return; if (e.target.id === "logdate" && e.target.value) { logDate = e.target.value; keepDate(logDate); current = dayOf(person.id, logDate) || current; draw(); } });
 who.addEventListener("click", e=>{
@@ -3703,6 +3737,10 @@ view.addEventListener("click", e=>{
   if (al){ const v = +al.dataset.alc; setChk({alcool: alcDe(person.id, logDate) === v ? null : v}); return; }
   const rf = e.target.closest("[data-ref]");
   if (rf){ toggleRef(+rf.dataset.ref); return; }
+  const avb = e.target.closest("[data-avabre], [data-avfecha]");
+  if (avb){ avAberto = avb.hasAttribute("data-avabre"); const y = scrollY; view.innerHTML = renderToday(); refreshToday(); scrollTo(0, y); if (avAberto) view.querySelector("[data-av-form] input")?.focus(); return; }
+  const avd = e.target.closest("[data-avdel]");
+  if (avd){ setExtras(extrasDe(person.id, logDate).filter((_, i) => i !== +avd.dataset.avdel)); return; }
   const fl = e.target.closest("[data-flag]");
   if (fl){ const f = fl.dataset.flag; setChk({[f]: !chkOf(person.id, logDate)[f]}); return; }
   const nav = e.target.closest("[data-screen]");
