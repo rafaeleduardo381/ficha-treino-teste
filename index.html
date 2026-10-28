@@ -1661,8 +1661,8 @@ function aquecAdd(i){
   if (!s) document.querySelector(`#rows-${d.id}-${i} .aq-in[data-w="${w}"][data-field="kg"]`)?.focus({preventScroll: true});
 }
 // Preferências das notificações deste aparelho (água, sono e descanso; a ofensiva fica sempre ligada)
-const PUSH_TIPOS = [["agua", "Água", "12h, 16h e 20h se estiver atrasado na meta"], ["sono", "Sono", "10h se ainda não anotou como dormiu"], ["descanso", "Descanso", "quando o tempo de descanso acabar"]];
-const pushPrefs = () => ({agua: true, sono: true, descanso: true, ...(store.get("pushprefs") || {})});
+const PUSH_TIPOS = [["agua", "Água", "12h, 16h e 20h se estiver atrasado na meta"], ["sono", "Sono", "10h se ainda não anotou como dormiu"], ["comida", "Comida", "15h e 19h: quanto falta de calorias e proteína"], ["creatina", "Creatina", "14h se ainda não marcou (só para quem toma)"], ["peso", "Pesar na academia", "20h50 nos dias de treino, se ainda não pesou"], ["semana", "Resumo da semana", "domingo, quando o resumo sair"], ["descanso", "Descanso", "quando o tempo de descanso acabar"]];
+const pushPrefs = () => ({agua: true, sono: true, descanso: true, comida: true, creatina: true, peso: true, semana: true, ...(store.get("pushprefs") || {})});
 function pushPref(k){
   const p = pushPrefs(); p[k] = !p[k]; store.set("pushprefs", p);
   if (pushSub) pushApi({action: "prefs", endpoint: pushSub.endpoint, prefs: p}).catch(() => {});
@@ -2491,6 +2491,8 @@ function setChk(patch){
   const c = CHK[id] ? {...CHK[id]} : {person: person.id, date: logDate, agua: 0, sono: 0};
   Object.assign(c, patch); c.updated = new Date().toISOString();
   CHK[id] = c; chkPending[id] = true; keepDate(logDate);
+  // meta e total do dia vão junto: a notificação "quanto falta" (push) lê daqui
+  try { const mk = metaKcal(person.id, logDate), cm = comidoDe(person.id, logDate); if (mk) { c.meta_kcal = mk; c.meta_prot = metas(person.id, logDate).total; } c.comido_kcal = Math.round(cm.kcal); c.comido_prot = Math.round(cm.prot); } catch(e) {}
   refreshToday(); setChkStatus("Salvando…");
   clearTimeout(chkTimers[id]); chkTimers[id] = setTimeout(() => saveChk(id), 600);
 }
