@@ -1,0 +1,5 @@
+Desenhos dos exercícios (arquivos art-*.svg)
+Origem: Workout Guide (https://github.com/bryllim/workout-guide), de Bryl Lim, baseado nas poses do Everkinetic (https://github.com/everkinetic/data).
+Licença: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/). Os arquivos derivados aqui continuam sob a mesma licença.
+Mudança: os quadros (2 ou 3 posições) foram juntados num SVG animado que alterna entre eles, com recorte e cor do tema do site. A geometria não foi alterada.
+Os traços vieram da cópia em texto do app GymMane (https://github.com/InlitX/GymMane, assets/art/), que mantém a mesma licença CC BY-SA 4.0.

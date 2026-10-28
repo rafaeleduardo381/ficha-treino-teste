@@ -945,6 +945,87 @@ body.mov .fogo-visual[data-fogo="brasa"]:not([data-fogo-playing]) .brasa-faisca{
 .fogo-visual[data-fogo-tier="20"] .fogo-img{filter:hue-rotate(115deg)}
 
 /* FIM FOGO CSS */
+/* INICIO MAIS CSS */
+/* Recursos inspirados no GymMane (2026-10-28) — ver fichas/mais-ui.js */
+.thumb.arte{background:var(--surface2)}
+.thumb.arte img{object-fit:contain;padding:3px}
+.zoom.arte>img{background:var(--surface2);max-height:300px;object-fit:contain;padding:10px}
+.mt-last{margin:6px 0 0;font-size:.8rem;color:var(--soft);font-family:var(--f-mono);line-height:1.35;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px}
+.mt-last span{font-family:var(--f-body,inherit);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.mt-hist{font:inherit;font-family:var(--f-body,inherit);font-size:.75rem;font-weight:700;color:var(--pc,var(--lime));background:none;border:0;padding:2px 0;cursor:pointer;margin-left:auto}
+.tm-mid .tm-ser{font-size:.72rem;color:#6E6E73;margin-top:2px}
+.tm-mid .tm-adj{display:flex;justify-content:center;gap:8px;margin-top:6px;overflow:visible}
+.tm-adj button{font:inherit;font-size:.75rem;font-weight:800;color:#fff;background:#1C1C1E;border:1px solid #333;border-radius:999px;padding:5px 12px;cursor:pointer}
+.notas-ex:empty{display:none}
+.notas-ex{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.notas-ex>.hint{margin:0}
+.nota-c{position:relative;margin:4px 0 0;padding:8px 34px 8px 10px;border-radius:12px;background:color-mix(in srgb,var(--c) 12%,var(--surface2));border-left:3px solid var(--c);font-size:.85rem;line-height:1.35}
+.nota-c b{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--c)}
+.nota-c small{display:block;font-size:.68rem;color:var(--muted)}
+.nota-c .aq-del{position:absolute;right:4px;top:4px}
+.nota-action{margin-top:8px}
+.nota-action svg{width:16px;height:16px}
+.nota-f{display:flex;flex-direction:column;gap:10px}
+.nota-f textarea{font:inherit;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:10px;resize:vertical}
+.nota-t{display:flex;align-items:center;justify-content:center;gap:4px}
+.nota-t input{position:absolute;opacity:0;pointer-events:none}
+.nota-t:has(input:checked){background:var(--c);color:#111;border-color:var(--c)}
+.hx-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.hx-list li{padding:10px 0;border-bottom:1px solid var(--line)}
+.hx-list li:last-child{border-bottom:0}
+.hx-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.hx-h span{font-weight:700}
+.hx-list small{color:var(--muted);font-size:.78rem}
+.semana-c .sc-row{display:grid;grid-template-columns:repeat(3,1fr) 64px;gap:8px;align-items:center;margin:6px 0}
+.sc-n{display:flex;flex-direction:column}
+.sc-n b{font-size:1.5rem;font-weight:800}
+.sc-n b small{font-size:.8rem;color:var(--muted);margin-left:2px}
+.sc-n span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.sc-ring{position:relative;width:64px;height:64px}
+.sc-ring svg{width:64px;height:64px;transform:rotate(-90deg)}
+.sc-ring circle{fill:none;stroke-width:6}
+.sc-bg{stroke:var(--surface2)}
+.sc-fg{stroke:var(--pc,var(--lime));stroke-linecap:round}
+.sc-ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:.85rem;font-weight:800}
+.mapa-p .mp-tg{margin:0}
+.mapa-p .mp-tg .chip{padding:5px 10px;font-size:.75rem}
+svg.body.hm{width:100%;max-height:260px;display:block;margin:8px 0}
+.hm0{fill:#363A41}.hm1{fill:#5A4632}.hm2{fill:#8E5A2B}.hm3{fill:#D0782C}.hm4{fill:#FFA94D}
+.hm-leg{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--muted)}
+.hm-leg i{width:22px;height:6px;border-radius:3px;background:currentColor}
+.hm-leg i.hm1{background:#5A4632}.hm-leg i.hm2{background:#8E5A2B}.hm-leg i.hm3{background:#D0782C}.hm-leg i.hm4{background:#FFA94D}
+.med-p h3{display:flex;align-items:center;gap:8px;margin:16px 0 8px}
+.lv{display:flex;gap:12px;align-items:center}
+.lv>div{flex:1;display:flex;flex-direction:column;gap:3px}
+.lv small{color:var(--muted);font-size:.78rem}
+.lv-b{width:46px;height:46px;flex:none;display:grid;place-items:center;border-radius:14px;background:var(--pc,var(--lime));color:#111;font-size:1.3rem;font-weight:800}
+.med-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:10px 6px}
+.med-i{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.med-i small{font-size:.68rem;line-height:1.2;color:var(--soft)}
+.med-i.off small{color:var(--muted);opacity:.7}
+.med{width:52px;height:52px}
+.med.off{opacity:.55}
+body.mov .med-i.nova .med{animation:medPop .9s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes medPop{0%{transform:scale(.3) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+.al-falta{margin:6px 0 2px;font-size:.85rem;color:var(--soft)}
+.al-falta b{color:var(--ink)}
+.al-add{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.al-add .al-tab{color:var(--ink);border-style:solid;background:var(--surface2)}
+.al-q{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px;margin:4px 0 8px}
+.al-busca{list-style:none;margin:0;padding:0}
+.al-busca-i{width:100%;text-align:left;font:inherit;color:var(--ink);background:none;border:0;border-bottom:1px solid var(--line);padding:10px 2px;display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.al-busca-i small{color:var(--muted);font-size:.75rem}
+.al-qt{display:flex;flex-direction:column;gap:12px}
+.al-por{display:flex;flex-wrap:wrap;gap:6px}
+.al-por small{color:var(--muted);font-weight:400}
+.al-g{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
+.al-gin{display:flex;align-items:center;gap:6px}
+.al-gin input{width:80px;font:inherit;font-size:1.2rem;font-weight:800;text-align:center;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px}
+.al-gin button{width:40px;height:40px;font:inherit;font-size:1.3rem;font-weight:800;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.al-calc{margin:0;font-size:1.05rem}
+.mais-dialog .done-btn{width:100%}
+
+/* FIM MAIS CSS */
 .navrow.info{grid-template-columns:repeat(2,minmax(0,1fr))}
 .envbar{background:var(--warn);color:#1A1205;font-family:var(--f-display);font-weight:800;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:5px 12px;border-radius:999px}
 </style>
@@ -964,7 +1045,7 @@ body.mov .fogo-visual[data-fogo="brasa"]:not([data-fogo-playing]) .brasa-faisca{
   <div class="tm-big" id="tmbig" hidden>
     <div class="tm-in">
       <button type="button" class="tm-b tm-pause" id="tmpause" aria-label="Pausar descanso"></button>
-      <div class="tm-mid" aria-live="off"><small id="tmfim"></small><b class="clock" id="clock">0:00</b><span id="tmlbl">Descanso</span></div>
+      <div class="tm-mid" aria-live="off"><small id="tmfim"></small><b class="clock" id="clock">0:00</b><span id="tmlbl">Descanso</span><span class="tm-ser" id="tmser"></span><span class="tm-adj"><button type="button" data-tm15="-15" aria-label="Tirar 15 segundos do descanso">−15 s</button><button type="button" data-tm15="15" aria-label="Somar 15 segundos ao descanso">+15 s</button></span></div>
       <button type="button" class="tm-b tm-x" id="stop" aria-label="Encerrar descanso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
   </div>
@@ -1291,7 +1372,9 @@ const CAT = {
  ]
 };
 // Foto (free-exercise-db, domínio público) e músculos trabalhados de cada exercício
-const MUS = {"Supino inclinado com halteres":{"id":"Incline_Dumbbell_Press","p":["chest"],"s":["shoulders","triceps"],"f":2},"Supino vertical reto (máquina)":{"id":"Leverage_Chest_Press","p":["chest"],"s":["shoulders","triceps"],"f":2},"Supino vertical inclinado (máquina)":{"id":"Leverage_Incline_Chest_Press","p":["chest"],"s":["shoulders","triceps"],"f":2},"Desenvolvimento com halteres, sentado":{"id":"Seated_Dumbbell_Press","p":["shoulders"],"s":["triceps"],"f":2},"Elevação lateral na polia, unilateral":{"id":"Cable_Seated_Lateral_Raise","p":["shoulders"],"s":["middle back","traps"],"f":2},"Voador (peck deck) ou crossover":{"id":"Butterfly","p":["chest"],"s":[],"f":2},"Voador (peck deck)":{"id":"Butterfly","p":["chest"],"s":[],"f":2},"Tríceps pulley (barra ou corda)":{"id":"Triceps_Pushdown","p":["triceps"],"s":[],"f":2},"Tríceps francês na polia (corda)":{"id":"Cable_Rope_Overhead_Triceps_Extension","p":["triceps"],"s":[],"f":2},"Agachamento livre":{"id":"Barbell_Full_Squat","p":["quadriceps"],"s":["calves","glutes","hamstrings","lower back"],"f":2},"Leg press 45°":{"id":"Leg_Press","p":["quadriceps"],"s":["calves","glutes","hamstrings"],"f":2},"Cadeira extensora":{"id":"Leg_Extensions","p":["quadriceps"],"s":[],"f":2},"Mesa flexora":{"id":"Lying_Leg_Curls","p":["hamstrings"],"s":[],"f":2},"Cadeira flexora (sentado)":{"id":"Seated_Leg_Curl","p":["hamstrings"],"s":[],"f":2},"Panturrilha em pé (máquina)":{"id":"Standing_Calf_Raises","p":["calves"],"s":[],"f":2},"Abdominal na polia":{"id":"Cable_Crunch","p":["abdominals"],"s":[],"f":2},"Graviton (barra fixa quando fizer 3×8 sem ajuda)":{"id":"Band_Assisted_Pull-Up","p":["lats"],"s":["abdominals","forearms","middle back"],"f":2},"Remada baixa, pegada neutra (triângulo)":{"id":"Seated_Cable_Rows","p":["middle back"],"s":["biceps","lats","shoulders"],"f":2},"Pulldown articulado unilateral":{"id":"One_Arm_Lat_Pulldown","p":["lats"],"s":["biceps","middle back"],"f":2},"Puxada alta (pulley)":{"id":"Wide-Grip_Lat_Pulldown","p":["lats"],"s":["biceps","middle back","shoulders"],"f":2},"Elevação lateral com halteres":{"id":"Side_Lateral_Raise","p":["shoulders"],"s":[],"f":2},"Voador invertido ou face pull":{"id":"Reverse_Machine_Flyes","p":["shoulders"],"s":[],"f":2},"Voador invertido na máquina":{"id":"Reverse_Machine_Flyes","p":["shoulders"],"s":[],"f":2},"Face pull na polia (corda)":{"id":"Face_Pull","p":["shoulders"],"s":["middle back"],"f":2},"Rosca inclinada com halteres":{"id":"Incline_Dumbbell_Curl","p":["biceps"],"s":[],"f":2},"Rosca scott (máquina)":{"id":"Machine_Preacher_Curls","p":["biceps"],"s":[],"f":2},"Stiff com barra":{"id":"Stiff-Legged_Barbell_Deadlift","p":["hamstrings"],"s":["glutes","lower back"],"f":2},"Elevação pélvica":{"id":"Barbell_Hip_Thrust","p":["glutes"],"s":["calves","hamstrings"],"f":2},"Agachamento búlgaro":{"id":"Split_Squat_with_Dumbbells","p":["quadriceps"],"s":["glutes","hamstrings"],"f":2},"Panturrilha sentado (sóleo)":{"id":"Seated_Calf_Raise","p":["calves"],"s":[],"f":2},"Elevação de pernas ou prancha":{"id":"Flat_Bench_Lying_Leg_Raise","p":["abdominals"],"s":[],"f":2},"Remada máquina com apoio no peito":{"id":"Leverage_Iso_Row","p":["lats"],"s":["biceps","middle back"],"f":2},"Crossover de baixo para cima":{"id":"Low_Cable_Crossover","p":["chest"],"s":["shoulders"],"f":2},"Rosca direta com barra W":{"id":"EZ-Bar_Curl","p":["biceps"],"s":[],"f":2},"Caminhada inclinada na esteira (opcional)":{"id":"Walking_Treadmill","p":["quadriceps"],"s":["calves","glutes","hamstrings"],"f":2},"Rosca martelo sentado":{"id":"Hammer_Curls","p":["biceps"],"s":[],"f":2},"Cadeira abdutora":{"id":"Thigh_Abductor","p":["abductors"],"s":["glutes"],"f":2},"Crucifixo inverso com halteres, peito apoiado no banco inclinado":{"id":"Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench","p":["shoulders"],"s":[],"f":2},"Agachamento no hack (máquina)":{"id":"Hack_Squat","p":["quadriceps"],"s":["glutes","hamstrings"],"f":2},"Agachamento no Smith":{"id":"Smith_Machine_Squat","p":["quadriceps"],"s":["glutes","hamstrings","calves"],"f":2},"Agachamento até o sofá":{"id":"Bodyweight_Squat","p":["quadriceps"],"s":["glutes","hamstrings"],"f":2},"Flexão com mãos no sofá":{"id":"Incline_Push-Up","p":["chest"],"s":["shoulders","triceps"],"f":2},"Remada com mochila, uma mão no sofá":{"id":"One-Arm_Dumbbell_Row","p":["middle back"],"s":["biceps","lats","shoulders"],"f":2},"Ponte de glúteo no chão":{"id":"Butt_Lift_Bridge","p":["glutes"],"s":["hamstrings"],"f":2},"Dead bug":{"id":"Dead_Bug","p":["abdominals"],"s":[],"f":2},"Desenvolvimento com mochila, em pé":{"id":"Standing_Dumbbell_Press","p":["shoulders"],"s":["triceps"],"f":2},"Stiff com mochila":{"id":"Stiff-Legged_Dumbbell_Deadlift","p":["hamstrings"],"s":["glutes","lower back"],"f":2},"Elevação em W deitado de bruços":{"id":"Lying_Rear_Delt_Raise","p":["shoulders"],"s":["middle back"],"f":2,"nofoto":true},"Panturrilha em pé, mão no sofá":{"id":"Wger_Calf_Raise","p":["calves"],"s":[],"cr":"wger.de · erikocobra · CC BY-SA 4.0"},"Prancha com toque no ombro, mãos no sofá":{"id":"Wger_Plank_Shoulder_Taps","p":["abdominals"],"s":["shoulders"],"cr":"wger.de · clafal · CC BY-SA 4.0"},"Caminhada":{"id":"Walking_Treadmill","p":["quadriceps"],"s":["calves","glutes","hamstrings"],"f":2},"Equilíbrio numa perna, perto do sofá":{"id":"Leg_Lift","p":["glutes"],"s":["calves","abdominals"],"f":2},"Meio agachamento numa perna, mão no sofá":{"id":"Leg_Lift","p":["quadriceps"],"s":["glutes"],"f":2},"Perdigueiro (bird dog)":{"id":"Wger_Bird_Dog","p":["lower back"],"s":["glutes","abdominals"],"cr":"wger.de · Settebello · CC BY-SA 4.0"}};
+const MUS = {"Supino inclinado com halteres":{"id":"Incline_Dumbbell_Press","p":["chest"],"s":["shoulders","triceps"],"f":2,"art":"incline-dumbbell-press"},"Supino vertical reto (máquina)":{"id":"Leverage_Chest_Press","p":["chest"],"s":["shoulders","triceps"],"f":2,"art":"machine-chest-press"},"Supino vertical inclinado (máquina)":{"id":"Leverage_Incline_Chest_Press","p":["chest"],"s":["shoulders","triceps"],"f":2,"art":"incline-chest-press-machine"},"Desenvolvimento com halteres, sentado":{"id":"Seated_Dumbbell_Press","p":["shoulders"],"s":["triceps"],"f":2,"art":"seated-dumbbell-press"},"Elevação lateral na polia, unilateral":{"id":"Cable_Seated_Lateral_Raise","p":["shoulders"],"s":["middle back","traps"],"f":2,"art":"cable-lateral-raise"},"Voador (peck deck) ou crossover":{"id":"Butterfly","p":["chest"],"s":[],"f":2},"Voador (peck deck)":{"id":"Butterfly","p":["chest"],"s":[],"f":2,"art":"pec-deck"},"Tríceps pulley (barra ou corda)":{"id":"Triceps_Pushdown","p":["triceps"],"s":[],"f":2,"art":"tricep-pushdown"},"Tríceps francês na polia (corda)":{"id":"Cable_Rope_Overhead_Triceps_Extension","p":["triceps"],"s":[],"f":2,"art":"overhead-tricep-extension"},"Agachamento livre":{"id":"Barbell_Full_Squat","p":["quadriceps"],"s":["calves","glutes","hamstrings","lower back"],"f":2},"Leg press 45°":{"id":"Leg_Press","p":["quadriceps"],"s":["calves","glutes","hamstrings"],"f":2,"art":"leg-press"},"Cadeira extensora":{"id":"Leg_Extensions","p":["quadriceps"],"s":[],"f":2,"art":"leg-extension"},"Mesa flexora":{"id":"Lying_Leg_Curls","p":["hamstrings"],"s":[],"f":2,"art":"lying-leg-curl"},"Cadeira flexora (sentado)":{"id":"Seated_Leg_Curl","p":["hamstrings"],"s":[],"f":2,"art":"seated-leg-curl"},"Panturrilha em pé (máquina)":{"id":"Standing_Calf_Raises","p":["calves"],"s":[],"f":2,"art":"standing-calf-raise"},"Abdominal na polia":{"id":"Cable_Crunch","p":["abdominals"],"s":[],"f":2,"art":"cable-crunch"},"Graviton (barra fixa quando fizer 3×8 sem ajuda)":{"id":"Band_Assisted_Pull-Up","p":["lats"],"s":["abdominals","forearms","middle back"],"f":2,"art":"assisted-pull-up"},"Remada baixa, pegada neutra (triângulo)":{"id":"Seated_Cable_Rows","p":["middle back"],"s":["biceps","lats","shoulders"],"f":2,"art":"seated-row"},"Pulldown articulado unilateral":{"id":"One_Arm_Lat_Pulldown","p":["lats"],"s":["biceps","middle back"],"f":2,"art":"lat-pulldown"},"Puxada alta (pulley)":{"id":"Wide-Grip_Lat_Pulldown","p":["lats"],"s":["biceps","middle back","shoulders"],"f":2,"art":"wide-grip-lat-pulldown"},"Elevação lateral com halteres":{"id":"Side_Lateral_Raise","p":["shoulders"],"s":[],"f":2,"art":"lateral-raise"},"Voador invertido ou face pull":{"id":"Reverse_Machine_Flyes","p":["shoulders"],"s":[],"f":2,"art":"reverse-pec-deck"},"Voador invertido na máquina":{"id":"Reverse_Machine_Flyes","p":["shoulders"],"s":[],"f":2},"Face pull na polia (corda)":{"id":"Face_Pull","p":["shoulders"],"s":["middle back"],"f":2},"Rosca inclinada com halteres":{"id":"Incline_Dumbbell_Curl","p":["biceps"],"s":[],"f":2,"art":"incline-dumbbell-curl"},"Rosca scott (máquina)":{"id":"Machine_Preacher_Curls","p":["biceps"],"s":[],"f":2,"art":"machine-biceps-curl"},"Stiff com barra":{"id":"Stiff-Legged_Barbell_Deadlift","p":["hamstrings"],"s":["glutes","lower back"],"f":2,"art":"romanian-deadlift"},"Elevação pélvica":{"id":"Barbell_Hip_Thrust","p":["glutes"],"s":["calves","hamstrings"],"f":2,"art":"hip-thrust"},"Agachamento búlgaro":{"id":"Split_Squat_with_Dumbbells","p":["quadriceps"],"s":["glutes","hamstrings"],"f":2,"art":"bulgarian-split-squat"},"Panturrilha sentado (sóleo)":{"id":"Seated_Calf_Raise","p":["calves"],"s":[],"f":2,"art":"seated-calf-raise"},"Elevação de pernas ou prancha":{"id":"Flat_Bench_Lying_Leg_Raise","p":["abdominals"],"s":[],"f":2,"art":"lying-leg-raise"},"Remada máquina com apoio no peito":{"id":"Leverage_Iso_Row","p":["lats"],"s":["biceps","middle back"],"f":2,"art":"chest-supported-row"},"Crossover de baixo para cima":{"id":"Low_Cable_Crossover","p":["chest"],"s":["shoulders"],"f":2,"art":"cable-fly"},"Rosca direta com barra W":{"id":"EZ-Bar_Curl","p":["biceps"],"s":[],"f":2,"art":"ez-bar-curl"},"Caminhada inclinada na esteira (opcional)":{"id":"Walking_Treadmill","p":["quadriceps"],"s":["calves","glutes","hamstrings"],"f":2,"art":"treadmill-incline-walk"},"Rosca martelo sentado":{"id":"Hammer_Curls","p":["biceps"],"s":[],"f":2},"Cadeira abdutora":{"id":"Thigh_Abductor","p":["abductors"],"s":["glutes"],"f":2,"art":"hip-abduction-machine"},"Crucifixo inverso com halteres, peito apoiado no banco inclinado":{"id":"Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench","p":["shoulders"],"s":[],"f":2},"Agachamento no hack (máquina)":{"id":"Hack_Squat","p":["quadriceps"],"s":["glutes","hamstrings"],"f":2},"Agachamento no Smith":{"id":"Smith_Machine_Squat","p":["quadriceps"],"s":["glutes","hamstrings","calves"],"f":2,"art":"smith-machine-squat"},"Agachamento até o sofá":{"id":"Bodyweight_Squat","p":["quadriceps"],"s":["glutes","hamstrings"],"f":2,"art":"bodyweight-squat"},"Flexão com mãos no sofá":{"id":"Incline_Push-Up","p":["chest"],"s":["shoulders","triceps"],"f":2,"art":"incline-push-up"},"Remada com mochila, uma mão no sofá":{"id":"One-Arm_Dumbbell_Row","p":["middle back"],"s":["biceps","lats","shoulders"],"f":2,"art":"one-arm-dumbbell-row"},"Ponte de glúteo no chão":{"id":"Butt_Lift_Bridge","p":["glutes"],"s":["hamstrings"],"f":2,"art":"glute-bridge"},"Dead bug":{"id":"Dead_Bug","p":["abdominals"],"s":[],"f":2,"art":"dead-bug"},"Desenvolvimento com mochila, em pé":{"id":"Standing_Dumbbell_Press","p":["shoulders"],"s":["triceps"],"f":2,"art":"standing-dumbbell-press"},"Stiff com mochila":{"id":"Stiff-Legged_Dumbbell_Deadlift","p":["hamstrings"],"s":["glutes","lower back"],"f":2,"art":"dumbbell-romanian-deadlift"},"Elevação em W deitado de bruços":{"id":"Lying_Rear_Delt_Raise","p":["shoulders"],"s":["middle back"],"f":2,"nofoto":true,"art":"reverse-snow-angel"},"Panturrilha em pé, mão no sofá":{"id":"Wger_Calf_Raise","p":["calves"],"s":[],"cr":"wger.de · erikocobra · CC BY-SA 4.0","art":"calf-raise"},"Prancha com toque no ombro, mãos no sofá":{"id":"Wger_Plank_Shoulder_Taps","p":["abdominals"],"s":["shoulders"],"cr":"wger.de · clafal · CC BY-SA 4.0","art":"plank-shoulder-tap"},"Caminhada":{"id":"Walking_Treadmill","p":["quadriceps"],"s":["calves","glutes","hamstrings"],"f":2,"art":"walking"},"Equilíbrio numa perna, perto do sofá":{"id":"Leg_Lift","p":["glutes"],"s":["calves","abdominals"],"f":2,"art":"hip-airplane"},"Meio agachamento numa perna, mão no sofá":{"id":"Leg_Lift","p":["quadriceps"],"s":["glutes"],"f":2,"art":"single-leg-box-squat"},"Perdigueiro (bird dog)":{"id":"Wger_Bird_Dog","p":["lower back"],"s":["glutes","abdominals"],"cr":"wger.de · Settebello · CC BY-SA 4.0","art":"bird-dog"}};
+// Alimentos da TACO, 4ª ed. (NEPA/Unicamp): [id, nome, kcal, proteína, carboidrato, gordura (por 100 g), porções caseiras]. Gerado por fichas/taco/gera.js
+const ALIMENTOS = [[1,"Arroz, integral, cozido",124,2.6,25.8,1,[["colher de servir",45],["escumadeira",90]]],[2,"Arroz, integral, cru",360,7.3,77.5,1.9],[3,"Arroz, tipo 1, cozido",128,2.5,28.1,0.2,[["colher de servir",45],["escumadeira",90]]],[4,"Arroz, tipo 1, cru",358,7.2,78.8,0.3],[5,"Arroz, tipo 2, cozido",130,2.6,28.2,0.4],[6,"Arroz, tipo 2, cru",358,7.2,78.9,0.3],[7,"Aveia, flocos, crua",394,13.9,66.6,8.5,[["colher de sopa",15]]],[8,"Biscoito, doce, maisena",443,8.1,75.2,12,[["unidade",5]]],[9,"Biscoito, doce, recheado com chocolate",472,6.4,70.5,19.6],[10,"Biscoito, doce, recheado com morango",471,5.7,71,19.6],[11,"Biscoito, doce, wafer, recheado de chocolate",503,5.6,67.5,24.7],[12,"Biscoito, doce, wafer, recheado de morango",513,4.5,67.4,26.4],[13,"Biscoito, salgado, cream cracker",432,10.1,68.7,14.4,[["unidade",6]]],[14,"Bolo, mistura para",419,6.2,84.7,6.1],[15,"Bolo, pronto, aipim",324,4.4,47.9,12.7],[16,"Bolo, pronto, chocolate",410,6.2,54.7,18.5],[17,"Bolo, pronto, coco",333,5.7,52.3,11.3],[18,"Bolo, pronto, milho",311,4.8,45.1,12.4],[19,"Canjica, branca, crua",358,7.2,78.1,1],[20,"Canjica, com leite integral",113,2.4,23.6,1.2],[21,"Cereais, milho, flocos, com sal",370,7.3,80.8,1.6],[22,"Cereais, milho, flocos, sem sal",363,6.9,80.4,1.2],[23,"Cereais, mingau, milho, infantil",394,6.4,87.3,1.1],[24,"Cereais, mistura para vitamina, trigo, cevada e aveia",381,8.9,81.6,2.1],[25,"Cereal matinal, milho",365,7.2,83.8,1],[26,"Cereal matinal, milho, açúcar",377,4.7,88.8,0.7],[27,"Creme de arroz, pó",386,7,83.9,1.2],[28,"Creme de milho, pó",333,4.8,86.1,1.6],[29,"Curau, milho verde",78,2.4,13.9,1.6],[30,"Curau, milho verde, mistura para",402,2.2,79.8,13.4],[31,"Farinha, de arroz, enriquecida",363,1.3,85.5,0.3],[32,"Farinha, de centeio, integral",336,12.5,73.3,1.8],[33,"Farinha, de milho, amarela",351,7.2,79.1,1.5],[34,"Farinha, de rosca",371,11.4,75.8,1.5],[35,"Farinha, de trigo",361,9.8,75.1,1.4],[36,"Farinha, láctea, de cereais",415,11.9,77.8,5.8],[37,"Lasanha, massa fresca, cozida",164,5.8,32.5,1.2],[38,"Lasanha, massa fresca, crua",220,7,45.1,1.3],[39,"Macarrão, instantâneo",436,8.8,62.4,17.2],[40,"Macarrão, trigo, cru",371,10,77.9,1.3],[41,"Macarrão, trigo, cru, com ovos",371,10.3,76.6,2],[42,"Milho, amido, cru",361,0.6,87.1,0],[43,"Milho, fubá, cru",354,7.2,78.9,1.9],[44,"Milho, verde, cru",138,6.6,28.6,0.6],[45,"Milho, verde, enlatado, drenado",98,3.2,17.1,2.4],[46,"Mingau tradicional, pó",373,0.6,89.3,0.4],[47,"Pamonha, barra para cozimento, pré-cozida",171,2.6,30.7,4.8],[48,"Pão, aveia, forma",343,12.4,59.6,5.7],[49,"Pão, de soja",309,11.3,56.5,3.6],[50,"Pão, glúten, forma",253,12,44.1,2.7],[51,"Pão, milho, forma",292,8.3,56.4,3.1],[52,"Pão, trigo, forma, integral",253,9.4,49.9,3.7,[["fatia",25]]],[53,"Pão, trigo, francês",300,8,58.6,3.1,[["unidade",50]]],[54,"Pão, trigo, sovado",311,8.4,61.5,2.8],[55,"Pastel, de carne, cru",289,10.7,42,8.8],[56,"Pastel, de carne, frito",388,10.1,43.8,20.1,[["unidade",80]]],[57,"Pastel, de queijo, cru",309,9.9,45.9,9.6],[58,"Pastel, de queijo, frito",422,8.7,48.1,22.7,[["unidade",80]]],[59,"Pastel, massa, crua",310,6.9,57.4,5.5],[60,"Pastel, massa, frita",570,6,49.3,40.9],[61,"Pipoca, com óleo de soja, sem sal",448,9.9,70.3,15.9,[["saco pequeno",25]]],[62,"Polenta, pré-cozida",103,2.3,23.3,0.3],[63,"Torrada, pão francês",377,10.5,74.6,3.3],[64,"Abóbora, cabotian, cozida",48,1.4,10.8,0.7],[65,"Abóbora, cabotian, crua",39,1.7,8.4,0.5],[66,"Abóbora, menina brasileira, crua",14,0.6,3.3,0],[67,"Abóbora, moranga, crua",12,1,2.7,0.1],[68,"Abóbora, moranga, refogada",29,0.4,6,0.8],[69,"Abóbora, pescoço, crua",25,0.7,6.1,0.1],[70,"Abobrinha, italiana, cozida",15,1.1,3,0.2],[71,"Abobrinha, italiana, crua",19,1.1,4.3,0.1],[72,"Abobrinha, italiana, refogada",24,1.1,4.2,0.8],[73,"Abobrinha, paulista, crua",31,0.6,7.9,0.1],[74,"Acelga, crua",21,1.4,4.6,0.1],[75,"Agrião, cru",17,2.7,2.3,0.2],[76,"Aipo, cru",19,0.8,4.3,0.1],[77,"Alface, americana, crua",9,0.6,1.7,0.1],[78,"Alface, crespa, crua",11,1.3,1.7,0.2],[79,"Alface, lisa, crua",14,1.7,2.4,0.1],[80,"Alface, roxa, crua",13,0.9,2.5,0.2],[81,"Alfavaca, crua",29,2.7,5.2,0.5],[82,"Alho, cru",113,7,23.9,0.2],[83,"Alho-poró, cru",32,1.4,6.9,0.1],[84,"Almeirão, cru",18,1.8,3.3,0.2],[85,"Almeirão, refogado",65,1.7,5.7,4.8],[86,"Batata, baroa, cozida",80,0.9,18.9,0.2],[87,"Batata, baroa, crua",101,1,24,0.2],[88,"Batata, doce, cozida",77,0.6,18.4,0.1,[["unidade média",130]]],[89,"Batata, doce, crua",118,1.3,28.2,0.1],[90,"Batata, frita, tipo chips, industrializada",543,5.6,51.2,36.6],[91,"Batata, inglesa, cozida",52,1.2,11.9,0,[["unidade média",130]]],[92,"Batata, inglesa, crua",64,1.8,14.7,0],[93,"Batata, inglesa, frita",267,5,35.6,13.1],[94,"Batata, inglesa, sauté",68,1.3,14.1,0.9],[95,"Berinjela, cozida",19,0.7,4.5,0.1],[96,"Berinjela, crua",20,1.2,4.4,0.1],[97,"Beterraba, cozida",32,1.3,7.2,0.1],[98,"Beterraba, crua",49,1.9,11.1,0.1],[99,"Biscoito, polvilho doce",438,1.3,80.5,12.2],[100,"Brócolis, cozido",25,2.1,4.4,0.5],[101,"Brócolis, cru",26,3.6,4,0.3],[102,"Cará, cozido",78,1.5,18.9,0.1],[103,"Cará, cru",96,2.3,23,0.1],[104,"Caruru, cru",34,3.2,6,0.6],[105,"Catalonha, crua",24,1.9,4.8,0.3],[106,"Catalonha, refogada",63,2,4.8,4.8],[107,"Cebola, crua",39,1.7,8.9,0.1],[108,"Cebolinha, crua",20,1.9,3.4,0.4],[109,"Cenoura, cozida",30,0.8,6.7,0.2],[110,"Cenoura, crua",34,1.3,7.7,0.2,[["unidade",80]]],[111,"Chicória, crua",14,1.1,2.9,0.1],[112,"Chuchu, cozido",19,0.4,4.8,0],[113,"Chuchu, cru",17,0.7,4.1,0.1],[114,"Coentro, folhas desidratadas",309,20.9,48,10.4],[115,"Couve, manteiga, crua",27,2.9,4.3,0.5],[116,"Couve, manteiga, refogada",90,1.7,8.7,6.6],[117,"Couve-flor, crua",23,1.9,4.5,0.2],[118,"Couve-flor, cozida",19,1.2,3.9,0.3],[119,"Espinafre, Nova Zelândia, cru",16,2,2.6,0.2],[120,"Espinafre, Nova Zelândia, refogado",67,2.7,4.2,5.4],[121,"Farinha, de mandioca, crua",361,1.6,87.9,0.3,[["colher de sopa",15]]],[122,"Farinha, de mandioca, torrada",365,1.2,89.2,0.3,[["colher de sopa",15]]],[123,"Farinha, de puba",360,1.6,87.3,0.5],[124,"Fécula, de mandioca",331,0.5,81.1,0.3],[125,"Feijão, broto, cru",39,4.2,7.8,0.1],[126,"Inhame, cru",97,2.1,23.2,0.2],[127,"Jiló, cru",27,1.4,6.2,0.2],[128,"Jurubeba, crua",126,4.4,23.1,3.9],[129,"Mandioca, cozida",125,0.6,30.1,0.3,[["pedaço",100]]],[130,"Mandioca, crua",151,1.1,36.2,0.3],[131,"Mandioca, farofa, temperada",406,2.1,80.3,9.1],[132,"Mandioca, frita",300,1.4,50.3,11.2],[133,"Manjericão, cru",21,2,3.6,0.4],[134,"Maxixe, cru",14,1.4,2.7,0.1],[135,"Mostarda, folha, crua",18,2.1,3.2,0.2],[136,"Nhoque, batata, cozido",181,5.9,36.8,1.9],[137,"Nabo, cru",18,1.2,4.1,0.1],[138,"Palmito, Juçara, em conserva",23,1.8,4.3,0.4],[139,"Palmito, pupunha, em conserva",29,2.5,5.5,0.5],[140,"Pão, de queijo, assado",363,5.1,34.2,24.6],[141,"Pão, de queijo, cru",295,3.6,38.5,14],[142,"Pepino, cru",10,0.9,2,0],[143,"Pimentão, amarelo, cru",28,1.2,6,0.4],[144,"Pimentão, verde, cru",21,1.1,4.9,0.2],[145,"Pimentão, vermelho, cru",23,1,5.5,0.1],[146,"Polvilho, doce",351,0.4,86.8,0],[147,"Quiabo, cru",30,1.9,6.4,0.3],[148,"Rabanete, cru",14,1.4,2.7,0.1],[149,"Repolho, branco, cru",17,0.9,3.9,0.1],[150,"Repolho, roxo, cru",31,1.9,7.2,0.1],[151,"Repolho, roxo, refogado",42,1.8,7.6,1.2],[152,"Rúcula, crua",13,1.8,2.2,0.1],[153,"Salsa, crua",33,3.3,5.7,0.6],[154,"Seleta de legumes, enlatada",57,3.4,12.7,0.4],[155,"Serralha, crua",30,2.7,4.9,0.7],[156,"Taioba, crua",34,2.9,5.4,0.9],[157,"Tomate, com semente, cru",15,1.1,3.1,0.2,[["unidade",100]]],[158,"Tomate, extrato",61,2.4,15,0.2],[159,"Tomate, molho industrializado",38,1.4,7.7,0.9],[160,"Tomate, purê",28,1.4,6.9,0],[161,"Tomate, salada",21,0.8,5.1,0],[162,"Vagem, crua",25,1.8,5.3,0.2],[163,"Abacate, cru",96,1.2,6,8.4,[["colher de sopa",30]]],[164,"Abacaxi, cru",48,0.9,12.3,0.1],[165,"Abacaxi, polpa, congelada",31,0.5,7.8,0.1],[166,"Abiu, cru",62,0.8,14.9,0.7],[167,"Açaí, polpa, com xarope de guaraná e glucose",110,0.7,21.5,3.7],[168,"Açaí, polpa, congelada",58,0.8,6.2,3.9],[169,"Acerola, crua",34,0.9,8,0.2],[170,"Acerola, polpa, congelada",22,0.6,5.5,0],[171,"Ameixa, calda, enlatada",183,0.4,46.9,0],[172,"Ameixa, crua",53,0.8,13.9,0],[173,"Ameixa, em calda, enlatada, drenada",177,1,47.7,0.3],[174,"Atemóia, crua",97,1,25.3,0.3],[175,"Banana, da terra, crua",128,1.4,33.7,0.2],[176,"Banana, doce em barra",280,2.2,75.7,0.1],[177,"Banana, figo, crua",105,1.1,27.8,0.1],[178,"Banana, maçã, crua",87,1.8,22.3,0.1],[179,"Banana, nanica, crua",92,1.4,23.8,0.1,[["unidade",90]]],[180,"Banana, ouro, crua",112,1.5,29.3,0.2],[181,"Banana, pacova, crua",78,1.2,20.3,0.1],[182,"Banana, prata, crua",98,1.3,26,0.1,[["unidade",70]]],[183,"Cacau, cru",74,1,19.4,0.1],[184,"Cajá-Manga, cru",46,1.3,11.4,0],[185,"Cajá, polpa, congelada",26,0.6,6.4,0.2],[186,"Caju, cru",43,1,10.3,0.3],[187,"Caju, polpa, congelada",37,0.5,9.4,0.2],[188,"Caju, suco concentrado, envasado",45,0.4,10.7,0.2],[189,"Caqui, chocolate, cru",71,0.4,19.3,0.1],[190,"Carambola, crua",46,0.9,11.5,0.2],[191,"Ciriguela, crua",76,1.4,18.9,0.4],[192,"Cupuaçu, cru",49,1.2,10.4,1],[193,"Cupuaçu, polpa, congelada",49,0.8,11.4,0.6],[194,"Figo, cru",41,1,10.2,0.2],[195,"Figo, enlatado, em calda",184,0.6,50.3,0.2],[196,"Fruta-pão, crua",67,1.1,17.2,0.2],[197,"Goiaba, branca, com casca, crua",52,0.9,12.4,0.5],[198,"Goiaba, doce em pasta",269,0.6,74.1,0],[199,"Goiaba, doce, cascão",286,0.4,78.7,0.1],[200,"Goiaba, vermelha, com casca, crua",54,1.1,13,0.4],[201,"Graviola, crua",62,0.8,15.8,0.2],[202,"Graviola, polpa, congelada",38,0.6,9.8,0.1],[203,"Jabuticaba, crua",58,0.6,15.3,0.1],[204,"Jaca, crua",88,1.4,22.5,0.3],[205,"Jambo, cru",27,0.9,6.5,0.1],[206,"Jamelão, cru",41,0.5,10.6,0.1],[207,"Kiwi, cru",51,1.3,11.5,0.6],[208,"Laranja, baía, crua",45,1,11.5,0.1],[209,"Laranja, baía, suco",37,0.7,8.7,0],[210,"Laranja, da terra, crua",52,1.1,12.9,0.2],[211,"Laranja, da terra, suco",41,0.7,9.6,0.1],[212,"Laranja, lima, crua",46,1.1,11.5,0.1],[213,"Laranja, lima, suco",39,0.7,9.2,0.1],[214,"Laranja, pêra, crua",37,1,8.9,0.1],[215,"Laranja, pêra, suco",33,0.7,7.6,0.1],[216,"Laranja, valência, crua",46,0.8,11.7,0.2],[217,"Laranja, valência, suco",36,0.5,8.6,0.1],[218,"Limão, cravo, suco",14,0.3,5.2,0],[219,"Limão, galego, suco",22,0.6,7.3,0.1],[220,"Limão, tahiti, cru",32,0.9,11.1,0.1],[221,"Maçã, Argentina, com casca, crua",63,0.2,16.6,0.2,[["unidade",130]]],[222,"Maçã, Fuji, com casca, crua",56,0.3,15.2,0,[["unidade",130]]],[223,"Macaúba, crua",404,2.1,13.9,40.7],[224,"Mamão, doce em calda, drenado",196,0.2,54,0.1],[225,"Mamão, Formosa, cru",45,0.8,11.6,0.1,[["fatia",150]]],[226,"Mamão, Papaia, cru",40,0.5,10.4,0.1,[["meia unidade",150]]],[227,"Mamão verde, doce em calda, drenado",209,0.3,57.6,0.1],[228,"Manga, Haden, crua",64,0.4,16.7,0.3,[["unidade",200]]],[229,"Manga, Palmer, crua",73,0.4,19.4,0.2],[230,"Manga, polpa, congelada",48,0.4,12.5,0.2],[231,"Manga, Tommy Atkins, crua",51,0.9,12.8,0.2,[["unidade",200]]],[232,"Maracujá, cru",68,2,12.3,2.1],[233,"Maracujá, polpa, congelada",39,0.8,9.6,0.2],[234,"Maracujá, suco concentrado, envasado",42,0.8,9.6,0.2],[235,"Melancia, crua",33,0.9,8.1,0,[["fatia",200]]],[236,"Melão, cru",29,0.7,7.5,0],[237,"Mexerica, Murcote, crua",58,0.9,14.9,0.1],[238,"Mexerica, Rio, crua",37,0.7,9.3,0.1],[239,"Morango, cru",30,0.9,6.8,0.3,[["unidade",12]]],[240,"Nêspera, crua",43,0.3,11.5,0],[241,"Pequi, cru",205,2.3,13,18],[242,"Pêra, Park, crua",61,0.2,16.1,0.2],[243,"Pêra, Williams, crua",53,0.6,14,0.1],[244,"Pêssego, Aurora, cru",36,0.8,9.3,0],[245,"Pêssego, enlatado, em calda",63,0.7,16.9,0],[246,"Pinha, crua",89,1.5,22.4,0.3],[247,"Pitanga, crua",41,0.9,10.2,0.2],[248,"Pitanga, polpa, congelada",19,0.3,4.8,0.1],[249,"Romã, crua",56,0.4,15.1,0],[250,"Tamarindo, cru",276,3.2,72.5,0.5],[251,"Tangerina, Poncã, crua",38,0.8,9.6,0.1],[252,"Tangerina, Poncã, suco",36,0.5,8.8,0],[253,"Tucumã, cru",262,2.1,26.5,19.1],[254,"Umbu, cru",37,0.8,9.4,0],[255,"Umbu, polpa, congelada",34,0.5,8.8,0.1],[256,"Uva, Itália, crua",53,0.7,13.6,0.2,[["cacho pequeno",100]]],[257,"Uva, Rubi, crua",49,0.6,12.7,0.2],[258,"Uva, suco concentrado, envasado",58,0,14.7,0],[259,"Azeite, de dendê",884,0,0,100],[260,"Azeite, de oliva, extra virgem",884,0,0,100,[["colher de sopa",13]]],[261,"Manteiga, com sal",726,0.4,0.1,82.4,[["colher de chá",5]]],[262,"Manteiga, sem sal",758,0.4,0,86,[["colher de chá",5]]],[263,"Margarina, com óleo hidrogenado, com sal (65% de lipídeos)",596,0,0,67.4],[264,"Margarina, com óleo hidrogenado, sem sal (80% de lipídeos)",723,0,0,81.7],[265,"Margarina, com óleo interesterificado, com sal (65%de lipídeos)",595,0,0,67.2],[266,"Margarina, com óleo interesterificado, sem sal (65% de lipídeos)",593,0,0,67.1],[267,"Óleo, de babaçu",884,0,0,100],[268,"Óleo, de canola",884,0,0,100],[269,"Óleo, de girassol",884,0,0,100],[270,"Óleo, de milho",884,0,0,100],[271,"Óleo, de pequi",884,0,0,100],[272,"Óleo, de soja",884,0,0,100,[["colher de sopa",13]]],[273,"Abadejo, filé, congelado, assado",112,23.5,0,1.2],[274,"Abadejo, filé, congelado,cozido",91,19.3,0,0.9],[275,"Abadejo, filé, congelado, cru",59,13.1,0,0.4],[276,"Abadejo, filé, congelado, grelhado",130,27.6,0,1.3],[277,"Atum, conserva em óleo",166,26.2,0,6,[["lata drenada",120]]],[278,"Atum, fresco, cru",118,25.7,0,0.9],[279,"Bacalhau, salgado, cru",136,29,0,1.3],[280,"Bacalhau, salgado, refogado",140,24,1.2,3.6],[281,"Cação, posta, com farinha de trigo, frita",208,25,3.1,10],[282,"Cação, posta, cozida",116,25.6,0,0.7],[283,"Cação, posta, crua",83,17.9,0,0.8],[284,"Camarão, Rio Grande, grande, cozido",90,19,0,1],[285,"Camarão, Rio Grande, grande, cru",47,10,0,0.5],[286,"Camarão, Sete Barbas, sem cabeça, com casca, frito",231,18.4,2.9,15.6],[287,"Caranguejo, cozido",83,18.5,0,0.4],[288,"Corimba, cru",128,17.4,0,6],[289,"Corimbatá, assado",262,19.9,0,19.6],[290,"Corimbatá, cozido",239,20.1,0,16.9],[291,"Corvina de água doce, crua",101,18.9,0,2.2],[292,"Corvina do mar, crua",94,18.6,0,1.6],[293,"Corvina grande, assada",147,26.8,0,3.6],[294,"Corvina grande, cozida",100,23.4,0,2.6],[295,"Dourada de água doce, fresca",131,18.8,0,5.6],[296,"Lambari, congelado, cru",131,16.8,0,6.5],[297,"Lambari, congelado, frito",327,28.4,0,22.8],[298,"Lambari, fresco,cru",152,15.7,0,9.4],[299,"Manjuba, com farinha de trigo, frita",344,23.5,10.2,22.6],[300,"Manjuba, frita",349,30.1,0,24.5],[301,"Merluza, filé, assado",122,26.6,0,0.9],[302,"Merluza, filé, cru",89,16.6,0,2],[303,"Merluza, filé, frito",192,26.9,0,8.5],[304,"Pescada, branca, crua",111,16.3,0,4.6],[305,"Pescada, branca, frita",223,27.4,0,11.8],[306,"Pescada, filé, com farinha de trigo, frito",283,21.4,5,19.1],[307,"Pescada, filé, cru",107,16.7,0,4],[308,"Pescada, filé, frito",154,28.6,0,3.6],[309,"Pescada, filé, molho escabeche",142,11.8,5,8],[310,"Pescadinha, crua",76,15.5,0,1.1],[311,"Pintado, assado",192,36.5,0,4],[312,"Pintado, cru",91,18.6,0,1.3],[313,"Pintado, grelhado",152,30.8,0,2.3],[314,"Porquinho, cru",93,20.5,0,0.6],[315,"Salmão, filé, com pele, fresco, grelhado",229,23.9,0,14],[316,"Salmão, sem pele, fresco, cru",170,19.3,0,9.7],[317,"Salmão, sem pele, fresco, grelhado",243,26.1,0,14.5],[318,"Sardinha, assada",164,32.2,0,3],[319,"Sardinha, conserva em óleo",285,15.9,0,24],[320,"Sardinha, frita",257,33.4,0,12.7],[321,"Sardinha, inteira, crua",114,21.1,0,2.7],[322,"Tucunaré, filé, congelado, cru",88,18,0,1.2],[323,"Apresuntado",129,13.5,2.9,6.7],[324,"Caldo de carne, tablete",241,7.8,15.1,16.6],[325,"Caldo de galinha, tablete",251,6.3,10.6,20.4],[326,"Carne, bovina, acém, moído, cozido",212,26.7,0,10.9],[327,"Carne, bovina, acém, moído, cru",137,19.4,0,5.9],[328,"Carne, bovina, acém, sem gordura, cozido",215,27.3,0,10.9,[["bife médio",100]]],[329,"Carne, bovina, acém, sem gordura, cru",144,20.8,0,6.1],[330,"Carne, bovina, almôndegas, cruas",189,12.3,9.8,11.2],[331,"Carne, bovina, almôndegas, fritas",272,18.2,14.3,15.8],[332,"Carne, bovina, bucho, cozido",133,21.6,0,4.5],[333,"Carne, bovina, bucho, cru",137,20.5,0,5.5],[334,"Carne, bovina, capa de contra-filé, com gordura, crua",217,19.2,0,15],[335,"Carne, bovina, capa de contra-filé, com gordura, grelhada",312,30.7,0,20],[336,"Carne, bovina, capa de contra-filé, sem gordura, crua",131,21.5,0,4.3],[337,"Carne, bovina, capa de contra-filé, sem gordura, grelhada",239,35.1,0,10],[338,"Carne, bovina, charque, cozido",263,36.4,0,11.9],[339,"Carne, bovina, charque, cru",249,22.7,0,16.8],[340,"Carne, bovina, contra-filé, à milanesa",352,20.6,12.2,24],[341,"Carne, bovina, contra-filé de costela, cru",202,19.8,0,13.1],[342,"Carne, bovina, contra-filé de costela, grelhado",275,29.9,0,16.3],[343,"Carne, bovina, contra-filé, com gordura, cru",206,21.2,0,12.8],[344,"Carne, bovina, contra-filé, com gordura, grelhado",278,32.4,0,15.5],[345,"Carne, bovina, contra-filé, sem gordura, cru",157,24,0,6],[346,"Carne, bovina, contra-filé, sem gordura, grelhado",194,35.9,0,4.5],[347,"Carne, bovina, costela, assada",373,28.8,0,27.7],[348,"Carne, bovina, costela, crua",358,16.7,0,31.8],[349,"Carne, bovina, coxão duro, sem gordura, cozido",217,31.9,0,8.9],[350,"Carne, bovina, coxão duro, sem gordura, cru",148,21.5,0,6.2],[351,"Carne, bovina, coxão mole, sem gordura, cozido",219,32.4,0,8.9],[352,"Carne, bovina, coxão mole, sem gordura, cru",169,21.2,0,8.7],[353,"Carne, bovina, cupim, assado",330,28.6,0,23],[354,"Carne, bovina, cupim, cru",221,19.5,0,15.3],[355,"Carne, bovina, fígado, cru",141,20.7,1.1,5.4],[356,"Carne, bovina, fígado, grelhado",225,29.9,4.2,9],[357,"Carne, bovina, filé mingnon, sem gordura, cru",143,21.6,0,5.6],[358,"Carne, bovina, filé mingnon, sem gordura, grelhado",220,32.8,0,8.8],[359,"Carne, bovina, flanco, sem gordura, cozido",196,29.4,0,7.8],[360,"Carne, bovina, flanco, sem gordura, cru",142,20,0,6.2],[361,"Carne, bovina, fraldinha, com gordura, cozida",338,24.2,0,26],[362,"Carne, bovina, fraldinha, com gordura, crua",221,17.6,0,16.1],[363,"Carne, bovina, lagarto, cozido",223,32.9,0,9.1],[364,"Carne, bovina, lagarto, cru",135,20.5,0,5.2],[365,"Carne, bovina, língua, cozida",315,21.4,0,24.8],[366,"Carne, bovina, língua, crua",215,17.1,0,15.8],[367,"Carne, bovina, maminha, crua",153,20.9,0,7],[368,"Carne, bovina, maminha, grelhada",153,30.7,0,2.4],[369,"Carne, bovina, miolo de alcatra, sem gordura, cru",163,21.6,0,7.8],[370,"Carne, bovina, miolo de alcatra, sem gordura, grelhado",241,31.9,0,11.6],[371,"Carne, bovina, músculo, sem gordura, cozido",194,31.2,0,6.7,[["pedaço",100]]],[372,"Carne, bovina, músculo, sem gordura, cru",142,21.6,0,5.5],[373,"Carne, bovina, paleta, com gordura, crua",159,21.4,0,7.5],[374,"Carne, bovina, paleta, sem gordura, cozida",194,29.7,0,7.4],[375,"Carne, bovina, paleta, sem gordura, crua",141,21,0,5.7],[376,"Carne, bovina, patinho, sem gordura, cru",134,21.7,0,4.5],[377,"Carne, bovina, patinho, sem gordura, grelhado",219,35.9,0,7.3,[["bife médio",100]]],[378,"Carne, bovina, peito, sem gordura, cozido",339,22.2,0,27],[379,"Carne, bovina, peito, sem gordura, cru",259,17.6,0,20.4],[380,"Carne, bovina, picanha, com gordura, crua",213,18.8,0,14.7],[381,"Carne, bovina, picanha, com gordura, grelhada",289,26.4,0,19.5],[382,"Carne, bovina, picanha, sem gordura, crua",134,21.3,0,4.7],[383,"Carne, bovina, picanha, sem gordura, grelhada",239,31.9,0,11.3],[384,"Carne, bovina, seca, cozida",313,26.9,0,21.9],[385,"Carne, bovina, seca, crua",313,19.7,0,25.4],[386,"Coxinha de frango, frita",283,9.6,34.5,11.8,[["unidade",70]]],[387,"Croquete, de carne, cru",246,12,13.9,15.6],[388,"Croquete, de carne, frito",347,16.9,18.1,22.7],[389,"Empada de frango, pré-cozida, assada",358,6.9,47.5,15.6],[390,"Empada, de frango, pré-cozida",378,7.3,35.5,22.9],[391,"Frango, asa, com pele, crua",213,18.1,0,15.1],[392,"Frango, caipira, inteiro, com pele, cozido",243,23.9,0,15.6],[393,"Frango, caipira, inteiro, sem pele, cozido",196,29.6,0,7.7],[394,"Frango, coração, cru",222,12.6,0,18.6],[395,"Frango, coração, grelhado",207,22.4,0.6,12.1],[396,"Frango, coxa, com pele, assada",215,28.5,0.1,10.4],[397,"Frango, coxa, com pele, crua",162,17.1,0,9.8],[398,"Frango, coxa, sem pele, cozida",167,26.9,0,5.8,[["unidade",90]]],[399,"Frango, coxa, sem pele, crua",120,17.8,0,4.9],[400,"Frango, fígado, cru",107,17.6,0,3.5],[401,"Frango, filé, à milanesa",221,28.5,7.5,7.8],[402,"Frango, inteiro, com pele, cru",226,16.4,0,17.3],[403,"Frango, inteiro, sem pele, assado",187,28,0,7.5],[404,"Frango, inteiro, sem pele, cozido",170,25,0,7.1],[405,"Frango, inteiro, sem pele, cru",129,20.6,0,4.6],[406,"Frango, peito, com pele, assado",212,33.4,0,7.6],[407,"Frango, peito, com pele, cru",150,20.8,0,6.7],[408,"Frango, peito, sem pele, cozido",163,31.5,0,3.2],[409,"Frango, peito, sem pele, cru",119,21.5,0,3],[410,"Frango, peito, sem pele, grelhado",159,32,0,2.5,[["filé médio",100]]],[411,"Frango, sobrecoxa, com pele, assada",260,28.7,0,15.2],[412,"Frango, sobrecoxa, com pele, crua",255,15.5,0,20.9],[413,"Frango, sobrecoxa, sem pele, assada",233,29.2,0,12],[414,"Frango, sobrecoxa, sem pele, crua",162,17.6,0,9.6],[415,"Hambúrguer, bovino, cru",215,13.2,4.2,16.2],[416,"Hambúrguer, bovino, frito",258,20,6.3,17],[417,"Hambúrguer, bovino, grelhado",210,13.2,11.3,12.4,[["unidade",90]]],[418,"Lingüiça, frango, crua",218,14.2,0,17.4],[419,"Lingüiça, frango, frita",246,18.3,0,18.5],[420,"Lingüiça, frango, grelhada",244,18.2,0,18.4],[421,"Lingüiça, porco, crua",227,16.1,0,17.6],[422,"Lingüiça, porco, frita",280,20.5,0,21.3],[423,"Lingüiça, porco, grelhada",297,23.2,0,21.9],[424,"Mortadela",269,12,5.8,21.6,[["fatia",15]]],[425,"Peru, congelado, assado",163,26.2,0,5.7],[426,"Peru, congelado, cru",94,18.1,0,1.8],[427,"Porco, bisteca, crua",164,21.5,0,8],[428,"Porco, bisteca, frita",311,33.7,0,18.5],[429,"Porco, bisteca, grelhada",280,28.9,0,17.4],[430,"Porco, costela, assada",402,30.2,0,30.3],[431,"Porco, costela, crua",256,18,0,19.8],[432,"Porco, lombo, assado",210,35.7,0,6.4],[433,"Porco, lombo, cru",176,22.6,0,8.8],[434,"Porco, orelha, salgada, crua",259,18.5,0,19.9],[435,"Porco, pernil, assado",262,32.1,0,13.9],[436,"Porco, pernil, cru",186,20.1,0,11.1],[437,"Porco, rabo, salgado, cru",377,15.6,0,34.5],[438,"Presunto, com capa de gordura",128,14.4,1.4,6.8,[["fatia",15]]],[439,"Presunto, sem capa de gordura",94,14.3,2.1,2.7,[["fatia",15]]],[440,"Quibe, assado",136,14.6,12.9,2.7],[441,"Quibe, cru",110,12.4,10.8,1.7],[442,"Quibe, frito",254,14.9,12.3,15.8],[443,"Salame",398,25.8,2.9,30.6],[444,"Toucinho, cru",593,11.5,0,60.3],[445,"Toucinho, frito",697,27.3,0,64.3],[446,"Bebida láctea, pêssego",55,2.1,7.6,1.9],[447,"Creme de Leite",222,1.5,4.5,22.5],[448,"Iogurte, natural",52,4.1,1.9,3,[["pote",170]]],[449,"Iogurte, natural, desnatado",42,3.8,5.8,0.3,[["pote",170]]],[450,"Iogurte, sabor abacaxi",0,0,0,0],[451,"Iogurte, sabor morango",70,2.7,9.7,2.3],[452,"Iogurte, sabor pêssego",68,2.5,9.4,2.3],[453,"Leite, condensado",313,7.7,57,6.7],[454,"Leite, de cabra",66,3.1,5.2,3.8],[455,"Leite, de vaca, achocolatado",83,2.1,14.2,2.2],[456,"Leite, de vaca, desnatado, pó",362,34.7,53,0.9],[457,"Leite, de vaca, desnatado, UHT",0,0,0,0,[["copo (200 ml)",200]]],[458,"Leite, de vaca, integral",0,0,0,0,[["copo (200 ml)",200],["xícara",240]]],[459,"Leite, de vaca, integral, pó",497,25.4,39.2,26.9],[460,"Leite, fermentado",70,1.9,15.7,0.1],[461,"Queijo, minas, frescal",264,17.4,3.2,20.2,[["fatia",30]]],[462,"Queijo, minas, meia cura",321,21.2,3.6,24.6,[["fatia",20]]],[463,"Queijo, mozarela",330,22.6,3,25.2,[["fatia",15]]],[464,"Queijo, parmesão",453,35.6,1.7,33.5],[465,"Queijo, pasteurizado",303,9.4,5.7,27.4],[466,"Queijo, petit suisse, morango",121,5.8,18.5,2.8],[467,"Queijo, prato",360,22.7,1.9,29.1],[468,"Maria mole",257,9.6,2.4,23.4],[469,"Queijo, ricota",140,12.6,3.8,8.1],[470,"Bebida isotônica, sabores variados",26,0,6.4,0],[471,"Café, infusão 10%",9,0.7,1.5,0.1,[["xícara de café",50]]],[472,"Cana, aguardente 1",216,0,0,0],[473,"Cana, caldo de",65,0,18.2,0],[474,"Cerveja, pilsen 2",41,0.6,3.3,0],[475,"Chá, erva-doce, infusão 5%",1,0,0.4,0],[476,"Chá, mate, infusão 5%",3,0,0.6,0.1],[477,"Chá, preto, infusão 5%",2,0,0.6,0],[478,"Coco, água de",22,0,5.3,0],[479,"Refrigerante, tipo água tônica",31,0,8,0],[480,"Refrigerante, tipo cola",34,0,8.7,0,[["lata (350 ml)",350]]],[481,"Refrigerante, tipo guaraná",39,0,10,0,[["lata (350 ml)",350]]],[482,"Refrigerante, tipo laranja",46,0,11.8,0],[483,"Refrigerante, tipo limão",40,0,10.3,0],[484,"Omelete, de queijo",268,15.6,0.4,22],[485,"Ovo, de codorna, inteiro, cru",177,13.7,0.8,12.7],[486,"Ovo, de galinha, clara, cozida/10minutos",59,13.4,0,0.1],[487,"Ovo, de galinha, gema, cozida/10minutos",353,15.9,1.6,30.8],[488,"Ovo, de galinha, inteiro, cozido/10minutos",146,13.3,0.6,9.5,[["unidade",50]]],[489,"Ovo, de galinha, inteiro, cru",143,13,1.6,8.9],[490,"Ovo, de galinha, inteiro, frito",240,15.6,1.2,18.6,[["unidade",50]]],[491,"Achocolatado, pó",401,4.2,91.2,2.2],[492,"Açúcar, cristal",387,0.3,99.6,0,[["colher de chá",5]]],[493,"Açúcar, mascavo",369,0.8,94.5,0.1],[494,"Açúcar, refinado",387,0.3,99.5,0,[["colher de chá",5]]],[495,"Chocolate, ao leite",540,7.2,59.6,30.3,[["barra pequena",25]]],[496,"Chocolate, ao leite, com castanha do Pará",559,7.4,55.4,34.2],[497,"Chocolate, ao leite, dietético",557,6.9,56.3,33.8],[498,"Chocolate, meio amargo",475,4.9,62.4,29.9,[["barra pequena",25]]],[499,"Cocada branca",449,1.1,81.4,13.6],[500,"Doce, de abóbora, cremoso",199,0.9,54.6,0.2],[501,"Doce, de leite, cremoso",306,5.5,59.5,6],[502,"Geléia, mocotó, natural",106,2.1,24.2,0.1],[503,"Glicose de milho",292,0,79.4,0],[504,"Maria mole",301,3.8,73.6,0.2],[505,"Maria mole, coco queimado",307,3.9,75.1,0.1],[506,"Marmelada",257,0.4,70.8,0.1],[507,"Mel, de abelha",309,0,84,0,[["colher de sopa",20]]],[508,"Melado",297,0,76.6,0],[509,"Quindim",411,4.7,46.3,24.4],[510,"Rapadura",352,1,90.8,0.1],[511,"Café, pó, torrado",419,14.7,65.8,11.9],[512,"Capuccino, pó",417,11.3,73.6,8.6],[513,"Fermento em pó, químico",90,0.5,43.9,0.1],[514,"Fermento, biológico, levedura, tablete",90,17,7.7,1.5],[515,"Gelatina, sabores variados, pó",380,8.9,89.2,0],[516,"Sal, dietético",0,0,0,0],[517,"Sal, grosso",0,0,0,0],[518,"Shoyu",61,3.3,11.6,0.3],[519,"Tempero a base de sal",21,2.7,2.1,0.3],[520,"Azeitona, preta, conserva",194,1.2,5.5,20.3],[521,"Azeitona, verde, conserva",137,0.9,4.1,14.2],[522,"Chantilly, spray, com gordura vegetal",315,0.5,16.9,27.3],[523,"Leite, de coco",166,1,2.2,18.4],[524,"Maionese, tradicional com ovos",302,0.6,7.9,30.5],[525,"Acarajé",289,8.3,19.1,19.9],[526,"Arroz carreteiro",154,10.8,11.6,7.1],[527,"Baião de dois, arroz e feijão-de-corda",136,6.2,20.4,3.2],[528,"Barreado",165,18.3,0.2,9.5],[529,"Bife à cavalo, com contra filé",291,23.7,0,21.1],[530,"Bolinho de arroz",274,8,41.7,8.3],[531,"Camarão à baiana",101,7.9,3.2,6],[532,"Charuto, de repolho",78,6.8,10.1,1.1],[533,"Cuscuz, de milho, cozido com sal",114,2.2,25.3,0.7,[["fatia",100]]],[534,"Cuscuz, paulista",142,2.6,22.5,4.6],[535,"Cuxá, molho",80,5.6,5.7,3.6],[536,"Dobradinha",125,19.8,0,4.4],[537,"Estrogonofe de carne",173,15,3,10.8],[538,"Estrogonofe de frango",157,17.6,2.6,8],[539,"Feijão tropeiro mineiro",152,10.2,19.6,6.8],[540,"Feijoada",117,8.7,11.6,6.5,[["concha",150]]],[541,"Frango, com açafrão",113,9.7,4.1,6.2],[542,"Macarrão, molho bolognesa",120,4.9,22.5,0.9],[543,"Maniçoba",134,10,3.4,8.7],[544,"Quibebe",86,8.6,6.6,2.7],[545,"Salada, de legumes, com maionese",96,1.1,8.9,7],[546,"Salada, de legumes, cozida no vapor",35,2,7.1,0.3],[547,"Salpicão, de frango",148,13.9,4.6,7.8],[548,"Sarapatel",123,18.5,1.1,4.4],[549,"Tabule",58,2,10.6,1.2],[550,"Tacacá",47,7,3.4,0.4],[551,"Tapioca, com manteiga",348,0.1,63.6,10.9,[["unidade",100]]],[552,"Tucupi, com pimenta-de-cheiro",27,2.1,4.7,0.3],[553,"Vaca atolada",145,5.1,10.1,9.3],[554,"Vatapá",255,6,9.7,23.2],[555,"Virado à paulista",307,10.2,14.1,25.6],[556,"Yakisoba",113,7.5,18.3,2.6],[557,"Amendoim, grão, cru",544,27.2,20.3,43.9,[["punhado",30]]],[558,"Amendoim, torrado, salgado",606,22.5,18.7,54,[["punhado",30]]],[559,"Ervilha, em vagem",88,7.5,14.2,0.5],[560,"Ervilha, enlatada, drenada",74,4.6,13.4,0.4],[561,"Feijão, carioca, cozido",76,4.8,13.6,0.5,[["concha",80],["colher de servir",50]]],[562,"Feijão, carioca, cru",329,20,61.2,1.3],[563,"Feijão, fradinho, cozido",78,5.1,13.5,0.6],[564,"Feijão, fradinho, cru",339,20.2,61.2,2.4],[565,"Feijão, jalo, cozido",93,6.1,16.5,0.5],[566,"Feijão, jalo, cru",328,20.1,61.5,0.9],[567,"Feijão, preto, cozido",77,4.5,14,0.5,[["concha",80],["colher de servir",50]]],[568,"Feijão, preto, cru",324,21.3,58.8,1.2],[569,"Feijão, rajado, cozido",85,5.5,15.3,0.4],[570,"Feijão, rajado, cru",326,17.3,62.9,1.2],[571,"Feijão, rosinha, cozido",68,4.5,11.8,0.5],[572,"Feijão, rosinha, cru",337,20.9,62.2,1.3],[573,"Feijão, roxo, cozido",77,5.7,12.9,0.5],[574,"Feijão, roxo, cru",331,22.2,60,1.2],[575,"Grão-de-bico, cru",355,21.2,57.9,5.4],[576,"Guandu, cru",344,19,64,2.1],[577,"Lentilha, cozida",93,6.3,16.3,0.5],[578,"Lentilha, crua",339,23.2,62,0.8],[579,"Paçoca, amendoim",487,16,52.4,26.1],[580,"Pé-de-moleque, amendoim",503,13.2,54.7,28],[581,"Soja, farinha",404,36,38.4,14.6],[582,"Soja, extrato solúvel, natural, fluido",39,2.4,4.3,1.6],[583,"Soja, extrato solúvel, pó",459,35.7,28.5,26.2],[584,"Soja, queijo (tofu)",65,6.6,2.1,4],[585,"Tremoço, cru",381,33.6,43.8,10.3],[586,"Tremoço, em conserva",121,11.1,12.4,3.8],[587,"Amêndoa, torrada, salgada",581,18.6,29.5,47.3],[588,"Castanha-de-caju, torrada, salgada",570,18.5,29.1,46.3],[589,"Castanha-do-Brasil, crua",643,14.5,15.1,63.5],[590,"Coco, cru",407,3.7,10.4,42],[591,"Coco, verde, cru",0,0,0,0],[592,"Farinha, de mesocarpo de babaçu, crua",329,1.4,79.2,0.2],[593,"Gergelim, semente",584,21.2,21.6,50.4],[594,"Linhaça, semente",495,14.1,43.3,32.3],[595,"Pinhão, cozido",174,3,43.9,0.7],[596,"Pupunha, cozida",219,2.5,29.6,12.8],[597,"Noz, crua",620,14,18.4,59.4]];
 const PLATES = {d1:"--p25", d2:"--p20", d3:"--p15", d4:"--p10", d5:"--p5"};
 const fmtCue = c => /^CLAV[ÍI]CULA:\s*/i.test(c) ? `<span class="alerta">Clavícula</span>${c.replace(/^CLAV[ÍI]CULA:\s*/i, "")}` : c;
 const fromPlan = plan => plan.days.map(d => ({id:d.id, wd:d.wd, name:d.name, sub:d.sub, plate:PLATES[d.id],
@@ -1381,9 +1464,9 @@ function renderDayCore(d){
     const boxes = log ? setRows(d, i, name, sets, marks, reps) : `<div class="sets">${Array.from({length:sets},(_,s)=>
       `<button type="button" class="set" data-ex="${i}" data-s="${s}" aria-pressed="${!!marks[i+"-"+s]}" aria-label="Série ${s+1} de ${name}">${s+1}</button>`).join("")}</div>`;
     const allDone = Array.from({length:sets}).every((_,s)=>marks[i+"-"+s]);
-    const mu = MUS[name], foto = IMG && mu && !mu.nofoto ? `<button type="button" class="thumb" data-zoom="${i}" aria-label="Ver a foto de ${esc(name)}"><img src="${IMG}${mu.id}.jpg" alt="" loading="lazy"><b>${i + 1}</b></button>` : "";
+    const mu = MUS[name], arte = arteDe(name), foto = arte ? `<button type="button" class="thumb arte" data-zoom="${i}" aria-label="Ver o desenho de ${esc(name)}"><img src="${arte}" alt="" loading="lazy"><b>${i + 1}</b></button>` : IMG && mu && !mu.nofoto ? `<button type="button" class="thumb" data-zoom="${i}" aria-label="Ver a foto de ${esc(name)}"><img src="${IMG}${mu.id}.jpg" alt="" loading="lazy"><b>${i + 1}</b></button>` : "";
     return `<article class="ex${allDone?" done":""}" id="ex-${d.id}-${i}">
-      ${foto ? `<figure class="zoom" hidden>${mu.f === 2 ? `<div class="zoom2"><span><img src="${IMG}${mu.id}.jpg" alt="Execução de ${esc(name)}: início" loading="lazy"><small>1 · início</small></span><span><img src="${IMG}${mu.id}-1.jpg" alt="Execução de ${esc(name)}: fim" loading="lazy"><small>2 · fim</small></span></div>` : `<img src="${IMG}${mu.id}.jpg" alt="Execução: ${esc(name)}" loading="lazy">`}<figcaption>${mu.p.map(x => MUSCLE_PT[x] || x).join(", ")}${mu.s.length ? " · ajuda: " + mu.s.map(x => MUSCLE_PT[x] || x).join(", ") : ""}${mu.cr ? `<br><span class="zoom-cr">Imagem: ${esc(mu.cr)}</span>` : ""}</figcaption></figure>` : ""}
+      ${foto ? `<figure class="zoom${arte ? " arte" : ""}" hidden>${arte ? `<img src="${arte}" alt="Execução de ${esc(name)} (animação)" loading="lazy">` : mu.f === 2 ? `<div class="zoom2"><span><img src="${IMG}${mu.id}.jpg" alt="Execução de ${esc(name)}: início" loading="lazy"><small>1 · início</small></span><span><img src="${IMG}${mu.id}-1.jpg" alt="Execução de ${esc(name)}: fim" loading="lazy"><small>2 · fim</small></span></div>` : `<img src="${IMG}${mu.id}.jpg" alt="Execução: ${esc(name)}" loading="lazy">`}<figcaption>${mu.p.map(x => MUSCLE_PT[x] || x).join(", ")}${mu.s.length ? " · ajuda: " + mu.s.map(x => MUSCLE_PT[x] || x).join(", ") : ""}${arte ? `<br><span class="zoom-cr">${MAIS.ARTE_CR}</span>` : mu.cr ? `<br><span class="zoom-cr">Imagem: ${esc(mu.cr)}</span>` : ""}</figcaption></figure>` : ""}
       <div class="ex-top${foto ? " has-thumb" : ""}">
         ${foto}${foto ? "" : `<span class="ex-n">${String(i+1).padStart(2,"0")}</span>`}
         <h3 class="ex-name">${name}</h3>
@@ -1398,6 +1481,7 @@ function renderDayCore(d){
       ${boxes}
       ${log && SUPA && !treinoPlus() ? `<div class="ex-acts"><button type="button" class="ghost" data-ditar="${i}" aria-pressed="false">${ICON_MIC}Ditar série</button><button type="button" class="ghost" data-filmar="${i}">${ICON_CAM}Filmar execução</button></div>` : ""}
       <details><summary>Execução</summary>${person.casa ? `<a class="link-action video-action" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name.split(",")[0].replace(/(.*?)/g, "").trim() + " como fazer")}" target="_blank" rel="noopener">▶ Ver vídeo de como fazer</a>` : ""}<ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul>${log && SUPA && treinoPlus() ? `<button type="button" class="link-action film-action" data-filmar="${i}">${ICON_CAM}Filmar execução</button>` : ""}</details>
+      ${log ? `${notasCard(name)}<button type="button" class="link-action nota-action" data-nota="${esc(name)}">${ICON_PENA}Anotar (vitória, nota ou incômodo)</button>` : ""}
     </article>`;
   }).join("");
   const total = d.ex.reduce((a,e)=>a+(e[4] ? e[1] : 0),0);
@@ -2461,14 +2545,15 @@ function protCard(){
       <div class="al-l"><div class="al-v"><b class="num" id="al-k">0</b><span id="al-km"></span></div><div class="st-bar" style="--c:var(--kcal)"><i id="al-kb"></i></div></div>
       <div class="al-l"><div class="al-v"><b class="num" id="al-p">0</b><span id="al-pm"></span></div><div class="st-bar" style="--c:var(--coral)"><i id="al-pb"></i></div></div>
     </div>
+    <p class="al-falta" id="al-falta"></p>
     <p class="alc-linha" id="al-alc" hidden></p><p class="alc-linha" id="al-whey" hidden></p>
     <ul class="al-list">${rs.map((r, i) => `<li><button type="button" class="al-r" data-ref="${i}" aria-pressed="false"><span class="al-c" aria-hidden="true">✓</span><span class="al-n"><b>${esc(r.nome)}</b><small>${esc(r.hora)}</small>${r.itens.map(x => `<span class="al-i">${esc(x)}</span>`).join("")}</span><span class="al-k num">${r.kcal.toLocaleString("pt-BR")} kcal<small>${r.prot} g proteína</small></span></button></li>`).join("")}</ul>
     <ul class="al-list al-av" id="al-av" aria-label="Itens avulsos"></ul>
     ${avAberto ? `<form data-av-form class="sp-form al-avf"><label class="sp-f"><span>O que foi</span><span class="sp-in"><input type="text" maxlength="60" name="nome" placeholder="ex.: copo de leite 250 ml" required></span></label>
       <div class="sp-2">${spCampo("kcal", "Calorias", "kcal", "", 0, 3000)}${spCampo("prot", "Proteína", "g", "", 0, 300)}</div>
       <div class="al-avb"><button type="button" class="ghost" data-avfecha>Cancelar</button><button type="submit" class="done-btn">Adicionar</button></div></form>`
-    : `<button type="button" class="alc-mais" data-avabre>+ item avulso</button>`}
-    <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio. Algo fora do cardápio (um café com leite, um copo de leite)? Use "+ item avulso".</p></article>`;
+    : `<div class="al-add"><button type="button" class="alc-mais al-tab" data-alimabre>+ alimento da tabela</button><button type="button" class="alc-mais" data-avabre>+ item avulso</button></div>`}
+    <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio. Comeu diferente? Use "+ alimento da tabela" (TACO, com a quantidade) ou "+ item avulso" se já sabe as calorias.</p></article>`;
 }
 function refreshProt(){
   const card = document.getElementById("card-prot"), k = document.getElementById("al-k"); if (!card || !k) return;
@@ -2479,8 +2564,9 @@ function refreshProt(){
   document.getElementById("al-kb").style.width = Math.min(100, c.kcal / mk * 100) + "%";
   document.getElementById("al-pb").style.width = Math.min(100, c.prot / m.total * 100) + "%";
   card.classList.toggle("met", metaBatida(person.id, logDate));
+  const fe = document.getElementById("al-falta"); if (fe) fe.innerHTML = faltaTexto();
   const av = document.getElementById("al-av");
-  if (av) av.innerHTML = extrasDe(person.id, logDate).map((x, i) => `<li><span class="al-n"><b>${esc(x.nome)}</b><small>avulso</small></span><span class="al-k num">${(+x.kcal || 0).toLocaleString("pt-BR")} kcal<small>${+x.prot || 0} g proteína</small></span><button type="button" class="aq-del" data-avdel="${i}" aria-label="Tirar ${esc(x.nome)}">×</button></li>`).join("");
+  if (av) av.innerHTML = extrasDe(person.id, logDate).map((x, i) => `<li><span class="al-n"><b>${esc(x.nome)}</b><small>${x.taco ? "tabela TACO" : "avulso"}</small></span><span class="al-k num">${(+x.kcal || 0).toLocaleString("pt-BR")} kcal<small>${+x.prot || 0} g proteína</small></span><button type="button" class="aq-del" data-avdel="${i}" aria-label="Tirar ${esc(x.nome)}">×</button></li>`).join("");
   const wx = wheyExtra(person.id, logDate), we = document.getElementById("al-whey"); if (we) { we.hidden = !wx.prot; we.textContent = wx.prot ? `Inclui whey: +${wx.prot} g de proteína e ${wx.kcal} kcal (aba Suplementos).` : ""; }
   const an = alcDe(person.id, logDate), ae = document.getElementById("al-alc");
   if (ae) { ae.hidden = !an; ae.textContent = an ? `Álcool: +${(an * ALC.kcal).toLocaleString("pt-BR")} kcal (total do dia ${(c.kcal + an * ALC.kcal).toLocaleString("pt-BR")} kcal). A meta se bate só com comida.` : ""; }
@@ -2808,6 +2894,7 @@ function renderProgress(){
     ${treinoPlus() ? "" : relCard(p)}
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="stats">${statCards}</div>
+    ${semanaCard()}
     ${treinoPlus() ? relCard(p) : ""}
 
     <article class="panel tinted" style="--c:var(--coral)">${phd(ICON_PILHA, "Desempenho", wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : "")}
@@ -2816,7 +2903,9 @@ function renderProgress(){
       ${ev.length ? `<p class="sub">${casa ? "Melhor série que mais subiu" : "Força estimada (1RM) que mais subiu"}</p><ul class="evo">${ev.map(e => `<li><span>${e.name}</span><b class="num ${e.pct >= 0 ? "up" : "down"}">${e.pct >= 0 ? "+" : ""}${e.pct.toFixed(0)}%</b></li>`).join("")}</ul>` : `<p class="hint">${casa ? "Depois de 2 treinos do mesmo exercício aparece quanto a sua melhor série subiu." : "Depois de 2 treinos do mesmo exercício aparece quanto a força estimada subiu."}</p>`}
     </article>
 
+    ${mapaPeriodo()}
     ${renderVolumeMuscular()}
+    ${diarioPanel()}
     <article class="panel tinted" style="--c:var(--peso)">${phd(ICON.balanca, "Peso", trend?.delta != null ? `<span class="delta">${trend.delta >= 0 ? "+" : "−"}${num(Math.abs(trend.delta).toFixed(2))} kg na semana</span>` : "")}
       ${ptsP.length ? lineChart({pts: ptsP, avgPts: avgP, color: "var(--peso)"}) + `<p class="sub">Pontos: cada pesagem · linha: média de 7 dias</p>` : `<p class="hint">Registre o peso na tela Hoje, todo dia ao acordar.</p>`}
       ${meta ? `<p class="hint">Meta: ${meta.txt}.</p>` : ""}
@@ -3424,6 +3513,7 @@ function renderPerfil(){
       <div class="pf-id"><button type="button" class="avatar big foto-btn${fotoDe(p) ? " tem-foto" : ""}" data-foto style="--av:${cor}${fotoCss(p)}" aria-label="Escolher foto de perfil na galeria">${person.name.slice(0, 1)}<i aria-hidden="true">${ICON_CAM}</i></button><div><h2>${person.name}</h2><p class="pf-goal">${person.goal || "Ficha em construção: falta a avaliação"}</p><p class="pf-foto"><button type="button" class="linkbtn" data-foto>${fotoDe(p) ? "Trocar foto" : "Escolher foto da galeria"}</button>${fotoDe(p) ? ` · <button type="button" class="linkbtn" data-fototira>remover</button>` : ""}</p></div></div>
       ${person.days ? `<div class="pf-bloco"><div class="pf-bl-h"><b>Bloco 1 · ${person.bloco}</b><span>${bl.acabou ? "terminou" : `semana ${bl.sem} de ${BLOCO.weeks}`}</span></div><div class="pf-segs" aria-hidden="true">${segs}</div><small>${bl.acabou ? "Hora da reavaliação: medidas, peso e cargas" : `Reavaliação a partir de ${dm(bl.reav)} · treino de seg a sex`}</small></div>` : ""}
     </article>
+    ${medalhasPanel()}
     <article class="panel"><h3>Trocar de perfil</h3><div class="pf-swap">${PEOPLE.map(x => `<button type="button" class="pf-p" data-person="${x.id}" aria-pressed="${x.id === p}" aria-label="${x.id === p ? "Você está no perfil " + x.art + " " + x.name : "Trocar para " + x.name}"><span class="avatar sm${fotoDe(x.id) ? " tem-foto" : ""}" style="--av:var(${x.cor || "--lime"})${fotoCss(x.id)}" aria-hidden="true">${x.name.slice(0, 1)}</span><span>${x.name}</span></button>`).join("")}</div></article>
     ${person.days ? `<div class="stats">${stat({ico: ICON_HALTER, c: "var(--lime)", l: "Esta semana", v: semana, u: `de ${dias}`, vis: `<div class="sx-week" aria-hidden="true">${weekOf(hoje).slice(0, 5).map(d => `<i class="${trained(p, d) ? "on" : d === hoje ? "hoje" : ""}"></i>`).join("")}</div>`, foot: semana >= dias ? "semana completa" : `${dias - semana === 1 ? "falta 1 treino" : `faltam ${dias - semana} treinos`}`})}${stat({ico: flameSvg(atual), c: flameOf(atual).a, l: "Ofensiva", v: atual, u: atual === 1 ? "dia" : "dias", foot: `recorde: ${recorde} ${recorde === 1 ? "dia" : "dias"}`})}${stat({ico: ICON.balanca, c: "var(--peso)", l: "Peso", v: pesoV.replace(" kg", ""), u: pesoV === "—" ? "" : "kg", foot: pesoS})}${stat({ico: ICON_CAL, c: "var(--blue)", l: "Total", v: total, u: total === 1 ? "treino" : "treinos", foot: "desde " + dm(person.inicio || BLOCO.start)})}</div>` : ""}
     <article class="panel"><h3>Minhas metas</h3><ul class="pf-metas">
@@ -3508,7 +3598,12 @@ function metaTreino(e,before=logDate,day=current,sessionDate=before){
 }
 const unidadeCarga = name => /halter|búlgaro|martelo/i.test(name)?'kg/halter':/graviton/i.test(name)?'kg de assistência':'kg';
 const alvoTexto = (t,e) => (t.kg==null?'':t.kg===0&&person.casa?'Peso do corpo · ':num(t.kg)+' '+unidadeCarga(e[0])+' · ')+t.reps;
+// Meta + linha "Última" (séries da última vez e link para o histórico do exercício; ideia do GymMane, 2026-10-28)
 function renderMetaTreino(e){
+ const u=typeof ultimaLinha==='function'?ultimaLinha(e[0]):'',m=renderMetaTreinoCore(e);
+ return m?m.replace(/<\/div>$/,u+'</div>'):u?'<span class="mt-ico" aria-hidden="true">'+ICON_ALVO+'</span><div class="mt-copy">'+u+'</div>':'';
+}
+function renderMetaTreinoCore(e){
  const t=metaTreino(e);
  if(!['up','hold','changed'].includes(t.kind))return '';
  if(t.kind==='changed')return '<div class="mt-copy"><small>Ficha atualizada</small><p class="hint">Registre as cargas deste treino.</p></div>';
@@ -3606,6 +3701,306 @@ function renderOutrosRegistros(creatTile,alcDias,alcSem,alcCima){
 }
 
 // FIM TREINO UI
+// INICIO MAIS UI
+// Recursos inspirados no GymMane (escolhidos pelo Rafael em 2026-10-28; só as ideias, código nosso):
+// 2 descanso ±15 s e "série X de Y do treino" · 5 cartão "Esta semana" · 6 medalhas · 7 mapa do corpo por período
+// 8 histórico por exercício · 9 diário (Vitória/Nota no banco, Incômodo só no aparelho) · 12 desenhos dos exercícios
+// 14 nível · 19 alimentos da TACO com quantidade (soma kcal/proteína e mostra quanto falta)
+// Inserido no HTML pelo build (marcadores INICIO/FIM MAIS UI). Usa as funções do HTML (LOGS, person, store, ...).
+const MAIS = {
+  ARTE_CR: "Desenho: Workout Guide (Bryl Lim) / Everkinetic · CC BY-SA 4.0",
+  NOTA_TIPOS: {vitoria: ["Vitória", "var(--lime)"], nota: ["Nota", "var(--blue)"], incomodo: ["Incômodo", "var(--coral)"]}
+};
+const mxSemAcento = s => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+const mxDocs = (p = person.id) => Object.values(LOGS).filter(d => d && d.person === p && d.date).sort((a, b) => a.date.localeCompare(b.date));
+const mxFeitas = ss => (ss || []).filter(s => s && s.done === true);
+const mxVolSet = (s, casa) => casa ? (+s.reps || 0) : (+s.kg || 0) * (+s.reps || 0);
+const mxKg = v => (Math.round(v * 10) / 10).toLocaleString("pt-BR");
+const mxDlg = (html, label) => {
+  let el = document.getElementById("mais-dialog");
+  if (!el) { el = document.createElement("dialog"); el.id = "mais-dialog"; el.className = "treino-dialog mais-dialog"; document.body.appendChild(el);
+    el.addEventListener("click", ev => { if (ev.target === el || ev.target.closest("[data-mx-close]")) el.close(); }); }
+  el.innerHTML = `<button type="button" class="ghost" data-mx-close>Fechar</button>${html}`; el.setAttribute("aria-label", label);
+  if (!el.open) el.showModal();
+  return el;
+};
+
+// ───── 12 · Desenho do exercício (animado) no lugar da foto ─────
+const arteDe = name => { const m = MUS[name]; return IMG && m && m.art ? IMG + "art-" + m.art + ".svg" : null; };
+
+// ───── 2 · Descanso: ±15 s e contagem de séries do treino ─────
+function seriesDoTreino(){
+  const d = person.days?.find(x => x.id === current); if (!d) return null;
+  const mk = getMarks(markKey(d.id)), tot = d.ex.reduce((a, e) => a + (e[4] ? e[1] : 0), 0);
+  const feitas = Object.entries(mk).filter(([k, v]) => v && d.ex[+k.split("-")[0]]?.[4] && +k.split("-")[1] < d.ex[+k.split("-")[0]][1]).length;
+  return tot ? {feitas: Math.min(feitas, tot), tot} : null;
+}
+function mxDescansoInfo(){
+  const el = document.getElementById("tmser"); if (!el) return;
+  const s = seriesDoTreino(); el.textContent = s ? `${s.feitas} de ${s.tot} séries do treino` : "";
+}
+function ajustaDescanso(delta){
+  if (!total) return;
+  if (pausa) pausa = Math.max(1000, pausa + delta * 1000);
+  else if (tick) { endAt = Math.max(Date.now() + 1000, endAt + delta * 1000); const rest = Math.ceil((endAt - Date.now()) / 1000); total = Math.max(total, rest); cancelaDescanso(); agendaDescanso(rest, tmInfo); }
+  else return;
+  update();
+}
+
+// ───── 1 · Última vez (vai junto da meta) ─────
+function ultimaLinha(name){
+  const prev = historicoEx(name, logDate, null).at(-1); if (!prev) return "";
+  const ss = mxFeitas(prev.ex[name].sets).filter(s => TreinoCore.valid(s));
+  if (!ss.length) return "";
+  const t = semCarga(name) ? ss.map(s => s.reps).join(" · ") : ss.map(s => num(s.kg) + "×" + s.reps).join(" · ");
+  return `<p class="mt-last"><span>Última · ${brDate(prev.date)}</span>${esc(t)}<button type="button" class="mt-hist" data-hist="${esc(name)}" aria-label="Ver o histórico de ${esc(name)}">histórico ›</button></p>`;
+}
+
+// ───── 8 · Histórico por exercício ─────
+function abreHistorico(name){
+  const casa = !!person.casa, rows = mxDocs().filter(d => mxFeitas(d.ex?.[name]?.sets).length || (d.ex?.[name]?.notas || []).length).reverse();
+  const nl = notasLocais();
+  const li = rows.map(d => {
+    const ss = mxFeitas(d.ex[name].sets).filter(s => TreinoCore.valid(s)), ajuda = /graviton/i.test(name);   // graviton: menos assistência é melhor
+    const best = ss.reduce((b, s) => !b || (ajuda ? s.kg < b.kg : s.kg > b.kg) || (s.kg === b.kg && s.reps > b.reps) ? s : b, null);
+    const vol = ajuda ? 0 : ss.reduce((a, s) => a + mxVolSet(s, casa), 0);
+    const notas = [...(d.ex[name].notas || []), ...(nl[docId(person.id, d.date)]?.[name] || [])];
+    return `<li><div class="hx-h"><b>${WD[parseDate(d.date).getDay()]} ${brDate(d.date)}</b><span class="num">${best ? (semCarga(name) ? best.reps + " reps" : mxKg(best.kg) + (ajuda ? " kg de ajuda × " : " kg × ") + best.reps) : "—"}</span></div>
+      <small>${ss.length} ${ss.length === 1 ? "série" : "séries"}${vol ? ` · ${casa ? vol + " reps" : vol >= 1000 ? mxKg(vol / 1000) + " t de volume" : Math.round(vol) + " kg de volume"}` : ""}${ss.length ? " · " + esc(ss.map(s => semCarga(name) ? s.reps : num(s.kg) + "×" + s.reps).join(" · ")) : ""}</small>
+      ${notas.map(n => notaChip(n)).join("")}</li>`;
+  }).join("");
+  mxDlg(`<h2>${esc(name)}</h2><p class="hint">Cada dia em que você fez este exercício (só séries com ✓). ${/graviton/i.test(name) ? "A menor ajuda do dia" : "A maior carga do dia"} aparece à direita.</p>${li ? `<ul class="hx-list">${li}</ul>` : `<p>Ainda não tem registro deste exercício.</p>`}`, "Histórico de " + name);
+}
+
+// ───── 9 · Diário: Vitória e Nota vão com o treino (o personal lê); Incômodo fica só neste aparelho ─────
+const notasLocais = () => store.get("diario:" + person.id) || {};
+const notaChip = n => { const [t, c] = MAIS.NOTA_TIPOS[n.t] || MAIS.NOTA_TIPOS.nota; return `<p class="nota-c" style="--c:${c}"><b>${t}</b>${esc(n.txt)}${n.t === "incomodo" ? `<small>só neste celular</small>` : ""}</p>`; };
+function notasDoDia(name, date = logDate){
+  return [...(LOGS[docId(person.id, date)]?.ex?.[name]?.notas || []), ...(notasLocais()[docId(person.id, date)]?.[name] || [])];
+}
+function notasCard(name){
+  const hoje = notasDoDia(name), prev = historicoEx(name, logDate, null).at(-1), antes = prev ? notasDoDia(name, prev.date) : [];
+  return `<div class="notas-ex" data-notas="${esc(name)}">${antes.length ? `<p class="hint">Na última vez (${brDate(prev.date)}):</p>${antes.map(notaChip).join("")}` : ""}${hoje.map((n, i) => notaChip(n).replace("</p>", `<button type="button" class="aq-del" data-nota-del="${i}" data-nota-ex="${esc(name)}" aria-label="Apagar a anotação">×</button></p>`)).join("")}</div>`;
+}
+function abreNota(name){
+  if (futuro()) return avisaFuturo();
+  mxDlg(`<h2>Anotar · ${esc(name)}</h2><form class="nota-f" data-nota-form="${esc(name)}">
+    <div class="chips three" role="radiogroup" aria-label="Tipo">${Object.entries(MAIS.NOTA_TIPOS).map(([k, [t, c]], i) => `<label class="chip nota-t" style="--c:${c}"><input type="radio" name="t" value="${k}"${i === 0 ? " checked" : ""}>${t}</label>`).join("")}</div>
+    <textarea name="txt" maxlength="140" rows="3" required placeholder="ex.: primeira vez 3×10 com 24 kg · joelho entrando na última rep"></textarea>
+    <p class="hint"><b>Vitória</b> e <b>Nota</b> ficam no treino do dia e o personal vê no relatório. <b>Incômodo</b> (dor, desconforto) fica <b>só neste celular</b>: o site é público. Dor forte ou que piora: pare e fale com o personal.</p>
+    <button type="submit" class="done-btn">Salvar</button></form>`, "Anotar no diário");
+}
+function salvaNota(name, t, txt){
+  txt = String(txt || "").trim().slice(0, 140); if (!txt || !MAIS.NOTA_TIPOS[t]) return;
+  const id = docId(person.id, logDate), n = {t, txt, at: new Date().toISOString()};
+  if (t === "incomodo") { const all = notasLocais(); ((all[id] ||= {})[name] ||= []).push(n); store.set("diario:" + person.id, all); }
+  else {
+    const doc = LOGS[id] ? JSON.parse(JSON.stringify(LOGS[id])) : {person: person.id, date: logDate, day: dayOf(person.id, logDate), ex: {}};
+    doc.ex ||= {}; doc.ex[name] ||= {sets: []}; (doc.ex[name].notas ||= []).push(n); doc.updated = new Date().toISOString();
+    LOGS[id] = doc; pending[id] = true; keepDate(logDate); clearTimeout(timers[id]); saveLog(id);
+  }
+  redesenhaNotas(name);
+}
+function apagaNota(name, i){
+  if (futuro()) return;
+  const id = docId(person.id, logDate), banco = LOGS[id]?.ex?.[name]?.notas || [];
+  if (i < banco.length) {
+    const doc = JSON.parse(JSON.stringify(LOGS[id])); doc.ex[name].notas.splice(i, 1); doc.updated = new Date().toISOString();
+    LOGS[id] = doc; pending[id] = true; clearTimeout(timers[id]); saveLog(id);
+  } else { const all = notasLocais(); all[id]?.[name]?.splice(i - banco.length, 1); store.set("diario:" + person.id, all); }
+  redesenhaNotas(name);
+}
+function redesenhaNotas(name){ document.querySelectorAll(".notas-ex").forEach(el => { if (el.dataset.notas === name) el.outerHTML = notasCard(name); }); }
+function diarioPanel(){
+  if (!person.days) return "";
+  const nl = notasLocais(), itens = [];
+  for (const d of mxDocs()) for (const [name, e] of Object.entries(d.ex || {})) for (const n of e.notas || []) itens.push({date: d.date, name, n});
+  for (const [id, por] of Object.entries(nl)) for (const [name, ns] of Object.entries(por)) for (const n of ns) itens.push({date: id.slice(-10), name, n});
+  if (!itens.length) return `<article class="panel">${phd(ICON_PENA, "Diário do treino")}<p class="hint">No treino, toque em <b>Anotar</b> num exercício: uma vitória, uma observação ou um incômodo. Aparece aqui e no próximo treino daquele exercício.</p></article>`;
+  itens.sort((a, b) => b.date.localeCompare(a.date) || (b.n.at || "").localeCompare(a.n.at || ""));
+  return `<article class="panel">${phd(ICON_PENA, "Diário do treino", `<span class="delta">${itens.length}</span>`)}<ul class="hx-list">${itens.slice(0, 12).map(x => `<li><div class="hx-h"><b>${brDate(x.date)}</b><span>${esc(x.name)}</span></div>${notaChip(x.n)}</li>`).join("")}</ul>${itens.length > 12 ? `<p class="hint">Mostrando as 12 mais recentes.</p>` : ""}</article>`;
+}
+const ICON_PENA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>`;
+
+// ───── 5 · Cartão "Esta semana" ─────
+// Recordes: sessões em que um exercício passou a maior carga ou a força estimada de todas as anteriores
+function recordesDe(p, de, ate){
+  const best = {}; let n = 0; const casa = PEOPLE.find(x => x.id === p)?.casa;
+  for (const d of mxDocs(p)) {
+    let nesta = 0;
+    for (const [name, e] of Object.entries(d.ex || {})) {
+      const ss = mxFeitas(e.sets).filter(s => TreinoCore.valid(s)); if (!ss.length || /graviton/i.test(name)) continue;
+      const kg = Math.max(...ss.map(s => s.kg)), e1 = Math.max(...ss.map(s => casa ? s.reps : s.kg * (1 + Math.min(s.reps, 12) / 30)));
+      const b = best[name];
+      if (b && (kg > b.kg + 1e-9 || e1 > b.e1 + 1e-9) && d.date >= de && d.date <= ate) nesta++;
+      best[name] = b ? {kg: Math.max(b.kg, kg), e1: Math.max(b.e1, e1)} : {kg, e1};
+    }
+    n += nesta;
+  }
+  return n;
+}
+function semanaNums(p, wk){
+  const casa = PEOPLE.find(x => x.id === p)?.casa, ate = logDate < trainDay() ? logDate : trainDay();
+  const docs = mxDocs(p).filter(d => d.date >= wk[0] && d.date <= wk[6]);
+  let vol = 0, ser = 0; for (const d of docs) for (const e of Object.values(d.ex || {})) for (const s of mxFeitas(e.sets)) { ser++; vol += mxVolSet(s, casa); }
+  const uteis = wk.filter(isWeekday), feitos = wk.filter(d => trained(p, d)).length;
+  return {vol, ser, feitos, plan: uteis.length, rec: recordesDe(p, wk[0], wk[6]), casa, ate};
+}
+function semanaCard(){
+  if (!person.days) return "";
+  const wk = weekOf(logDate), a = semanaNums(person.id, wk), b = semanaNums(person.id, weekOf(addDays(wk[0], -7)));
+  const pct = b.vol ? Math.round((a.vol - b.vol) / b.vol * 100) : null, r = 26, c = 2 * Math.PI * r, f = a.plan ? Math.min(1, a.feitos / a.plan) : 0;
+  const volT = a.casa ? a.vol.toLocaleString("pt-BR") : a.vol >= 1000 ? mxKg(a.vol / 1000) : Math.round(a.vol).toLocaleString("pt-BR"), volU = a.casa ? "reps" : a.vol >= 1000 ? "t" : "kg";
+  return `<article class="panel semana-c">${phd(ICON_HALTER, wk.includes(trainDay()) ? "Esta semana" : "Semana de " + brDate(wk[0]), pct != null && a.vol ? `<span class="delta ${pct >= 0 ? "up" : "down"}">${pct >= 0 ? "▲" : "▼"} ${Math.abs(pct)}% vs semana anterior</span>` : "")}
+    <div class="sc-row"><div class="sc-n"><b class="num">${volT}<small>${volU}</small></b><span>${a.casa ? "repetições" : "volume"}</span></div><div class="sc-n"><b class="num">${a.ser}</b><span>séries</span></div><div class="sc-n"><b class="num">${a.rec}</b><span>${a.rec === 1 ? "recorde" : "recordes"}</span></div>
+    <div class="sc-ring" role="img" aria-label="${a.feitos} de ${a.plan} treinos"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="${r}" class="sc-bg"/><circle cx="32" cy="32" r="${r}" class="sc-fg" stroke-dasharray="${c * f} ${c}"/></svg><b class="num">${a.feitos}/${a.plan}</b></div></div>
+    <p class="hint">Volume = kg × reps de todas as séries com ✓ (${a.casa ? "em casa conta repetições" : "aquecimento e drop ficam de fora"}). Recorde = passou a maior carga ou a força estimada daquele exercício.</p></article>`;
+}
+
+// ───── 7 · Mapa do corpo por período (7 ou 30 dias) ─────
+let mapaDias = 7;
+function mapaPeriodo(){
+  if (!person.days) return "";
+  const fim = logDate < trainDay() ? logDate : trainDay(), ini = addDays(fim, 1 - mapaDias);
+  const docs = mxDocs().filter(d => d.date >= ini && d.date <= fim), v = TreinoCore.volume(person.days, docs, MUS), sem = mapaDias / 7;
+  const nivel = m => { const x = v[m]; if (!x || !x.done) return 0; const r = x.planned ? x.done / (x.planned * sem) : 1; return r < .25 ? 1 : r < .5 ? 2 : r < .85 ? 3 : 4; };
+  const half = list => `<path class="bm-base" d="${BODY_SIL}"/>` + list.map(([m, d]) => `<path class="hm${nivel(m)}" d="${d}"/>`).join("");
+  const view = (list, dx) => `<g transform="translate(${dx},0)"><ellipse class="bm-base" cx="30" cy="9" rx="6.2" ry="7.4"/>${half(list)}<g transform="matrix(-1 0 0 1 60 0)">${half(list)}</g></g>`;
+  const atras = Object.entries(v).filter(([m, x]) => x.planned && x.done < x.planned * sem * .5).sort((a, b) => b[1].planned - a[1].planned).slice(0, 4).map(([m]) => MUSCLE_PT[m] || m);
+  return `<article class="panel mapa-p">${phd(ICON_ALVO, "Mapa do corpo", `<div class="chips two-c mp-tg" role="group" aria-label="Período">${[7, 30].map(n => `<button type="button" class="chip" data-mapa="${n}" aria-pressed="${n === mapaDias}">${n} dias</button>`).join("")}</div>`)}
+    <svg class="body hm" viewBox="2 0 120 124" role="img" aria-label="Músculos treinados nos últimos ${mapaDias} dias">${view(BODY_FRONT, 0)}${view(BODY_BACK, 62)}</svg>
+    <div class="hm-leg" aria-hidden="true"><span>nada</span><i class="hm1"></i><i class="hm2"></i><i class="hm3"></i><i class="hm4"></i><span>volume cheio</span></div>
+    <p class="hint">${brDate(ini)} a ${brDate(fim)}: séries com ✓ por músculo comparadas com o que a ficha prevê para ${mapaDias === 7 ? "uma semana" : "30 dias"} (principal = 1, ajuda = 0,5).${atras.length ? ` Ficou para trás: <b>${atras.join(", ")}</b>.` : ""}</p></article>`;
+}
+
+// ───── 6 · Medalhas e 14 · Nível ─────
+const MEDALHAS = [
+  {id: "t1", ico: "flag", nome: "Primeiro treino", f: s => s.treinos >= 1},
+  {id: "t10", ico: "halter", nome: "10 treinos", f: s => s.treinos >= 10},
+  {id: "t50", ico: "halter", nome: "50 treinos", f: s => s.treinos >= 50, cor: "prata"},
+  {id: "t100", ico: "halter", nome: "100 treinos", f: s => s.treinos >= 100, cor: "ouro"},
+  {id: "pr1", ico: "seta", nome: "Primeiro recorde", f: s => s.rec >= 1},
+  {id: "pr25", ico: "seta", nome: "25 recordes", f: s => s.rec >= 25, cor: "prata"},
+  {id: "sem1", ico: "cal", nome: "Semana completa", f: s => s.semanas >= 1},
+  {id: "sem4", ico: "cal", nome: "4 semanas completas", f: s => s.semanas >= 4, cor: "prata"},
+  {id: "of5", ico: "fogo", nome: "Ofensiva de 5", f: s => s.of >= 5},
+  {id: "of20", ico: "fogo", nome: "Ofensiva de 20", f: s => s.of >= 20, cor: "prata"},
+  {id: "of60", ico: "fogo", nome: "Ofensiva de 60", f: s => s.of >= 60, cor: "ouro"},
+  {id: "s100", ico: "lista", nome: "100 séries", f: s => s.series >= 100},
+  {id: "s1000", ico: "lista", nome: "1.000 séries", f: s => s.series >= 1000, cor: "ouro"},
+  {id: "v1", ico: "peso", nome: "1 tonelada", f: s => !s.casa && s.vol >= 1000},
+  {id: "v10", ico: "peso", nome: "10 toneladas", f: s => !s.casa && s.vol >= 10000, cor: "prata"},
+  {id: "v100", ico: "peso", nome: "100 toneladas", f: s => !s.casa && s.vol >= 100000, cor: "ouro"},
+  {id: "r1k", ico: "peso", nome: "1.000 repetições", f: s => s.casa && s.vol >= 1000},
+  {id: "r10k", ico: "peso", nome: "10.000 repetições", f: s => s.casa && s.vol >= 10000, cor: "ouro"},
+  {id: "dia", ico: "pena", nome: "Primeira anotação", f: s => s.notas >= 1}
+];
+const MED_ICO = {
+  flag: '<path d="M8 21V4M8 4h8l-1.6 3L16 10H8"/>', halter: '<path d="M6.5 7v10M17.5 7v10M4 9.5v5M20 9.5v5M6.5 12h11"/>',
+  seta: '<path d="M4 17l5-5 4 4 7-7M15 9h5v5"/>', cal: '<rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M9 14l2 2 4-4"/>',
+  fogo: '<path d="M12 21c3.6 0 6-2.4 6-5.6 0-3.4-2.6-5-3.6-8.4-1.6 1.4-2 3-2 4.4-1.4-1-2-2.6-1.8-4.4C8 9 6 11.6 6 15.4 6 18.6 8.4 21 12 21z"/>',
+  lista: '<path d="M5 7h14M5 12h14M5 17h9"/>', peso: '<path d="M6 9h12l2 11H4z"/><path d="M9 9a3 3 0 0 1 6 0"/>', pena: '<path d="M5 19h4L19 9a2.8 2.8 0 0 0-4-4L5 15z"/>'
+};
+const MED_COR = {bronze: ["#F2C29A", "#B8733F"], prata: ["#EEF1F4", "#9AA3AD"], ouro: ["#FFE48A", "#D49A1C"]};
+const medalhaSvg = (m, on) => { const [a, b] = MED_COR[m.cor || "bronze"]; const g = "mg" + m.id;
+  return `<svg viewBox="0 0 64 64" class="med${on ? "" : " off"}" aria-hidden="true"><defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${on ? a : "#4A4E55"}"/><stop offset="1" stop-color="${on ? b : "#2C2F34"}"/></linearGradient></defs>
+    <path d="M32 3l25 14.5v29L32 61 7 46.5v-29z" fill="url(#${g})"/><path d="M32 9l20 11.6v22.8L32 55 12 43.4V20.6z" fill="none" stroke="${on ? "#fff8" : "#fff2"}" stroke-width="1.5"/>
+    <g transform="translate(20 20)" fill="none" stroke="${on ? "#3A2410" : "#777"}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="${on ? .85 : .7}">${MED_ICO[m.ico]}</g></svg>`; };
+function statsGerais(p){
+  const casa = PEOPLE.find(x => x.id === p)?.casa, docs = mxDocs(p);
+  let vol = 0, series = 0, notas = 0; const dias = new Set();
+  for (const d of docs) { for (const e of Object.values(d.ex || {})) { notas += (e.notas || []).length; for (const s of mxFeitas(e.sets)) { series++; vol += mxVolSet(s, casa); } } if (trained(p, d.date)) dias.add(d.date); }
+  notas += Object.values(store.get("diario:" + p) || {}).reduce((a, x) => a + Object.values(x).reduce((b, y) => b + y.length, 0), 0);
+  const semanas = new Set([...dias].map(d => weekOf(d)[0])); let completas = 0;
+  for (const w of semanas) { const wk = weekOf(w); if (wk[6] <= trainDay() && wk.filter(isWeekday).every(d => trained(p, d))) completas++; }
+  return {casa, vol, series, notas, treinos: dias.size, semanas: completas, rec: recordesDe(p, "0000", "9999"), of: Math.max(bestStreak(p), streakOf(p))};
+}
+// Nível: sobe com os treinos; cada nível pede 5 treinos a mais que o anterior (5, 10, 15...)
+const nivelDe = n => { let L = 1, need = 5, acc = 0; while (n >= acc + need) { acc += need; L++; need += 5; } return {L, falta: acc + need - n, pct: (n - acc) / need}; };
+function medalhasPanel(){
+  if (!person.days) return "";
+  const s = statsGerais(person.id), lv = nivelDe(s.treinos), lista = MEDALHAS.filter(m => !(s.casa ? ["v1", "v10", "v100"] : ["r1k", "r10k"]).includes(m.id));
+  const ganhas = lista.filter(m => m.f(s));
+  const nova = ganhas.filter(m => !(store.get("medalhas:" + person.id) || []).includes(m.id));
+  if (nova.length) store.set("medalhas:" + person.id, ganhas.map(m => m.id));
+  return `<article class="panel med-p">
+    <div class="lv"><span class="lv-b num">${lv.L}</span><div><b>Nível ${lv.L}</b><small>${lv.falta === 1 ? "falta 1 treino" : `faltam ${lv.falta} treinos`} para o nível ${lv.L + 1} · ${s.treinos} ${s.treinos === 1 ? "treino" : "treinos"} no total</small><div class="st-bar" style="--c:var(--pc)"><i style="width:${Math.round(lv.pct * 100)}%"></i></div></div></div>
+    <h3>Medalhas <span class="count">${ganhas.length}/${lista.length}</span></h3>
+    <div class="med-g">${lista.map(m => { const on = m.f(s); return `<div class="med-i${on ? "" : " off"}${nova.some(x => x.id === m.id) ? " nova" : ""}">${medalhaSvg(m, on)}<small>${m.nome}</small></div>`; }).join("")}</div>
+    <p class="hint">Contam só séries com ✓. Semana completa = todos os dias úteis treinados (feriado não conta). Ofensiva = sua melhor sequência.</p></article>`;
+}
+
+// ───── 19 · Alimentos da TACO ─────
+const ALIM_N = typeof ALIMENTOS !== "undefined" ? ALIMENTOS.map(a => mxSemAcento(a[1])) : [];
+function buscaAlimentos(q){
+  const t = mxSemAcento(q).split(/[\s,]+/).filter(Boolean); if (!t.length) return [];
+  return ALIMENTOS.map((a, i) => ({a, i})).filter(({i}) => t.every(w => ALIM_N[i].includes(w)))
+    .sort((x, y) => (y.a[6] ? 1 : 0) - (x.a[6] ? 1 : 0) || (ALIM_N[x.i].startsWith(t[0]) ? 0 : 1) - (ALIM_N[y.i].startsWith(t[0]) ? 0 : 1) || x.a[1].length - y.a[1].length).slice(0, 40).map(x => x.a);
+}
+const alimPor = id => ALIMENTOS.find(a => a[0] === +id);
+const alimItem = a => `<li><button type="button" class="al-busca-i" data-alim="${a[0]}"><span>${esc(a[1])}</span><small>${a[2]} kcal · ${num(a[3])} g prot. por 100 g</small></button></li>`;
+function abreAlimentos(){
+  if (futuro()) return avisaFuturo();
+  const rec = (store.get("alim:recentes") || []).map(alimPor).filter(Boolean);
+  const el = mxDlg(`<h2>Adicionar alimento</h2><p class="hint">Tabela TACO (Unicamp). Escolha o alimento e a quantidade: o app soma as calorias e a proteína do dia.</p>
+    <input type="search" class="al-q" id="al-q" placeholder="Buscar: arroz, frango grelhado, banana..." autocomplete="off" enterkeyhint="search">
+    <div id="al-res">${rec.length ? `<p class="hint">Usados há pouco</p><ul class="al-busca">${rec.map(alimItem).join("")}</ul>` : `<p class="hint">Dica: escreva o alimento e como foi feito (ex.: "ovo cozido", "feijão carioca cozido").</p>`}</div>`, "Adicionar alimento");
+  const q = el.querySelector("#al-q");
+  q.addEventListener("input", () => { const r = buscaAlimentos(q.value); el.querySelector("#al-res").innerHTML = q.value.trim() ? (r.length ? `<ul class="al-busca">${r.map(alimItem).join("")}</ul>` : `<p class="hint">Nada encontrado. Tente outra palavra ou use "+ item avulso".</p>`) : ""; });
+  setTimeout(() => q.focus(), 50);
+}
+function abreQuantidade(id){
+  const a = alimPor(id); if (!a) return;
+  const por = a[6] || [], g0 = por.length ? por[0][1] : 100;
+  const el = mxDlg(`<h2>${esc(a[1])}</h2><p class="hint">Por 100 g: ${a[2]} kcal · ${num(a[3])} g de proteína · ${num(a[4])} g de carboidrato · ${num(a[5])} g de gordura.</p>
+    <form class="al-qt" data-alim-form="${a[0]}">
+      <div class="chips al-por">${por.map(([n, g]) => `<button type="button" class="chip" data-por="${g}" data-porn="${esc(n)}">1 ${esc(n)} <small>${g} g</small></button>`).join("")}<button type="button" class="chip" data-por="100">100 g</button></div>
+      <label class="al-g"><span>Quantidade</span><span class="al-gin"><button type="button" data-gstep="-1" aria-label="Menos">−</button><input name="g" type="number" inputmode="decimal" min="1" max="2000" value="${g0}"><span>g</span><button type="button" data-gstep="1" aria-label="Mais">+</button></span></label>
+      <p class="al-calc" id="al-calc"></p><p class="hint" id="al-falta-q"></p>
+      <button type="submit" class="done-btn">Adicionar ao dia</button></form>`, "Quantidade de " + a[1]);
+  const f = el.querySelector("form"), passo = () => (por[0]?.[1] || 50);
+  let porN = por.length ? por[0][0] : "";
+  const calc = () => { const g = +f.g.value || 0, k = Math.round(a[2] * g / 100), p = Math.round(a[3] * g / 10) / 10, c = comidoDe(person.id, logDate), mk = metaKcal(person.id, logDate), mp = metas(person.id, logDate).total;
+    el.querySelector("#al-calc").innerHTML = `<b class="num">${k}</b> kcal · <b class="num">${num(p)}</b> g de proteína`;
+    el.querySelector("#al-falta-q").textContent = mk ? `Depois disso: ${Math.max(0, mk - c.kcal - k).toLocaleString("pt-BR")} kcal e ${Math.max(0, Math.round(mp - c.prot - p))} g de proteína para a meta do dia.` : ""; };
+  el.addEventListener("click", ev => {
+    const b = ev.target.closest("[data-por]"); if (b) { f.g.value = b.dataset.por; porN = b.dataset.porn || ""; calc(); }
+    const s = ev.target.closest("[data-gstep]"); if (s) { const q = (+f.g.value || 0) + +s.dataset.gstep * passo(); f.g.value = Math.max(passo(), Math.min(2000, q)); porN = ""; calc(); }
+  });
+  f.g.addEventListener("input", () => { porN = ""; calc(); });
+  f.addEventListener("submit", ev => { ev.preventDefault(); const g = Math.round(+f.g.value); if (!(g > 0 && g <= 2000)) return;
+    const k = Math.round(a[2] * g / 100), p = Math.round(a[3] * g / 100), qt = porN && por.find(x => x[0] === porN)?.[1] === g ? `1 ${porN}` : `${g} g`;
+    const curto = a[1].split(",").slice(0, 2).join(",").slice(0, 44);
+    store.set("alim:recentes", [a[0], ...(store.get("alim:recentes") || []).filter(x => x !== a[0])].slice(0, 8));
+    el.close(); const y = scrollY; view.innerHTML = renderToday(); refreshToday(); scrollTo(0, y);
+    setExtras([...extrasDe(person.id, logDate), {nome: `${curto} · ${qt}`, kcal: k, prot: p, g, taco: a[0]}]);
+    toast(`<span><b>+${k} kcal · ${p} g de proteína</b><br>${esc(curto)} (${qt})</span>`);
+  });
+  calc();
+}
+function faltaTexto(){
+  const mk = metaKcal(person.id, logDate), m = metas(person.id, logDate); if (!mk || !m.total) return "";
+  const c = comidoDe(person.id, logDate), fk = mk - c.kcal, fp = m.total - c.prot;
+  return fk <= 0 && fp <= 0 ? "Meta do dia batida: calorias e proteína ✓" : `Falta${fk > 0 && fp > 0 ? "m" : ""} ${fk > 0 ? `<b>${fk.toLocaleString("pt-BR")} kcal</b>` : ""}${fk > 0 && fp > 0 ? " e " : ""}${fp > 0 ? `<b>${fp} g de proteína</b>` : ""} para a meta do dia`;
+}
+
+// ───── Cliques ─────
+document.addEventListener("click", ev => {
+  const t = ev.target;
+  const h = t.closest("[data-hist]"); if (h) { ev.preventDefault(); return abreHistorico(h.dataset.hist); }
+  const n = t.closest("[data-nota]"); if (n) return abreNota(n.dataset.nota);
+  const nd = t.closest("[data-nota-del]"); if (nd) return apagaNota(nd.dataset.notaEx, +nd.dataset.notaDel);
+  const al = t.closest("[data-alimabre]"); if (al) return abreAlimentos();
+  const ai = t.closest("[data-alim]"); if (ai) return abreQuantidade(ai.dataset.alim);
+  const tm = t.closest("[data-tm15]"); if (tm) return ajustaDescanso(+tm.dataset.tm15);
+  const mp = t.closest("[data-mapa]"); if (mp) { mapaDias = +mp.dataset.mapa; const el = mp.closest(".mapa-p"); if (el) el.outerHTML = mapaPeriodo(); return; }
+});
+document.addEventListener("submit", ev => {
+  const f = ev.target.closest?.("[data-nota-form]"); if (!f) return;
+  ev.preventDefault(); salvaNota(f.dataset.notaForm, f.t.value, f.txt.value); document.getElementById("mais-dialog")?.close();
+});
+
+// FIM MAIS UI
 function draw(){ drawCore(); FogoUI.mount(document, calmo()); cuidaDaTela(); if (animNext) { animNext = false; enterAnim(); } }
 function drawCore(){
   document.body.classList.toggle("treino-plus", treinoPlus());
@@ -3795,7 +4190,7 @@ function startTimer(sec, info){
   total = sec; endAt = Date.now() + sec*1000; pausa = 0; clearTimeout(fimTm);
   tmBig.classList.remove("zero", "pausado"); tmLbl.textContent = info ? info.replace(/\.$/, "") : "Descanso";
   tmPause.innerHTML = ICO_PAUSA; tmPause.setAttribute("aria-label", "Pausar descanso");
-  tmModo(true); clearInterval(tick); update(); tick = setInterval(update, 250);
+  tmModo(true); clearInterval(tick); update(); tick = setInterval(update, 250); mxDescansoInfo();
 }
 function update(){
   const ms = pausa || Math.max(0, endAt - Date.now()), left = Math.ceil(ms/1000);
