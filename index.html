@@ -230,6 +230,10 @@ button.todaycard,button.dcard,.opt{align-items:stretch}
 button.todaycard > *,button.dcard > *{align-self:stretch;min-width:0}
 .panel.tinted{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--surface)) 0,var(--surface) 78px)}
 .ex{background:linear-gradient(180deg,color-mix(in srgb,var(--pc,var(--muted)) 7%,var(--surface)) 0,var(--surface) 78px)}
+.rel-go{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.rel-mais{font-size:.85rem;font-weight:800;color:var(--lime)}
+.coach-ant{padding:0}.coach-ant>summary{padding:14px 16px;cursor:pointer;font-weight:700;color:var(--soft)}.coach-ant>.rel{margin:0 8px 8px}
+.coach-lem p{margin:0;color:var(--soft);line-height:1.45}
 .rel-t{margin:0;font-weight:700;font-size:.98rem;line-height:1.4}
 .rel-n{display:flex;flex-wrap:wrap;gap:6px}
 .rel-n span{font-size:.76rem;font-weight:800;color:var(--soft);background:var(--surface2);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
@@ -1072,6 +1076,7 @@ svg.body.rn .bm-base{fill:#2A2D33}
   <button type="button" data-screen="treino" aria-label="Treino"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg><span>Treino</span></button>
   <button type="button" data-screen="progresso" aria-label="Progresso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Progresso</span></button>
   <button type="button" data-screen="suplementos" aria-label="Suplementos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8z"/><path d="M5 5.5h14M9.5 3h5"/><path d="M9.5 13.5h5"/></svg><span>Suplementos</span></button>
+  <button type="button" data-screen="coach" aria-label="Coach"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3.5 20.5l1.4-4.9A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 11.8l2.4 2.4 4.6-4.7"/></svg><span>Coach</span></button>
 </nav>
 
 <script>window.SUPA = {"url":"https://hixyzxzhhacneilvumcb.supabase.co","key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpeHl6eHpoaGFjbmVpbHZ1bWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1MTM5NDAsImV4cCI6MjEwNzA4OTk0MH0.y_g3bCEhAfBPeuW7WKQndTZB1C-dPDnPtJbkQB-fxnI","table":"treinos_teste","checkins":"checkins_teste","relatorios":"relatorios","env":"teste","push":"https://hixyzxzhhacneilvumcb.supabase.co/functions/v1/push-teste"};</script>
@@ -1811,15 +1816,15 @@ function syncLocal(server){
 }
 // Versão do site (GitHub Pages): o banco é o Supabase do Rafael, sem login para ninguém
 const SUPA = window.SUPA || null;
-const REL = {};   // último relatório semanal de cada pessoa
+const REL = {}, RELS = {};   // último relatório semanal de cada pessoa e todos (mais novo primeiro)
 async function loadRel(){
   if (!SUPA || !SUPA.relatorios) return;
   try {
     const h = {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key};
     const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.relatorios}?select=*&order=semana.desc&limit=60`, {headers: h});
     if (!r.ok) return;
-    for (const x of await r.json()) if (!REL[x.person]) REL[x.person] = x;
-    refreshStats();
+    for (const x of await r.json()) { if (!REL[x.person]) REL[x.person] = x; (RELS[x.person] = RELS[x.person] || []).push(x); }
+    refreshStats(); if (screen === "coach") draw();
   } catch(e) {}
 }
 function supaDb(){
@@ -2838,16 +2843,33 @@ const ICON_PLAY = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const ICON_FITA = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="8" width="19" height="8" rx="2"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg>`;
 // Título de painel: ícone colorido + título (+ selo à direita)
 const phd = (ico, t, extra = "") => `<div class="ph"><div class="ph-t"><span class="st-ico">${ico}</span><h3>${t}</h3></div>${extra}</div>`;
-function relCard(p){
-  const r = REL[p]; if (!r) return "";
+function relCard(p, r = REL[p], titulo = "Resumo da semana"){
+  if (!r) return "";
   const fim = addDays(r.semana, 6), n = r.numeros || {}, li = (arr, cls) => (arr || []).slice(0, 4).map(t => `<li class="${cls}">${esc(t)}</li>`).join("");
   const chips = [n.treinos != null ? `${n.treinos}${n.previstos ? "/" + n.previstos : ""} treinos` : "", n.volume_kg ? (n.volume_kg / 1000).toLocaleString("pt-BR", {maximumFractionDigits: 1}) + " t" : "", n.sono_media ? "sono " + num(n.sono_media) + " h" : "", n.kcal_media ? `${Math.round(n.kcal_media).toLocaleString("pt-BR")} kcal/dia` : "", n.prot_media ? `${Math.round(n.prot_media)} g proteína/dia` : "", n.peso_delta != null ? (n.peso_delta > 0 ? "+" : n.peso_delta < 0 ? "−" : "") + num(Math.abs(n.peso_delta)) + " kg" : ""].filter(Boolean);
   const blk = (t, arr, cls) => arr && arr.length ? `<div class="rel-b"><p class="rel-h">${t}</p><ul class="rel-l">${li(arr, cls)}</ul></div>` : "";
-  return `<article class="panel tinted rel" style="--c:var(--lime)">${phd(ICON_LIVRO, "Resumo da semana", `<span class="delta">${dd(r.semana)}–${dd(fim)}</span>`)}
+  return `<article class="panel tinted rel" style="--c:var(--lime)">${phd(ICON_LIVRO, titulo, `<span class="delta">${dd(r.semana)}–${dd(fim)}</span>`)}
     ${r.titulo ? `<p class="rel-t">${esc(r.titulo)}</p>` : ""}
     ${chips.length ? `<div class="rel-n">${chips.map(c => `<span>${c}</span>`).join("")}</div>` : ""}
     ${blk("Foi bem", r.destaques, "ok")}${blk("Atenção", r.atencao, "at")}${blk("Próxima semana", r.proxima, "nx")}
     <p class="hint">Feito pelo seu personal todo domingo com os treinos e o check-in da semana.</p></article>`;
+}
+// Atalho no Progresso: a avaliação inteira fica na aba Coach
+function relAtalho(p){
+  const r = REL[p]; if (!r) return "";
+  return `<button type="button" class="panel tinted rel rel-go" style="--c:var(--lime)" data-screen="coach">${phd(ICON_LIVRO, "Avaliação da semana", `<span class="delta">${dd(r.semana)}–${dd(addDays(r.semana, 6))}</span>`)}${r.titulo ? `<span class="rel-t">${esc(r.titulo)}</span>` : ""}<span class="rel-mais">Ver no Coach ›</span></button>`;
+}
+// Aba Coach: avaliação da semana feita pelo personal (relatório de domingo) e as semanas anteriores
+function renderCoach(){
+  const p = person.id, todos = RELS[p] || (REL[p] ? [REL[p]] : []), [ult, ...ant] = todos;
+  const ate = trainDay(), semTreino = person.days && !Object.values(LOGS).some(d => d.person === p && d.date > addDays(ate, -14) && d.date <= ate && trained(p, d.date));
+  const lembrete = semTreino ? `<article class="panel tinted coach-lem" style="--c:var(--warn)">${phd(ICON_LIVRO, "Registre seus treinos")}<p>Faz duas semanas que não aparece treino seu por aqui. Marque cada série na aba Treino, mesmo que faça só parte da ficha: é com esses números que eu monto a sua avaliação de domingo.</p></article>` : "";
+  return `<section class="list coach" aria-label="Coach">
+    <div class="dayhead"><div><div class="eyebrow">Seu personal</div><h2>Coach</h2><p class="dsub">Avaliação feita todo domingo com os treinos e o check-in da semana.</p></div></div>
+    ${lembrete}
+    ${ult ? relCard(p, ult, "Avaliação da semana") : `<article class="panel"><p>Ainda não há avaliação para ${esc(person.name)}. A primeira sai no domingo, às 10h, com os treinos registrados na semana.</p></article>`}
+    ${ant.length ? `<h3 class="sec">Semanas anteriores</h3>${ant.map(r => `<details class="panel coach-ant"><summary>${dd(r.semana)}–${dd(addDays(r.semana, 6))}${r.titulo ? " · " + esc(r.titulo) : ""}</summary>${relCard(p, r, "Avaliação da semana")}</details>`).join("")}` : ""}
+  </section>`;
 }
 const tile = (v, l, s = "") => `<div class="tile"><b class="num">${v}</b><span>${l}</span>${s ? `<small>${s}</small>` : ""}</div>`;
 function renderProgress(){
@@ -2905,11 +2927,11 @@ function renderProgress(){
   return `<section class="list prog" aria-label="Progresso">
     <h2>Progresso</h2>
     ${treinoPlus() ? "" : renderPainel(p)}
-    ${treinoPlus() ? "" : relCard(p)}
+    ${treinoPlus() ? "" : relAtalho(p)}
     <p class="sub">4 semanas até ${today === trainDay() ? "hoje" : brDate(today)} · a data muda no calendário do Hoje</p>
     <div class="stats">${statCards}</div>
     ${semanaCard()}
-    ${treinoPlus() ? relCard(p) : ""}
+    ${treinoPlus() ? relAtalho(p) : ""}
 
     <article class="panel tinted" style="--c:var(--coral)">${phd(ICON_PILHA, "Desempenho", wPct != null ? `<span class="delta ${wPct >= 0 ? "up" : "down"}">${wPct >= 0 ? "▲" : "▼"} ${Math.abs(wPct)}% na última semana</span>` : "")}
       <p class="sub">${casa ? "Repetições por semana" : "Volume por semana (kg × reps)"}</p>
@@ -3192,7 +3214,7 @@ function drawTabs(){
   tabs.innerHTML = person.days.map(t => `<button type="button" role="tab" data-tab="${t.id}" aria-selected="${t.id===current}" style="--pc:var(${t.plate})"><span class="wd"><span class="plate"></span>${t.wd}</span><span class="nm">${t.name}</span></button>`).join("");
 }
 function drawDock(){
-  const sec = ["hoje","treino","progresso","suplementos"].includes(screen) ? screen : "";
+  const sec = ["hoje","treino","progresso","suplementos","coach"].includes(screen) ? screen : "";
   dock.querySelectorAll("[data-screen]").forEach(b => b.dataset.screen === sec ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   document.body.dataset.tela = screen;
   const tm = screen === "treino" && treinoView === "dia";
@@ -4028,6 +4050,7 @@ function drawCore(){
   if (screen === "perfil") { view.innerHTML = shownStats = renderPerfil(); return; }
   if (screen === "cardapio") { view.innerHTML = `<button type="button" class="ghost back" data-screen="perfil">‹ Perfil</button>` + renderCardapio(); return; }
   if (screen === "suplementos") { view.innerHTML = renderSuplementos(); return; }
+  if (screen === "coach") { view.innerHTML = renderCoach(); return; }
   if (EXTRA.find(t => t.id === screen)) { view.innerHTML = `<button type="button" class="ghost back" data-screen="perfil">‹ Perfil</button>` + (person.panels || PANELS)[screen]; return; }
   if (!person.days){ view.innerHTML = PENDING(person); return; }
   if (treinoView === "semana") { view.innerHTML = renderSemana(); return; }
