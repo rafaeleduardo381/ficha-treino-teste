@@ -1,0 +1,3 @@
+Fotos dos alimentos (food-*.webp): GymMane, de InlitX (https://github.com/InlitX/GymMane), assets/food.
+Licença GPLv3 com o termo adicional de atribuição: "Based on GymMane by InlitX" (Baseado no GymMane por InlitX).
+Associação com a Tabela TACO em fichas/alimentos-fotos.json (gerada por fichas/taco/fotos.js).
