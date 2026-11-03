@@ -2553,13 +2553,12 @@ function protCard(){
     </div>
     <p class="al-falta" id="al-falta"></p>
     <p class="alc-linha" id="al-alc" hidden></p><p class="alc-linha" id="al-whey" hidden></p>
-    <ul class="al-list">${rs.map((r, i) => `<li><button type="button" class="al-r" data-ref="${i}" aria-pressed="false"><span class="al-c" aria-hidden="true">✓</span><span class="al-n"><b>${esc(r.nome)}</b><small>${esc(r.hora)}</small>${r.itens.map(x => `<span class="al-i">${esc(x)}</span>`).join("")}</span><span class="al-k num">${r.kcal.toLocaleString("pt-BR")} kcal<small>${r.prot} g proteína</small></span></button></li>`).join("")}</ul>
     <ul class="al-list al-av" id="al-av" aria-label="Itens avulsos"></ul>
     ${avAberto ? `<form data-av-form class="sp-form al-avf"><label class="sp-f"><span>O que foi</span><span class="sp-in"><input type="text" maxlength="60" name="nome" placeholder="ex.: copo de leite 250 ml" required></span></label>
       <div class="sp-2">${spCampo("kcal", "Calorias", "kcal", "", 0, 3000)}${spCampo("prot", "Proteína", "g", "", 0, 300)}</div>
       <div class="al-avb"><button type="button" class="ghost" data-avfecha>Cancelar</button><button type="submit" class="done-btn">Adicionar</button></div></form>`
     : `<div class="al-add"><button type="button" class="alc-mais al-tab" data-alimabre>+ alimento da tabela</button><button type="button" class="alc-mais" data-avabre>+ item avulso</button></div>`}
-    <p class="hint">Toque em cada refeição que comeu. Os valores são do seu cardápio (Perfil → Cardápio) ajustados à sua meta; comeu algo parecido? Vale marcar — veja as trocas no Cardápio. Comeu diferente? Use "+ alimento da tabela" (TACO, com a quantidade) ou "+ item avulso" se já sabe as calorias.</p></article>`;
+    <p class="hint">Anote o que comeu: "+ alimento da tabela" (TACO, com a quantidade) ou "+ item avulso" se já sabe as calorias. O cartão soma o total do dia. Ideias de refeição em Perfil → Cardápio.</p></article>`;
 }
 function refreshProt(){
   const card = document.getElementById("card-prot"), k = document.getElementById("al-k"); if (!card || !k) return;
