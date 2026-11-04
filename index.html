@@ -591,6 +591,13 @@ body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-ou
 .md-ef{display:flex;flex-wrap:wrap;gap:4px}.md-ef i{font-style:normal;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--violet) 16%,var(--surface));color:var(--violet)}
 .md-efs{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px 14px}.md-efs legend{font-size:.8rem;font-weight:700;color:var(--soft);margin-bottom:6px}
 .md-f select{width:100%;background:none;border:0;color:var(--ink);font:inherit;font-weight:700;padding:12px 0}.md-f select option{background:var(--surface)}
+.mp{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.mp-f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}.mp-f label{grid-column:1/-1;font-size:.8rem;font-weight:700;color:var(--soft)}
+.mp-in{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:0 12px}.mp-in input{all:unset;flex:1;min-width:0;padding:12px 0;font-family:var(--f-mono);font-weight:700;font-size:1.05rem;color:var(--ink)}.mp-in em{font-style:normal;color:var(--muted);font-weight:700}
+.mp-f .done-btn{height:46px;padding:0 16px;margin:0;width:auto;min-width:0}.mp-f .ghost{grid-column:1/-1}
+.mp-top{display:flex;align-items:baseline;gap:8px}.mp-top span{font-size:.8rem;font-weight:700;color:var(--soft)}.mp-top b{font-size:1.25rem}.mp-top .ghost{margin-left:auto}
+.mp-falta{margin:0;font-size:.85rem;color:var(--soft)}.mp-msg{margin:0;font-size:.8rem;color:var(--warn)}.mp-msg:empty{display:none}
+.mp-rec{margin:0;font-size:.82rem;color:var(--soft);display:block}.mp-rec small{display:block;margin-top:2px}.mp-rec small,.mp-av{font-size:.75rem;color:var(--muted)}.mp-av{color:var(--warn)}
 .md-ck{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--soft)}
 .sq{display:block;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface2)}
 .sq-h{margin:0 0 8px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -1894,7 +1901,7 @@ async function loadSaude(){
     const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.saude || "saude"}?select=*`, {headers: {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key}});
     if (!r.ok) return;
     for (const x of await r.json()) SAUDE[x.person] = x;
-    redesenhaMeds();
+    redesenhaMeds(); refreshMetaPeso();
   } catch(e) {}
 }
 async function salvaSaude(meds){
@@ -2141,6 +2148,7 @@ function renderWeekNav(suplementos = false){
     ${logDate === hoje ? `<p class="week-cap">${suplementos ? "Escolha o dia para consultar ou registrar. Sábado e domingo também entram no histórico." : "O anel de cada dia mostra quanto você completou: água, sono e treino."}</p>` : `<button type="button" class="backtoday" data-date="${hoje}">${logDate > hoje ? "Dia futuro (só para ver)" : "Vendo " + WD[parseDate(logDate).getDay()] + ", " + brDate(logDate)} · Voltar para hoje</button>`}`;
 }
 function renderToday(){
+  if (renderToday.p !== person.id) metaPesoEdit = false; renderToday.p = person.id;
   for (const k in ringState) delete ringState[k];   // ao abrir a tela, os anéis enchem de novo a partir do zero
   const hoje = trainDay();
   return `<section class="list" aria-label="Hoje">
@@ -2814,7 +2822,7 @@ function renderExtras(){
         <div class="ck-h"><span class="ico">${ICON.balanca}</span><label class="pz-t" for="peso">Peso corporal</label><span class="pz-st" id="pz-st"></span></div>
         <div class="pz-v" id="pz-v" hidden><p class="pz-big"><b class="num" id="pz-num"></b><span>kg</span></p><button type="button" class="ghost pz-ed" data-pesoedit>Editar</button></div>
         <div class="pz-in" id="pz-in"><div class="step pz-step"><button type="button" data-pstep="-1" aria-label="Menos 0,1 kg">−</button><div class="pz-field"><input id="peso" class="pz-input" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" aria-label="Peso corporal em quilogramas" aria-describedby="pesohint"><span class="pz-unit" aria-hidden="true">kg</span></div><button type="button" data-pstep="1" aria-label="Mais 0,1 kg">+</button></div><button type="button" class="pz-save" id="pz-save" data-pesosave disabled>Salvar</button></div>
-        <p class="pz-note" id="pesohint"></p></article>` : `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
+        <p class="pz-note" id="pesohint"></p><div id="mp-box">${metaPesoBloco()}</div></article>` : `<article class="ck mini-ck" id="card-peso" style="--c:var(--peso)"><div class="ck-h"><span class="ico">${ICON.balanca}</span>Peso</div>
         <div class="pesorow"><input id="peso" class="pesoin" inputmode="decimal" autocomplete="off" placeholder="kg" aria-label="Peso em kg"><span>kg</span></div>
         <p class="ck-note" id="pesohint">na academia, ao chegar: antes de treinar, sem tênis</p></article>`}
       ${treinoPlus() ? "" : `<button type="button" class="ck mini-ck dietbtn" id="card-dieta" data-sheet="dieta" style="--c:var(--coral)"><span class="ck-h"><span class="ico">${ICON.prato}</span>Alimentação</span>
@@ -2921,6 +2929,51 @@ const addDays = (s, n) => { const d = parseDate(s); d.setDate(d.getDate() + n); 
 const lastDays = (n, end = trainDay()) => Array.from({length: n}, (_, i) => addDays(end, i - n + 1));
 const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
 function pesoAt(p, s){ const v = CHK[docId(p, s)]?.peso; return v ? +v : null; }
+// Peso recomendado por pessoa (agente de nutrição, 2026-11-04; mudar só com aprovação do Rafael). Peso na balança da academia − 1,5 kg (Davy sem desconto)
+const PESO_REC = {"rafael":{"faixa":[66,70],"ritmo":[0.16,0.32],"txt":"Ganho de massa devagar: 66–70 kg, +0,2 a 0,3 kg por semana","piso":57.5,"teto":77},
+ "laura":{"faixa":[60,62],"ritmo":[-0.3,-0.15],"txt":"Perder gordura sem perder músculo: 60–62 kg, −0,15 a −0,3 kg por semana","piso":50.5,"teto":68},
+ "laysa":{"faixa":[55,57],"ritmo":[0.1,0.2],"txt":"Ganhar músculo com calma: voltar a 55 kg e chegar a 57, +0,1 a 0,2 kg por semana","piso":52,"teto":64.5},
+ "davy":{"faixa":[80,85],"ritmo":[-0.8,-0.4],"txt":"Perder gordura com saúde: 80–85 kg, −0,4 a −0,8 kg por semana, sem pressa","piso":72,"teto":93}};
+let metaPesoEdit = false;
+const metaPesoDe = p => { const v = +SAUDE[p]?.meta_peso; return v > 0 ? v : null; };
+function pesoAtualMeta(p){   // média das últimas 7 pesagens com o desconto da balança (mesma régua das metas)
+  const ws = Object.values(CHK).filter(c => c && c.person === p && +c.peso > 0 && c.date <= trainDay()).sort((a, b) => a.date.localeCompare(b.date)).slice(-7).map(c => +c.peso - (METAS_REGRA.desconto[p] ?? DESCONTO_PESO));
+  return ws.length ? avg(ws) : null;
+}
+function metaPesoBloco(){
+  const p = person.id, R = PESO_REC[p]; if (!R) return "";
+  const meta = metaPesoDe(p), atual = pesoAtualMeta(p), kg = v => num(Math.round(v * 10) / 10);
+  const rec = `<p class="mp-rec">Recomendado: <b>${kg(R.faixa[0])}–${kg(R.faixa[1])} kg</b><small>${esc(R.txt)}</small></p>`;
+  if (metaPesoEdit || !meta) return `<div class="mp"><form class="mp-f" data-mp-form><label for="mp-in">Peso que quer alcançar</label><span class="mp-in"><input id="mp-in" name="v" inputmode="decimal" autocomplete="off" placeholder="${kg((R.faixa[0] + R.faixa[1]) / 2)}" value="${meta ? kg(meta) : ""}"><em>kg</em></span><button type="submit" class="done-btn">Salvar</button>${meta ? '<button type="button" class="ghost" data-mp-x>Cancelar</button>' : ""}</form><p class="mp-msg" id="mp-msg"></p>${rec}</div>`;
+  let falta = "";
+  if (atual != null) {
+    const d = meta - atual, rm = (R.ritmo[0] + R.ritmo[1]) / 2;
+    if (Math.abs(d) < 0.3) falta = "Você chegou na sua meta. Agora é manter.";
+    else if (Math.sign(d) === Math.sign(rm)) { const a = Math.abs(d / R.ritmo[1]), b = Math.abs(d / R.ritmo[0]); falta = `${d > 0 ? "Faltam" : "Faltam perder"} <b>${kg(Math.abs(d))} kg</b> · ~${Math.round(Math.min(a, b))} a ${Math.round(Math.max(a, b))} semanas no ritmo certo`; }
+    else falta = `Você está a <b>${kg(Math.abs(d))} kg</b> da meta, na direção contrária ao seu objetivo.`;
+  } else falta = "Pese-se na academia para o app calcular quanto falta.";
+  const fora = meta < R.faixa[0] || meta > R.faixa[1] ? `<small class="mp-av">Sua meta está fora da recomendada (${kg(R.faixa[0])}–${kg(R.faixa[1])} kg). Pode manter: vamos acompanhar pela média das semanas.</small>` : "";
+  return `<div class="mp"><div class="mp-top"><span>Sua meta</span><b class="num">${kg(meta)} kg</b><button type="button" class="ghost" data-mp-ed>Mudar</button></div><p class="mp-falta">${falta}</p>${fora}${rec}</div>`;
+}
+function salvaMetaPeso(v){
+  const p = person.id, R = PESO_REC[p], msg = document.getElementById("mp-msg");
+  const n = Math.round(Number(String(v).replace(",", ".")) * 10) / 10;
+  if (!(n > 0)) { if (msg) msg.textContent = "Digite o peso em kg, ex.: 68,5"; return; }
+  if (R && (n < R.piso || n > R.teto)) { if (msg) msg.textContent = `Essa meta está fora do limite saudável para você. Escolha entre ${num(R.piso)} e ${num(R.teto)} kg.`; return; }
+  const atual = pesoAtualMeta(p), sobe = R ? (R.ritmo[0] + R.ritmo[1]) / 2 > 0 : null;
+  if (R && atual != null && Math.abs(n - atual) >= 0.3 && (n > atual) !== sobe && !confirm(`Essa meta vai na direção contrária ao seu objetivo de ${sobe ? "ganhar massa" : "perder gordura"}. Confirma?`)) return;
+  metaPesoEdit = false;
+  const row = {...(SAUDE[p] || {id: p, person: p, medicamentos: []}), meta_peso: n, updated: new Date().toISOString()};
+  SAUDE[p] = row; refreshMetaPeso();
+  if (SUPA) fetch(`${SUPA.url}/rest/v1/${SUPA.saude || "saude"}?on_conflict=id`, {method: "POST", headers: {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal"}, body: JSON.stringify({id: p, person: p, medicamentos: row.medicamentos || [], meta_peso: n, updated: row.updated})})
+    .then(r => toast(r.ok ? "Meta de peso salva ✓" : "Não salvou: tente de novo com internet")).catch(() => toast("Não salvou: tente de novo com internet"));
+}
+function refreshMetaPeso(){ const b = document.getElementById("mp-box"); if (b) b.innerHTML = metaPesoBloco(); }
+document.addEventListener("click", ev => {
+  if (ev.target.closest("[data-mp-ed]")) { metaPesoEdit = true; refreshMetaPeso(); document.getElementById("mp-in")?.focus(); }
+  if (ev.target.closest("[data-mp-x]")) { metaPesoEdit = false; refreshMetaPeso(); }
+});
+document.addEventListener("submit", ev => { const f = ev.target.closest?.("[data-mp-form]"); if (!f) return; ev.preventDefault(); salvaMetaPeso(f.v.value); });
 function pesoTrend(p, end){
   const w = lastDays(7, end).map(s => pesoAt(p, s)).filter(v => v), prev = lastDays(7, addDays(end, -7)).map(s => pesoAt(p, s)).filter(v => v);
   if (!w.length) return null;
