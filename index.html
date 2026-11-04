@@ -1546,7 +1546,6 @@ function renderDayCore(d){
         </div>
       </div>
       ${log ? `<div class="meta" hidden></div>` : ""}
-      ${log ? seqBloco(d, i) : ""}
       ${boxes}
       ${log && SUPA && !treinoPlus() ? `<div class="ex-acts"><button type="button" class="ghost" data-ditar="${i}" aria-pressed="false">${ICON_MIC}Ditar série</button><button type="button" class="ghost" data-filmar="${i}">${ICON_CAM}Filmar execução</button></div>` : ""}
       <details><summary>Execução</summary>${person.casa ? `<a class="link-action video-action" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name.split(",")[0].replace(/(.*?)/g, "").trim() + " como fazer")}" target="_blank" rel="noopener">▶ Ver vídeo de como fazer</a>` : ""}<ul>${cues.map(c=>`<li>${c}</li>`).join("")}</ul>${log && SUPA && treinoPlus() ? `<button type="button" class="link-action film-action" data-filmar="${i}">${ICON_CAM}Filmar execução</button>` : ""}</details>
