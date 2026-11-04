@@ -2985,8 +2985,9 @@ function lineChart({pts, avgPts, color, band}){
   const iw = W - PADL - 6, ih = H - PADT - PADB, n = Math.max(1, pts.length - 1);
   const xs = i => PADL + (pts.length === 1 ? iw / 2 : i / n * iw), y = v => PADT + ih - (v - lo) / (hi - lo) * ih;
   const grid = [lo, (lo + hi) / 2, hi].map(v => `<line x1="${PADL}" x2="${W - 6}" y1="${y(v)}" y2="${y(v)}" class="gl"/><text x="${PADL - 6}" y="${y(v) + 4}" class="ax" text-anchor="end">${num(v.toFixed(v % 1 ? 1 : 0))}</text>`).join("");
-  const line = avgPts.length > 1 ? `<polyline class="gl-draw" pathLength="1" points="${avgPts.map(p => `${xs(p.i)},${y(p.v)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : "";
-  const dots = pts.map((p, i) => `<circle class="gdot" style="animation-delay:${300 + i * 25}ms" cx="${xs(i)}" cy="${y(p.v)}" r="4" fill="${color}" opacity=".45" stroke="var(--surface)" stroke-width="2"/><rect x="${xs(i) - 12}" y="${PADT}" width="24" height="${ih}" fill="transparent" data-tip="${esc(p.tip)}"/>`).join("");
+  const line = (pts.length > 1 ? `<polyline class="gl-draw" pathLength="1" points="${pts.map((p, i) => `${xs(i)},${y(p.v)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` : "")
+    + (avgPts.length > 1 ? `<polyline points="${avgPts.map(p => `${xs(p.i)},${y(p.v)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".45" stroke-linejoin="round"/>` : "");
+  const dots = pts.map((p, i) => `<circle class="gdot" style="animation-delay:${300 + i * 25}ms" cx="${xs(i)}" cy="${y(p.v)}" r="4" fill="${color}" stroke="var(--surface)" stroke-width="2"/><rect x="${xs(i) - 12}" y="${PADT}" width="24" height="${ih}" fill="transparent" data-tip="${esc(p.tip)}"/>`).join("");
   const lbl = pts.length === 1 ? `<text x="${xs(0)}" y="${H - 6}" class="ax" text-anchor="middle">${pts[0].l}</text>` : pts.length ? `<text x="${xs(0)}" y="${H - 6}" class="ax">${pts[0].l}</text><text x="${xs(pts.length - 1)}" y="${H - 6}" class="ax" text-anchor="end">${pts[pts.length - 1].l}</text>` : "";
   return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img">${grid}${line}${dots}${lbl}</svg><div class="tip" hidden></div></div>`;
 }
@@ -3108,7 +3109,7 @@ function renderProgress(){
     ${renderVolumeMuscular()}
     ${diarioPanel()}
     <article class="panel tinted" style="--c:var(--peso)">${phd(ICON.balanca, "Peso", trend?.delta != null ? `<span class="delta">${trend.delta >= 0 ? "+" : "−"}${num(Math.abs(trend.delta).toFixed(2))} kg na semana</span>` : "")}
-      ${ptsP.length ? lineChart({pts: ptsP, avgPts: avgP, color: "var(--peso)"}) + `<p class="sub">Pontos: cada pesagem · linha: média de 7 dias</p>` : `<p class="hint">Registre o peso na tela Hoje, todo dia ao acordar.</p>`}
+      ${ptsP.length ? lineChart({pts: ptsP, avgPts: avgP, color: "var(--peso)"}) + `<p class="sub">Linha: cada pesagem · tracejado: média de 7 dias</p>` : `<p class="hint">Registre o peso na tela Hoje: na academia, ao chegar, antes do treino e sem tênis (seg, qua e sex).</p>`}
       ${meta ? `<p class="hint">Meta: ${meta.txt}.</p>` : ""}
     </article>
 
