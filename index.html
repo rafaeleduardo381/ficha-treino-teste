@@ -590,6 +590,7 @@ body.mov .ex-acts .ghost[aria-pressed="true"]{animation:of-pulso 1.2s ease-in-ou
 .md-i>div{display:flex;flex-direction:column;gap:3px;min-width:0}.md-i small{color:var(--muted);font-size:.78rem}
 .md-ef{display:flex;flex-wrap:wrap;gap:4px}.md-ef i{font-style:normal;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--violet) 16%,var(--surface));color:var(--violet)}
 .md-efs{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px 14px}.md-efs legend{font-size:.8rem;font-weight:700;color:var(--soft);margin-bottom:6px}
+.md-f select{width:100%;background:none;border:0;color:var(--ink);font:inherit;font-weight:700;padding:12px 0}.md-f select option{background:var(--surface)}
 .md-ck{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--soft)}
 .sq{display:block;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface2)}
 .sq-h{margin:0 0 8px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -1909,15 +1910,18 @@ const MED_EFEITOS = [["fome", "Fome"], ["peso", "Peso"], ["sono", "Sono"], ["ene
 let medEdit = null;   // índice do remédio aberto para editar (-1 = novo)
 function medsPanel(){
   const meds = SAUDE[person.id]?.medicamentos || [];
-  const lista = meds.map((m, i) => `<li class="md-i"><div><b>${esc(m.nome)}</b><small>${[m.para, m.receita ? "com receita" : "", m.desde ? "desde " + esc(m.desde) : ""].filter(Boolean).map(esc).join(" · ")}</small>${(m.efeitos || []).length ? `<span class="md-ef">${m.efeitos.map(e => `<i>${esc((MED_EFEITOS.find(x => x[0] === e) || [e, e])[1])}</i>`).join("")}</span>` : ""}${m.obs ? `<small>${esc(m.obs)}</small>` : ""}</div><button type="button" class="ghost" data-med-ed="${i}">Editar</button></li>`).join("");
+  const lista = meds.map((m, i) => `<li class="md-i"><div><b>${esc(m.nome)}</b><small>${[m.dose, m.freq, m.horario].filter(Boolean).map(esc).join(" · ")}</small><small>${[m.para, m.receita ? "com receita" : "", m.desde ? "desde " + m.desde : ""].filter(Boolean).map(esc).join(" · ")}</small>${(m.efeitos || []).length ? `<span class="md-ef">${m.efeitos.map(e => `<i>${esc((MED_EFEITOS.find(x => x[0] === e) || [e, e])[1])}</i>`).join("")}</span>` : ""}${m.obs ? `<small>${esc(m.obs)}</small>` : ""}</div><button type="button" class="ghost" data-med-ed="${i}">Editar</button></li>`).join("");
   const m = medEdit != null ? (meds[medEdit] || {}) : null;
   const form = m ? `<form class="sp-form md-f" data-med-form="${medEdit}">
-      <label class="sp-f"><span>Nome do remédio</span><span class="sp-in"><input name="nome" maxlength="60" required value="${esc(m.nome || "")}" placeholder="ex.: Mounjaro"></span></label>
-      <label class="sp-f"><span>Para quê</span><span class="sp-in"><input name="para" maxlength="80" value="${esc(m.para || "")}" placeholder="ex.: perda de peso, pedido do médico"></span></label>
+      <label class="sp-f"><span>Nome do remédio</span><span class="sp-in"><input name="nome" maxlength="60" required value="${esc(m.nome || "")}" placeholder="nome do remédio"></span></label>
+      <div class="sp-2"><label class="sp-f"><span>Dose</span><span class="sp-in"><input name="dose" maxlength="30" value="${esc(m.dose || "")}" placeholder="ex.: 5 mg, 1 comprimido"></span></label>
+      <label class="sp-f"><span>Com que frequência</span><span class="sp-in"><select name="freq">${["", "1 vez por dia", "2 vezes por dia", "3 vezes por dia", "Dia sim, dia não", "1 vez por semana", "1 vez por mês", "Só quando precisa"].concat(m.freq && ![ "1 vez por dia", "2 vezes por dia", "3 vezes por dia", "Dia sim, dia não", "1 vez por semana", "1 vez por mês", "Só quando precisa"].includes(m.freq) ? [m.freq] : []).map(o => `<option value="${esc(o)}"${(m.freq || "") === o ? " selected" : ""}>${o || "Escolha"}</option>`).join("")}</select></span></label></div>
+      <label class="sp-f"><span>Horário ou dia</span><span class="sp-in"><input name="horario" maxlength="40" value="${esc(m.horario || "")}" placeholder="ex.: de manhã, toda segunda"></span></label>
+      <label class="sp-f"><span>Para quê</span><span class="sp-in"><input name="para" maxlength="80" value="${esc(m.para || "")}" placeholder="ex.: pedido do médico para..."></span></label>
       <div class="sp-2"><label class="sp-f"><span>Desde</span><span class="sp-in"><input name="desde" maxlength="20" value="${esc(m.desde || "")}" placeholder="mês/ano"></span></label>
       <label class="md-ck"><input type="checkbox" name="receita"${m.receita ? " checked" : ""}> Com receita médica</label></div>
       <fieldset class="md-efs"><legend>Mexe com o quê?</legend>${MED_EFEITOS.map(([k, t]) => `<label class="md-ck"><input type="checkbox" name="ef" value="${k}"${(m.efeitos || []).includes(k) ? " checked" : ""}> ${t}</label>`).join("")}</fieldset>
-      <label class="sp-f"><span>Observação</span><span class="sp-in"><input name="obs" maxlength="140" value="${esc(m.obs || "")}" placeholder="ex.: tira a fome à noite; dose mudou em 10/2026"></span></label>
+      <label class="sp-f"><span>Observação</span><span class="sp-in"><input name="obs" maxlength="140" value="${esc(m.obs || "")}" placeholder="ex.: efeito que você sente, mudança de dose"></span></label>
       <div class="al-avb">${medEdit >= 0 ? `<button type="button" class="ghost" data-med-del="${medEdit}">Tirar</button>` : ""}<button type="button" class="ghost" data-med-x>Cancelar</button><button type="submit" class="done-btn">Salvar</button></div></form>` : "";
   return `<article class="panel md"><h3>Medicamentos</h3>
     <p class="hint">Remédio que você usa e que pode mexer com fome, peso, sono ou treino. O seu personal e o agente de nutrição levam em conta em toda avaliação. Quem decide a dose é o médico.</p>
@@ -1926,7 +1930,7 @@ function medsPanel(){
 }
 function salvaMedForm(f){
   const meds = [...(SAUDE[person.id]?.medicamentos || [])], i = +f.dataset.medForm;
-  const m = {nome: f.nome.value.trim().slice(0, 60), para: f.para.value.trim().slice(0, 80), desde: f.desde.value.trim().slice(0, 20), receita: f.receita.checked, efeitos: [...f.querySelectorAll('[name="ef"]:checked')].map(x => x.value), obs: f.obs.value.trim().slice(0, 140)};
+  const m = {nome: f.nome.value.trim().slice(0, 60), dose: f.dose.value.trim().slice(0, 30), freq: f.freq.value.slice(0, 40), horario: f.horario.value.trim().slice(0, 40), para: f.para.value.trim().slice(0, 80), desde: f.desde.value.trim().slice(0, 20), receita: f.receita.checked, efeitos: [...f.querySelectorAll('[name="ef"]:checked')].map(x => x.value), obs: f.obs.value.trim().slice(0, 140)};
   if (!m.nome) return;
   if (i >= 0) meds[i] = m; else meds.push(m);
   medEdit = null; salvaSaude(meds);
