@@ -3011,7 +3011,7 @@ function relCard(p, r = REL[p], titulo = "Resumo da semana"){
     ${r.titulo ? `<p class="rel-t">${esc(r.titulo)}</p>` : ""}
     ${chips.length ? `<div class="rel-n">${chips.map(c => `<span>${c}</span>`).join("")}</div>` : ""}
     ${blk("Foi bem", r.destaques, "ok")}${blk("Atenção", r.atencao, "at")}${blk("Próxima semana", r.proxima, "nx")}
-    <p class="hint">Feito pelo seu personal todo domingo com os treinos e o check-in da semana.</p></article>`;
+    <p class="hint">Feito pelo seu personal todo domingo com os seus números da semana.</p></article>`;
 }
 // Histórico por exercício no Progresso (a meta do treino não mostra mais a "Última"): toque abre a lista de datas
 function histLista(p){
@@ -3028,11 +3028,11 @@ function relAtalho(p){
 function renderCoach(){
   const p = person.id, todos = RELS[p] || (REL[p] ? [REL[p]] : []), [ult, ...ant] = todos;
   const ate = trainDay(), semTreino = person.days && !Object.values(LOGS).some(d => d.person === p && d.date > addDays(ate, -14) && d.date <= ate && trained(p, d.date));
-  const lembrete = semTreino ? `<article class="panel tinted coach-lem" style="--c:var(--warn)">${phd(ICON_LIVRO, "Registre seus treinos")}<p>Faz duas semanas que não aparece treino seu por aqui. Marque cada série na aba Treino, mesmo que faça só parte da ficha: é com esses números que eu monto a sua avaliação de domingo.</p></article>` : "";
+  const lembrete = semTreino ? `<article class="panel tinted coach-lem" style="--c:var(--warn)">${phd(ICON_LIVRO, "Cadê os treinos, porra?")}<p>Duas semanas sem um treino registrado aqui. Ou você sumiu da academia ou tá treinando e não anota, e as duas coisas são vacilo. Marca cada série na aba Treino, mesmo que faça só metade da ficha: sem número eu não consigo te cobrar direito.</p></article>` : "";
   return `<section class="list coach" aria-label="Coach">
-    <div class="dayhead"><div><div class="eyebrow">Seu personal</div><h2>Coach</h2><p class="dsub">Avaliação feita todo domingo com os treinos e o check-in da semana.</p></div></div>
+    <div class="dayhead"><div><div class="eyebrow">Seu personal carrasco</div><h2>Coach</h2><p class="dsub">Todo domingo ele pega os seus números da semana e fala na cara. Sem passar pano.</p></div></div>
     ${lembrete}
-    ${ult ? relCard(p, ult, "Avaliação da semana") : `<article class="panel"><p>Ainda não há avaliação para ${esc(person.name)}. A primeira sai no domingo, às 10h, com os treinos registrados na semana.</p></article>`}
+    ${ult ? relCard(p, ult, "Avaliação da semana") : `<article class="panel"><p>Ainda não tem avaliação pra ${esc(person.name)}. Domingo às 10h sai a primeira, com o que você registrar na semana. Se não registrar nada, a bronca vem do mesmo jeito.</p></article>`}
     ${ant.length ? `<h3 class="sec">Semanas anteriores</h3>${ant.map(r => `<details class="panel coach-ant"><summary>${dd(r.semana)}–${dd(addDays(r.semana, 6))}${r.titulo ? " · " + esc(r.titulo) : ""}</summary>${relCard(p, r, "Avaliação da semana")}</details>`).join("")}` : ""}
   </section>`;
 }
