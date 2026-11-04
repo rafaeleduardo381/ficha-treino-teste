@@ -1123,6 +1123,10 @@ const TreinoCore = (() => {
   const work = ss => (ss || []).filter(valid);
   const assisted = p => /graviton/i.test(p.name);
   const ambiguous = p => /\bou\b/i.test(p.name);
+  // Pesos que existem na academia (Rafael, 2026-11-04): halteres de 2 em 2 kg; barra e Smith sobem 3 kg (menor anilha, por lado no Smith);
+  // máquinas com pilha (abdutora, extensora...), polia, leg press e anilha do abdominal de 5 em 5; mochila (casa) de 1 em 1
+  const passoCarga = (name, kg = 0) => /mochila/i.test(name) ? (kg < 10 ? 1 : 2) : /halter|búlgaro|martelo/i.test(name) ? 2 : /smith|com barra|barra w/i.test(name) ? 3 : 5;
+  const proxCarga = (name, kg) => { const s = passoCarga(name, kg); return s === 2 && !/mochila/i.test(name) ? (Math.floor(kg / 2 + 1e-9) + 1) * 2 : Math.round((kg + s) * 100) / 100; };   // halter ímpar (ex.: 5 kg) sobe para o próximo par
   const timed = p => /\bs\b|seg|min|\//i.test(p.reps);
   const e1 = s => valid(s) && s.kg > 0 && s.reps <= 12 ? s.kg * (1 + s.reps / 30) : null;
   const add = (s,n) => { const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10); };
@@ -1166,7 +1170,7 @@ const TreinoCore = (() => {
     const stalled=mins.length===3&&mins.every(v=>v!=null)&&mins[1]<=mins[0]&&mins[2]<=mins[1];
     const held={...base,kind:'hold',kg,stalled,reason:full?'Mesma carga; busque o topo da faixa mantendo o sobrar da ficha.':'Séries faltantes ou não confirmadas: sem aumento de carga.'};
     if(!A&&kg===0)return !p.casa?{...held,reason:'Sem carga externa registrada. Siga a ficha; sem peso inventado.'}:full&&check(last,hi,0)?{...base,kind:'up',kg:0,previousKg:0,degrau:true,explain:true,reason:'Bateu o topo em todas as séries: hora de subir de degrau. O próximo nível está em "Sobe para", na Execução.'}:{...held,explain:true,reason:'Peso do corpo: busque '+hi+' reps em todas as séries, sem perder a execução.'};   // treino em casa: progride pelo degrau
-    const mochila=/mochila/i.test(p.name),step=(mochila||/halter|búlgaro|martelo/i.test(p.name))&&!A?(kg<10?1:2):5;   // pesos que existem: halter de 1 ou 2 kg; mochila com garrafas de 1 L; máquina, polia, barra, Smith (por lado), leg press e graviton de 5 kg
+    const mochila=/mochila/i.test(p.name),step=A?5:passoCarga(p.name,kg);   // pesos que existem na academia: ver passoCarga
     const efetiva=k=>A?(p.bw>0?p.bw-k:null):k,salto=k=>{const e=efetiva(k);return !mochila&&e!=null&&e>0&&step/e>0.15;};   // mochila sobe de garrafa em garrafa: sem regra de salto grande   // graviton: carga efetiva = peso do corpo − assistência
     // subiu com salto grande e não chegou ao piso: volta para a carga anterior
     const ant=hist.length>1?trabalho(hist.at(-2)):null;
@@ -1174,7 +1178,7 @@ const TreinoCore = (() => {
       return {...base,kind:'hold',back:true,explain:true,kg:ant.kg,reps:String(hi+4),reason:'Não chegou a '+lo+' reps com '+kgTx(kg)+' kg: volte para '+kgTx(ant.kg)+' kg e faça '+(hi+4)+' reps antes de tentar de novo.'};
     if(!full||!check(last,hi,kg))return held;
     if(A&&kg===0)return {...held,reason:'Sem assistência: tente a barra fixa (meta 3×8).',explain:true};
-    const next=Math.max(0,Math.round((kg+(A?-step:step))*100)/100);
+    const next=A?Math.max(0,kg-step):proxCarga(p.name,kg);
     const reserve=String(p.rir),singular=reserve==='1';
     const condition=reserve==='0'?'Se completou as repetições com boa execução':reserve==='0–1'||reserve==='0-1'?'Se manteve o esforço da ficha com boa execução':'Se ainda faria mais '+reserve+' '+(singular?'repetição':'repetições')+' com boa execução';
     if(salto(kg)){   // salto passa de 15% da carga: primeiro topo +2 reps em todas as séries por 2 sessões
@@ -1212,7 +1216,7 @@ const TreinoCore = (() => {
     for(const d of logs)for(const [name,e] of Object.entries(d.ex||{}))if(eligible.has(name))sum(name,(e.sets||[]).filter(s=>s.done===true).length,'done');return out;
   }
   function streak(end,state,allowToday=true) {let n=0,d=end;for(let i=0;i<600;i++,d=add(d,-1))if(weekday(d)){const s=state(d);if(s==='trained')n++;else if(s!=='excused'&&!(allowToday&&d===end))break;}return n;}
-  return {valid,work,e1,history,target,records,compare,volume,streak,add};
+  return {passoCarga,proxCarga,valid,work,e1,history,target,records,compare,volume,streak,add};
 })();
 if(typeof module!=='undefined')module.exports=TreinoCore;
 
@@ -1644,7 +1648,7 @@ function aquecSugestao(d, i, name){
   const t = treinoPlus() ? metaTreino(e) : null, ult = historicoEx(name).at(-1)?.ex?.[name]?.sets || [];
   const kg = t && Number.isFinite(t.kg) && t.kg > 0 ? t.kg : Math.max(0, ...ult.filter(s => TreinoCore.valid(s)).map(s => s.kg));
   if (!(kg > 0)) return [];
-  const passo = /halter|búlgaro|martelo/i.test(name) ? (kg < 10 ? 1 : 2) : 5, r = v => Math.max(passo, Math.round(v / passo) * passo);
+  const passo = TreinoCore.passoCarga(name), r = v => Math.max(passo, Math.round(v / passo) * passo);
   const a = r(kg * .5), b = r(kg * .75);
   return b < kg && b > a ? [[a, 10], [b, 5]] : a < kg ? [[a, 10]] : [];
 }
@@ -1672,7 +1676,7 @@ function dropSugestao(d, i, name){
   for (let q = 0; q < nQ; q++) {
     const pct = (cfg.reducao_pct[q] ?? cfg.reducao_pct.at(-1) ?? 20) / 100;
     if (!(kg > 0)) { out.push(null); continue; }
-    const passo = /halter|búlgaro|martelo/i.test(name) ? (kg <= 10 ? 1 : 2) : 5, r = Math.round(kg * (1 - pct) / passo * 1000) / 1000;
+    const passo = TreinoCore.passoCarga(name), r = Math.round(kg * (1 - pct) / passo * 1000) / 1000;
     let n = (r % 1 === 0.5 ? Math.floor(r) : Math.round(r)) * passo; if (n >= kg) n = kg - passo;   // peso que existe mais perto do % (empate para baixo); sempre abaixo da queda anterior
     if (n < base * (cfg.piso_pct ?? 45) / 100) n = 0;   // nenhuma queda abaixo de ~45% do peso da série (~30% da 1RM): a que não cabe não entra
     kg = n > 0 ? n : 0; out.push(kg > 0 ? kg : null);
@@ -1803,7 +1807,7 @@ function metaFor(last, reps, sets, leg, name){
   const ref = help ? Math.min(...inRange.map(s => s.kg)) : Math.max(...inRange.map(s => s.kg));
   const top = ok.filter(s => (help ? s.kg <= ref : s.kg >= ref) && s.reps >= hi).length >= sets;
   if (!top) return `<b>${num(ref)} kg</b>, buscando ${hi} reps em todas as séries`;
-  const step = help ? 2.5 : /halter/i.test(name) ? (ref < 10 ? 1 : 2) : leg && ref >= 20 ? 5 : 2.5;
+  const step = help ? 5 : TreinoCore.passoCarga(name);
   const next = Math.max(0, help ? ref - step : ref + step);
   return `<b>${num(next)} kg</b> × ${lo}–${hi} (${help ? "menos ajuda" : "subiu"}: bateu ${hi} em todas)`;
 }
@@ -3339,7 +3343,7 @@ const PANELS = {
   </ul></div>
   <div class="panel"><h3>Drop na última</h3><p>Na última série, quando chegar ao fim das repetições, tire uns 20–30% do peso na hora e continue até quase não conseguir mais. Só nos exercícios marcados.</p></div>
   <div class="panel"><h3>1ª semana da ficha</h3><p>Semana de teste em todos os exercícios: escolha a carga que deixa sobrar 3 no topo da faixa de repetições, <b>sem drop e sem isometria</b>, e anote as cargas. Nos exercícios que você já fazia, parta da carga que já usava. Da 2ª semana em diante, "sobrar" e drops como está na ficha.</p></div>
-  <div class="panel"><h3>Progressão dupla</h3><p>Bateu o topo da faixa de reps em todas as séries sobrando o que a ficha pede? Sobe a carga: <b>halteres +1 kg</b> (até 10 kg) ou +2 kg; <b>máquina, polia, barra, Smith e leg press +5 kg</b>, e volta para o piso da faixa. Se o salto passar de ~15% da carga, primeiro faça o topo +2 reps em todas as séries por 2 sessões, depois suba. No graviton, tire 5 kg de assistência.</p></div>
+  <div class="panel"><h3>Progressão dupla</h3><p>Bateu o topo da faixa de reps em todas as séries sobrando o que a ficha pede? Sobe a carga: <b>halteres +2 kg</b>; <b>barra e Smith +3 kg</b> (no Smith, de cada lado); <b>máquina, polia e leg press +5 kg</b>, e volta para o piso da faixa. Se o salto passar de ~15% da carga, primeiro faça o topo +2 reps em todas as séries por 2 sessões, depois suba. No graviton, tire 5 kg de assistência.</p></div>
   <div class="panel"><h3>Execução</h3><ul>
    <li>Aquecimento: 5 min leve + 50% × 8, 70% × 4, 85% × 1–2 no primeiro exercício de cada grupo.</li>
    <li>Descida controlada em ~2 s, sem quicar; priorize a posição alongada.</li>
