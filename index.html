@@ -1894,12 +1894,12 @@ async function loadSaude(){
     const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.saude || "saude"}?select=*`, {headers: {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key}});
     if (!r.ok) return;
     for (const x of await r.json()) SAUDE[x.person] = x;
-    redesenhaPerfil();
+    redesenhaMeds();
   } catch(e) {}
 }
 async function salvaSaude(meds){
   const p = person.id, row = {id: p, person: p, medicamentos: meds, updated: new Date().toISOString()};
-  SAUDE[p] = row; redesenhaPerfil();
+  SAUDE[p] = row; redesenhaMeds();
   if (!SUPA) return;
   try {
     const r = await fetch(`${SUPA.url}/rest/v1/${SUPA.saude || "saude"}?on_conflict=id`, {method: "POST", headers: {apikey: SUPA.key, Authorization: "Bearer " + SUPA.key, "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal"}, body: JSON.stringify(row)});
@@ -1908,6 +1908,7 @@ async function salvaSaude(meds){
 }
 const MED_EFEITOS = [["fome", "Fome"], ["peso", "Peso"], ["sono", "Sono"], ["energia", "Energia no treino"], ["glicemia", "Glicemia"], ["humor", "Humor"]];
 let medEdit = null;   // índice do remédio aberto para editar (-1 = novo)
+function redesenhaMeds(){ const b = document.getElementById("md-box"); if (b) b.innerHTML = medsPanel(); }
 function medsPanel(){
   const meds = SAUDE[person.id]?.medicamentos || [];
   const lista = meds.map((m, i) => `<li class="md-i"><div><b>${esc(m.nome)}</b><small>${[m.dose, m.freq, m.horario].filter(Boolean).map(esc).join(" · ")}</small><small>${[m.para, m.receita ? "com receita" : "", m.desde ? "desde " + m.desde : ""].filter(Boolean).map(esc).join(" · ")}</small>${(m.efeitos || []).length ? `<span class="md-ef">${m.efeitos.map(e => `<i>${esc((MED_EFEITOS.find(x => x[0] === e) || [e, e])[1])}</i>`).join("")}</span>` : ""}${m.obs ? `<small>${esc(m.obs)}</small>` : ""}</div><button type="button" class="ghost" data-med-ed="${i}">Editar</button></li>`).join("");
@@ -1923,8 +1924,8 @@ function medsPanel(){
       <fieldset class="md-efs"><legend>Mexe com o quê?</legend>${MED_EFEITOS.map(([k, t]) => `<label class="md-ck"><input type="checkbox" name="ef" value="${k}"${(m.efeitos || []).includes(k) ? " checked" : ""}> ${t}</label>`).join("")}</fieldset>
       <label class="sp-f"><span>Observação</span><span class="sp-in"><input name="obs" maxlength="140" value="${esc(m.obs || "")}" placeholder="ex.: efeito que você sente, mudança de dose"></span></label>
       <div class="al-avb">${medEdit >= 0 ? `<button type="button" class="ghost" data-med-del="${medEdit}">Tirar</button>` : ""}<button type="button" class="ghost" data-med-x>Cancelar</button><button type="submit" class="done-btn">Salvar</button></div></form>` : "";
-  return `<article class="panel md"><h3>Medicamentos</h3>
-    <p class="hint">Remédio que você usa e que pode mexer com fome, peso, sono ou treino. O seu personal e o agente de nutrição levam em conta em toda avaliação. Quem decide a dose é o médico.</p>
+  return `<article class="panel md" style="--c:var(--violet)">${phd(ICON_POTE, "Medicamentos", meds.length ? `<span class="sp-tag">${meds.length}</span>` : "")}
+    <p class="hint">Remédios que você usa. O seu personal e o agente de nutrição levam em conta em toda avaliação. Quem decide a dose é o médico.</p>
     ${meds.length ? `<ul class="md-l">${lista}</ul>` : `<p class="hint">Nenhum remédio informado.</p>`}
     ${form || `<button type="button" class="alc-mais" data-med-ed="-1">+ medicamento</button>`}</article>`;
 }
@@ -1937,8 +1938,8 @@ function salvaMedForm(f){
 }
 document.addEventListener("click", ev => {
   const t = ev.target;
-  const ed = t.closest("[data-med-ed]"); if (ed) { medEdit = +ed.dataset.medEd; redesenhaPerfil(); return; }
-  if (t.closest("[data-med-x]")) { medEdit = null; redesenhaPerfil(); return; }
+  const ed = t.closest("[data-med-ed]"); if (ed) { medEdit = +ed.dataset.medEd; redesenhaMeds(); document.querySelector("[data-med-form] input")?.focus({preventScroll: true}); document.getElementById("md-box")?.scrollIntoView({block: "start", behavior: "smooth"}); return; }
+  if (t.closest("[data-med-x]")) { medEdit = null; redesenhaMeds(); return; }
   const dl = t.closest("[data-med-del]"); if (dl) { const meds = [...(SAUDE[person.id]?.medicamentos || [])]; meds.splice(+dl.dataset.medDel, 1); medEdit = null; salvaSaude(meds); }
 });
 document.addEventListener("submit", ev => { const f = ev.target.closest?.("[data-med-form]"); if (!f) return; ev.preventDefault(); salvaMedForm(f); });
@@ -2531,14 +2532,16 @@ function wheyCard(){
 }
 const spCampo = (nome, label, uni, v, min, max) => `<label class="sp-f"><span>${label}</span><span class="sp-in"><input type="number" min="${min}" max="${max}" step="0.1" inputmode="decimal" name="${nome}" value="${esc(v ?? "")}" required><em>${uni}</em></span></label>`;
 function renderSuplementos(){
+  if (medEdit != null && renderSuplementos.p !== person.id) medEdit = null; renderSuplementos.p = person.id;
   const p = person.id, cfg = suplementoPerfil(p);
   const uso = (tipo, nome) => `<div class="sp-uso"><span>Usa ${nome}?</span><div class="chips" role="group" aria-label="Usa ${nome}">${[["sim", "Sim"], ["nao", "Não"]].map(([v, t]) => `<button type="button" class="chip" data-sup-status="${tipo}_status" data-value="${v}" aria-pressed="${(cfg[tipo + "_status"] === "parou" ? "nao" : cfg[tipo + "_status"]) === v}">${t}</button>`).join("")}</div></div>`;
   return `<section class="list" id="suplementos" aria-label="Alimentação">
     <div class="sup-dayhead"><div class="dayhead"><div><div class="eyebrow">Rotina ${person.art} ${esc(person.name)}</div><h2>Alimentação</h2><p class="dsub">O que comeu, suplementos e bebida do dia.</p></div></div><button type="button" class="avatar" data-perfil aria-label="Trocar pessoa ou abrir perfil">${esc(person.name.slice(0, 1))}</button></div>
     ${renderWeekNav(true)}
     <div class="cards ali-cards">${protCard()}${alcCard()}</div>
-    <h3 class="sec">Suplementos</h3>
+    <h3 class="sec">O que você toma</h3>
     <div class="sp-grid" id="sp-cards">${creatCard()}${wheyCard()}</div>
+    <div id="md-box">${medsPanel()}</div>
     <p class="ckstate" id="sup-save-state" role="status">${esc(chkStatus[docId(p, logDate)] || "")}</p>
     <article class="panel"><details data-sup-details="produtos"><summary>Meus produtos</summary>
       <form data-sup-form="creatina" class="sp-form">${uso("creatina", "creatina")}<div class="sp-2">${spCampo("creatina_porcao", "Dose diária", "g", cfg.creatina_porcao ?? DOSE_CREAT, 1, 10)}<label class="sp-f"><span>Produto</span><span class="sp-in"><input type="text" maxlength="60" name="creatina_produto" value="${esc(cfg.creatina_produto || "")}" placeholder="opcional"></span></label></div><button type="submit" class="ghost">Salvar creatina</button></form>
@@ -3612,7 +3615,7 @@ function gymBanner(){
 function permPanel(){
   if (!SUPA) return "";
   const g = academiaSalva(), lin = (ico, c, t, sub, botoes) => `<li style="--c:${c}"><span class="ico">${ico}</span><span class="mt-l">${t}<small>${sub}</small></span><span class="pm-b">${botoes}</span></li>`;
-  return `${medsPanel()}<article class="panel"><h3>Permissões do aparelho</h3><ul class="pf-metas pm">
+  return `<article class="panel"><h3>Permissões do aparelho</h3><ul class="pf-metas pm">
     ${lin(ICON_CAM, "var(--coral)", "Câmera", "Foto de evolução e vídeo da execução", `<button type="button" class="chip" data-fotocam>Testar</button>`)}
     ${lin(ICON_MIC, "var(--lime)", "Microfone", "Ditar carga e repetições no treino", `<button type="button" class="chip" data-mictest>Testar</button>`)}
     ${lin(ICON_PIN, "var(--blue)", "Localização", g ? `Configurada neste aparelho para ${person.name} (precisão ~${g.acc} m)` : "Não configurada. Só consulta GPS após você salvar a posição na academia; não usa horário.", g ? `<button type="button" class="chip" data-gymdel>Remover</button>` : `<button type="button" class="chip" data-gymset>Estou na academia: configurar</button>`)}
