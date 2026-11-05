@@ -1731,14 +1731,14 @@ let descansoAgendado = false;
 function agendaDescanso(sec, info){
   if (!pushSub || !pushPrefs().descanso || !(sec > 0)) return;
   descansoAgendado = true;
-  pushApi({action: "timer", endpoint: pushSub.endpoint, seconds: sec, title: "Acabou a moleza, porra", body: info || "Próxima série. Levanta."}).catch(() => { descansoAgendado = false; });
+  pushApi({action: "timer", endpoint: pushSub.endpoint, seconds: sec, title: "Acabou a moleza, caralho", body: info || "Próxima série. Levanta essa bunda."}).catch(() => { descansoAgendado = false; });
 }
 function cancelaDescanso(){ if (!descansoAgendado || !pushSub) return; descansoAgendado = false; pushApi({action: "timer_cancel", endpoint: pushSub.endpoint}).catch(() => {}); }
 function descansoInfo(d, i, s, n){
   const name = d.ex[i][0];
   if (s + 1 < n) return `${name}: série ${s + 2} de ${n}.`;
   const prox = d.ex.slice(i + 1).find(e => e[3] !== "—" || e[1]);
-  return prox ? `Próximo: ${prox[0]}. Sem enrolar, caralho.` : "Último exercício. Fecha essa porra!";
+  return prox ? `Próximo: ${prox[0]}. Para de enrolar, porra.` : "Último exercício. Fecha essa merda, caralho!";
 }
 function changeSets(i, dir){
   const d = person.days.find(x => x.id === current), [name, sets, reps] = d.ex[i];
@@ -3048,11 +3048,11 @@ function relAtalho(p){
 function renderCoach(){
   const p = person.id, todos = RELS[p] || (REL[p] ? [REL[p]] : []), [ult, ...ant] = todos;
   const ate = trainDay(), semTreino = person.days && !Object.values(LOGS).some(d => d.person === p && d.date > addDays(ate, -14) && d.date <= ate && trained(p, d.date));
-  const lembrete = semTreino ? `<article class="panel tinted coach-lem" style="--c:var(--warn)">${phd(ICON_LIVRO, "Cadê os treinos, porra?")}<p>Duas semanas sem um treino aqui, caralho. Ou você sumiu da academia ou treina e não anota, e as duas coisas são vagabundagem. Marca cada série na aba Treino, mesmo que faça só metade da ficha. Sem número eu não consigo nem te xingar direito.</p></article>` : "";
+  const lembrete = semTreino ? `<article class="panel tinted coach-lem" style="--c:var(--warn)">${phd(ICON_LIVRO, "Cadê a porra dos treinos?")}<p>Duas semanas sem um treino aqui, caralho. Ou você sumiu da academia ou treina e não anota, e as duas coisas são vagabundagem da pior. Marca cada série na aba Treino, mesmo que faça só metade da ficha. Sem número eu não consigo nem te xingar direito, porra.</p></article>` : "";
   return `<section class="list coach" aria-label="Coach">
-    <div class="dayhead"><div><div class="eyebrow">Seu personal carrasco</div><h2>Coach</h2><p class="dsub">Todo domingo ele pega os seus números e esfrega na sua cara. Sem dó e sem passar pano.</p></div></div>
+    <div class="dayhead"><div><div class="eyebrow">Seu personal carrasco</div><h2>Coach</h2><p class="dsub">Todo domingo ele pega os seus números de merda e esfrega na sua cara. Sem dó, sem pano e sem paciência.</p></div></div>
     ${lembrete}
-    ${ult ? relCard(p, ult, "Avaliação da semana") : `<article class="panel"><p>Ainda não tem avaliação pra ${esc(person.name)}. Domingo às 10h sai a primeira. Registra a semana direito, senão a bronca vem dobrada, porra.</p></article>`}
+    ${ult ? relCard(p, ult, "Avaliação da semana") : `<article class="panel"><p>Ainda não tem avaliação pra ${esc(person.name)}. Domingo às 10h sai a primeira. Registra a semana direito, caralho, senão a bronca vem em dobro.</p></article>`}
     ${ant.length ? `<h3 class="sec">Semanas anteriores</h3>${ant.map(r => `<details class="panel coach-ant"><summary>${dd(r.semana)}–${dd(addDays(r.semana, 6))}${r.titulo ? " · " + esc(r.titulo) : ""}</summary>${relCard(p, r, "Avaliação da semana")}</details>`).join("")}` : ""}
   </section>`;
 }
