@@ -2539,7 +2539,9 @@ function redesenhaSup(){
 }
 function refreshSuplementos(){
   if (screen !== "suplementos") return;
-  const el = document.getElementById("sp-cards"); if (el) el.innerHTML = creatCard() + wheyCard();
+  const el = document.getElementById("sp-cards");
+  const digitando = el && [...el.querySelectorAll("input")].some(x => x === document.activeElement || x.value.trim() !== (x.defaultValue || "").trim());
+  if (el && !digitando) el.innerHTML = creatCard() + wheyCard();
   refreshProt(); refreshAlc();
 }
 // Redesenha a tela onde está o cartão de comida (Hoje ou Alimentação) sem perder a rolagem
@@ -2822,6 +2824,7 @@ function pesoPasso(d){
   inp.value = num((Math.round((base + d / 10) * 10) / 10).toFixed(1)); pzSync();
 }
 function salvaPeso(inp){
+  if (inp) delete inp.dataset.rascunho;
   const txt = inp.value.trim(); if (!txt) { pesoEditando = false; return refreshExtras(); }
   const v = Number(txt.replace(",", "."));
   if (!(v > 20 && v < 300)) return aviso("Peso inválido.", "Digite em kg, por exemplo 63,5.");
@@ -2838,7 +2841,7 @@ function refreshExtras(){
     pz.hidden = !tem; document.getElementById("pz-in").hidden = tem || futuro();
     document.getElementById("pz-num").textContent = c.peso ? num((+c.peso).toFixed(1)) : "";
     const st = document.getElementById("pz-st"); st.textContent = c.peso ? "Anotado ✓" : ""; st.className = "pz-st" + (c.peso ? " ok" : "");
-    if (pin && pin !== document.activeElement) pin.value = c.peso ? num((+c.peso).toFixed(1)) : "";
+    if (pin && pin !== document.activeElement && pin.dataset?.rascunho !== "1") pin.value = c.peso ? num((+c.peso).toFixed(1)) : "";
     if (pin) pin.placeholder = ult ? num(ult.v.toFixed(1)) : "0,0";
     pzSync();
     const media = t ? `Média 7 dias <b>${num(t.avg.toFixed(1))} kg</b>` + (t.delta != null && Math.abs(t.delta) >= 0.05 ? ` · ${t.delta > 0 ? "+" : "−"}${num(Math.abs(t.delta).toFixed(1))} kg na semana` : "") : "";
@@ -2846,7 +2849,7 @@ function refreshExtras(){
     const linhas = tem ? [media] : [perto ? "Perto da academia que você configurou. Registre seu peso." : ult ? `Última: <b>${num(ult.v.toFixed(1))} kg</b> ${ult.quando}` : "", futuro() ? "" : person.casa ? "De manhã, em jejum, depois do banheiro e sem roupa." : "Ao chegar, antes do treino e sem tênis."];
     if (h) h.innerHTML = linhas.filter(Boolean).map(x => `<span>${x}</span>`).join("");
   }
-  else if (pin && pin !== document.activeElement) pin.value = c.peso ? num(c.peso) : "";
+  else if (pin && pin !== document.activeElement && pin.dataset?.rascunho !== "1") pin.value = c.peso ? num(c.peso) : "";
   if (h && pz) {}
   else if (h) {
     const t = pesoTrend(person.id, logDate);
@@ -4263,7 +4266,7 @@ view.addEventListener("touchend", e => { if (!swipe) return; const dx = e.change
 // Dia futuro: dá para ver o treino previsto, mas não registrar
 view.addEventListener("click", e => { if (futuro() && e.target.closest(".set, [data-ck], [data-sq], [data-ref], [data-sheet], [data-setctl], [data-setday], [data-alc], [data-ditar], [data-pesosave], [data-pesoedit], [data-pstep], [data-sp-creat], [data-sp-whey], [data-aqadd], [data-aqdel], [data-avabre], [data-avdel]")) { e.stopImmediatePropagation(); e.preventDefault(); avisaFuturo(); } }, true);
 view.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "peso") { e.preventDefault(); salvaPeso(e.target); } });
-view.addEventListener("input", e => { if (e.target.id === "peso") pzSync(); });
+view.addEventListener("input", e => { if (e.target.id === "peso") { e.target.dataset.rascunho = "1"; pzSync(); } });
 let pzRep = null, pzRepetiu = false;
 const pzPara = () => { clearTimeout(pzRep); clearInterval(pzRep); pzRep = null; };
 view.addEventListener("pointerdown", e => { const b = e.target.closest("[data-pstep]"); if (!b || futuro()) return; pzRepetiu = false; pzPara(); pzRep = setTimeout(() => { pzRepetiu = true; pzRep = setInterval(() => pesoPasso(+b.dataset.pstep), 90); }, 400); });
