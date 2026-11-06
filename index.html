@@ -2432,10 +2432,15 @@ function showOfensiva(tipo, n, dia){
 // Dia virou com o site aberto: atualiza a tela sozinho (sem tirar quem ainda está anotando o treino de ontem)
 let diaVisto = trainDay();
 function viraDia(){
-  const hoje = trainDay(); if (hoje === diaVisto) return;
-  const k = store.get("logdate"), anotando = k && k.date === diaVisto && Date.now() - k.at < DATA_FICA && trained(person.id, diaVisto);
-  if (logDate === diaVisto && !anotando) logDate = hoje;
+  const hoje = trainDay(), k = store.get("logdate");
+  // data antiga sem nada anotado há 3 h (ex.: treino da madrugada de ontem com o app aberto até hoje): volta para hoje
+  const parada = logDate !== hoje && logDate < hoje && !(k && k.date === logDate && Date.now() - k.at < DATA_FICA);
+  if (hoje === diaVisto && !parada) return;
+  const anotando = k && k.date === diaVisto && Date.now() - k.at < DATA_FICA && trained(person.id, diaVisto);
+  const antes = logDate;
+  if ((logDate === diaVisto && !anotando && hoje !== diaVisto) || parada) logDate = hoje;
   diaVisto = hoje; current = dayOf(person.id, logDate) || current; draw(); checkOfensiva();
+  if (antes !== logDate && typeof toast === "function") toast(`<span>Voltei para <b>hoje (${brDate(hoje)})</b>. O app estava em ${brDate(antes)}.</span>`);
 }
 setInterval(viraDia, 30e3);
 // Saiu da tela (bloqueou o celular, trocou de app): grava na hora o que estava esperando, antes que o sistema congele o app
